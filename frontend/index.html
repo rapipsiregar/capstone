@@ -105,7 +105,7 @@
             <span class="hero-editorial-badge">✨ Monitor Reputasi & Sentimen Kosmetik Halal</span>
             <h2 class="hero-editorial-headline">Eksplorasi Skincare Terverifikasi & Suara Nyata Konsumen</h2>
             <p class="hero-editorial-desc">
-              Pantau persepsi kepercayaan konsumen dari 8.300+ ulasan Female Daily dengan kecerdasan buatan Explainable AI.
+              Pantau persepsi kepercayaan konsumen dari ribuan ulasan Female Daily dengan kecerdasan buatan Explainable AI.
             </p>
             
             <div class="hero-search-wrapper">
@@ -117,11 +117,11 @@
               <div id="heroSearchResultsDropdown" class="hero-search-results-dropdown"></div>
             </div>
 
-            <div class="hero-stats-row">
-              <span class="hero-stat-pill">📦 <strong>801</strong> Produk Skincare</span>
-              <span class="hero-stat-pill">🏷️ <strong>216</strong> Brand Terdaftar</span>
-              <span class="hero-stat-pill">💬 <strong>8.365</strong> Ulasan Konsumen</span>
-              <span class="hero-stat-pill">🛡️ <strong>100%</strong> Teranotasi Halal & BPOM</span>
+            <div class="hero-stats-row" id="heroStatsRow">
+              <span class="hero-stat-pill" id="heroStatProducts">📦 <strong id="heroCountProducts">-</strong> Produk Skincare</span>
+              <span class="hero-stat-pill" id="heroStatBrands">🏷️ <strong id="heroCountBrands">-</strong> Brand Terdaftar</span>
+              <span class="hero-stat-pill" id="heroStatReviews">💬 <strong id="heroCountReviews">-</strong> Ulasan Konsumen</span>
+              <span class="hero-stat-pill" id="heroStatCompliance">🛡️ <strong id="heroCountCompliance">-</strong> Klaim Halal & BPOM</span>
             </div>
           </div>
 
@@ -436,7 +436,7 @@
             📚 Ringkasan Partisi Dataset Riset (Female Daily Skincare)
           </h3>
           <p style="font-size: 0.85rem; color: var(--text-muted);">
-            Dataset 8.365 ulasan asli tanpa duplikasi dari 215 brand dan 797 produk skincare yang dibagi secara terstratifikasi (stratified split).
+            Dataset <span id="metricsDatasetReviewCount">8.365</span> ulasan asli tanpa duplikasi dari <span id="metricsDatasetBrandCount">216</span> brand dan <span id="metricsDatasetProductCount">801</span> produk skincare yang dibagi secara terstratifikasi (stratified split).
           </p>
         </div>
         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">

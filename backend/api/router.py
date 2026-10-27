@@ -8,6 +8,7 @@ from backend.api.v1.dataset_ingest import router as dataset_ingest_router
 from backend.api.v1.export_summary import router as export_summary_router
 from backend.api.v1.reviews_feed import router as reviews_feed_router
 from backend.api.v1.catalog import router as catalog_router
+from backend.api.v1.catalog_stats import router as catalog_stats_router
 from backend.api.v1.model_metrics import router as model_metrics_router
 
 api_router = APIRouter(prefix="/api/v1")
@@ -20,6 +21,7 @@ api_router.include_router(dataset_ingest_router)
 api_router.include_router(export_summary_router)
 api_router.include_router(reviews_feed_router)
 api_router.include_router(catalog_router)
+api_router.include_router(catalog_stats_router)
 api_router.include_router(model_metrics_router)
 
 

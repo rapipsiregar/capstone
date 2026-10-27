@@ -61,5 +61,38 @@ class TestHomepageLayout(unittest.TestCase):
         self.assertIsNone(re.search(r"Memuat \d+ Kategori", self.catalog_js))
 
 
+    # ---------- Section 9B (Task 9.4, 9.5, 9.6) ----------
+    def test_hero_stats_not_hardcoded_in_html(self):
+        """Task 9.4 (F2): Verify hero stats row does not contain hardcoded literal numbers."""
+        home = self._panel("tab-content-reputation")
+        stats_match = re.search(r'<div class="hero-stats-row"[^>]*>(.*?)</div>', home, re.DOTALL)
+        self.assertIsNotNone(stats_match)
+        stats_html = stats_match.group(1)
+        self.assertNotIn(">801<", stats_html)
+        self.assertNotIn(">216<", stats_html)
+        self.assertNotIn(">8.365<", stats_html)
+        self.assertIn('id="heroCountProducts"', stats_html)
+        self.assertIn('id="heroCountBrands"', stats_html)
+        self.assertIn('id="heroCountReviews"', stats_html)
+        self.assertIn('id="heroCountCompliance"', stats_html)
+
+    def test_compliance_pill_not_100_percent(self):
+        """Task 9.5 (F1): Verify pill does not falsely claim 100% Halal & BPOM."""
+        self.assertNotIn("100% Teranotasi", self.html)
+        self.assertNotIn("100% Teranotasi Halal & BPOM", self.html)
+        home = self._panel("tab-content-reputation")
+        self.assertIn("Klaim Halal & BPOM", home)
+
+    def test_one_fact_one_value_metrics_and_catalog(self):
+        """Task 9.6 (F3): Verify single source of truth (216 brands & 801 products)."""
+        self.assertNotIn("215 brand dan 797 produk", self.html)
+        metrics_panel = self._panel("tab-content-metrics")
+        self.assertIn("216", metrics_panel)
+        self.assertIn("801", metrics_panel)
+        self.assertIn("metricsDatasetBrandCount", metrics_panel)
+        self.assertIn("metricsDatasetProductCount", metrics_panel)
+
+
 if __name__ == "__main__":
     unittest.main()
+

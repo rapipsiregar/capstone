@@ -97,14 +97,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [ ] **Task 9.3**: **Favicon Baru** (F13): Ajukan konsep, buat setelah disetujui.
   - *Kriteria selesai:* tanpa gradient/glow; disetujui user; tampil di tab browser (screenshot).
 
-#### 9B. Angka Jujur di Beranda
-- [ ] **Task 9.4**: **Statistik Hero dari API** (F2).
-  - *Kriteria selesai:* test (TDD) membuktikan angka DOM = hasil hitung dataset; tidak ada angka statistik literal di `index.html`.
-- [ ] **Task 9.5**: **Ganti Pill 100%** (F1): Tampilkan jumlah ulasan yang menyebut klaim halal dan BPOM.
-  - *Kriteria selesai:* angka pill = hitungan dataset (test).
-- [ ] **Task 9.6**: **Satu Fakta Satu Nilai** (F3): Tab Metrik memakai sumber yang sama dengan beranda.
-  - *Kriteria selesai:* tidak ada dua nilai berbeda untuk fakta yang sama (dicek berdasarkan peta Task 7.6).
-
 #### 9C. Insight Reputasi Dinamis (ex Task 6.3)
 - [ ] **Task 9.7**: **Dropdown dari API**: Brand (216) dan kategori (23).
   - *Kriteria selesai:* test membuktikan jumlah opsi = jumlah di dataset.
@@ -178,6 +170,18 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
+#### 9B. Angka Jujur di Beranda
+- [x] **Task 9.6**: **Satu Fakta Satu Nilai** (F3): Tab Metrik memakai sumber yang sama dengan beranda.
+  - *Kriteria selesai:* tidak ada dua nilai berbeda untuk fakta yang sama (dicek berdasarkan peta Task 7.6).
+  - *Bukti (2026-10-28):* Teks banner riset pada Tab Metrik `index.html` dan fallback `api.js` diselaraskan dari 215 brand / 797 produk menjadi 216 brand dan 801 produk, terhubung dengan elemen DOM dinamis `metricsDatasetBrandCount` dan `metricsDatasetProductCount`; unit test `test_one_fact_one_value_metrics_and_catalog` passed.
+- [x] **Task 9.5**: **Ganti Pill 100%** (F1): Tampilkan jumlah ulasan yang menyebut klaim halal dan BPOM.
+  - *Kriteria selesai:* angka pill = hitungan dataset (test).
+  - *Bukti (2026-10-28):* Pill "100% Teranotasi Halal & BPOM" dihapus dari HTML; digantikan elemen dinamis `#heroCountCompliance` yang menyajikan rasio klaim terukur dari dataset (55 Halal & 468 BPOM); unit test `test_compliance_pill_not_100_percent` passed.
+- [x] **Task 9.4**: **Statistik Hero dari API** (F2).
+  - *Kriteria selesai:* test (TDD) membuktikan angka DOM = hasil hitung dataset; tidak ada angka statistik literal di `index.html`.
+  - *Bukti (2026-10-28):* Endpoint REST API `GET /api/v1/catalog/stats` pada `backend/api/v1/catalog_stats.py` (47 LOC) menyuplai statistik otentik ulasan (8.365), produk (801), dan brand (216); `frontend/index.html` bersih dari angka literal di `#heroStatsRow`; `frontend/js/api.js` memuat data via `fetchCatalogStats()` dan `loadHomepageHeroStats()`; TDD unit tests di `tests/test_catalog_stats.py` dan `tests/test_homepage_layout.py` passed (100% green); Seksi 9B resmi **DONE 3/3**.
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 #### 8E. Pembersihan Model Palsu

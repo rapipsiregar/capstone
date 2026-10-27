@@ -56,7 +56,7 @@ async function fetchBrandAnalytics(brand = null, category = null) {
     return {
       status: "success",
       total_reviews: 8365,
-      total_brands: 215,
+      total_brands: 216,
       brands_summary: [
         { brand_name: "Wardah", total_reviews: 447, high_trust_ratio: 0.40, low_trust_ratio: 0.32, neutral_ratio: 0.28, top_aspect: "Klaim_Efikasi_Manfaat", aspect_distribution: { "Klaim_Efikasi_Manfaat": 274, "Kandungan_Bahan_Sensitivitas": 91, "Transparansi_Layanan_Harga": 75, "Sertifikasi_Halal_BPOM": 7 }, products: [] },
         { brand_name: "Emina", total_reviews: 213, high_trust_ratio: 0.46, low_trust_ratio: 0.31, neutral_ratio: 0.23, top_aspect: "Klaim_Efikasi_Manfaat", aspect_distribution: { "Klaim_Efikasi_Manfaat": 102, "Kandungan_Bahan_Sensitivitas": 55, "Transparansi_Layanan_Harga": 52, "Sertifikasi_Halal_BPOM": 4 }, products: [] },
@@ -155,5 +155,53 @@ async function fetchModelEvaluationMetrics() {
     return null;
   }
 }
+
+async function fetchCatalogStats() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/catalog/stats`);
+    if (!res.ok) throw new Error('Failed to fetch catalog stats');
+    return await res.json();
+  } catch (err) {
+    console.error('Error fetching catalog stats:', err);
+    return null;
+  }
+}
+
+async function loadHomepageHeroStats() {
+  const stats = await fetchCatalogStats();
+  if (!stats) return;
+
+  const elProds = document.getElementById('heroCountProducts');
+  const elBrands = document.getElementById('heroCountBrands');
+  const elReviews = document.getElementById('heroCountReviews');
+  const elCompliance = document.getElementById('heroCountCompliance');
+
+  if (elProds && stats.total_products) {
+    elProds.textContent = Number(stats.total_products).toLocaleString('id-ID');
+  }
+  if (elBrands && stats.total_brands) {
+    elBrands.textContent = Number(stats.total_brands).toLocaleString('id-ID');
+  }
+  if (elReviews && stats.total_reviews) {
+    elReviews.textContent = Number(stats.total_reviews).toLocaleString('id-ID');
+  }
+  if (elCompliance && stats.halal_claimed_reviews !== undefined) {
+    elCompliance.textContent = `${stats.halal_claimed_reviews} Halal & ${stats.bpom_claimed_reviews} BPOM`;
+  }
+
+  const mRev = document.getElementById('metricsDatasetReviewCount');
+  const mBrand = document.getElementById('metricsDatasetBrandCount');
+  const mProd = document.getElementById('metricsDatasetProductCount');
+  if (mRev && stats.total_reviews) mRev.textContent = Number(stats.total_reviews).toLocaleString('id-ID');
+  if (mBrand && stats.total_brands) mBrand.textContent = Number(stats.total_brands).toLocaleString('id-ID');
+  if (mProd && stats.total_products) mProd.textContent = Number(stats.total_products).toLocaleString('id-ID');
+}
+
+if (typeof document !== 'undefined') {
+  document.addEventListener('DOMContentLoaded', () => {
+    loadHomepageHeroStats();
+  });
+}
+
 
 
