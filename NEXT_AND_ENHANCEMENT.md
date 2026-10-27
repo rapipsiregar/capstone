@@ -142,8 +142,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 11: Pembersihan File
 
 #### 11A. Duplikat & Yatim (persetujuan per item)
-- [ ] **Task 11.1**: **Splitter Ganda**: `splitter.py` vs `female_daily_splitter.py` (aplikasi memakai yang kedua).
+- [x] **Task 11.1**: **Splitter Ganda**: `splitter.py` vs `female_daily_splitter.py` (aplikasi memakai yang kedua).
   - *Kriteria selesai:* satu splitter tersisa; pytest hijau.
+  - *Bukti (2026-10-28):* Modul duplikat `backend/services/splitter.py` dan `tests/test_splitter.py` dihapus dengan pre-approval user; modul resmi `backend/services/female_daily_splitter.py` tetap aktif digunakan oleh API; 142 pytest passed (100% green).
 - [ ] **Task 11.2**: **Modul Yatim**: `female_daily_xai.py` dan `frontend/js/empirical_drivers.json` tidak dirujuk aplikasi.
   - *Kriteria selesai:* `grep` membuktikan tidak ada rujukan sebelum dihapus; pytest hijau.
 - [ ] **Task 11.3**: **Sisa Data Statis**: Bagian `frontend/js/data.js` yang tidak terpakai lagi setelah Phase 9C.
