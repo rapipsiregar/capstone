@@ -1,0 +1,148 @@
+{
+  "status": "success",
+  "dataset_split": "test.csv",
+  "total_test_samples": 837,
+  "device_used": "cuda",
+  "trust_classifier": {
+    "num_samples": 837,
+    "loss": 0.4094,
+    "accuracy": 0.8387,
+    "precision_macro": 0.8263,
+    "recall_macro": 0.8181,
+    "f1_macro": 0.8218,
+    "confusion_matrix": [
+      [
+        197,
+        19,
+        15
+      ],
+      [
+        20,
+        143,
+        41
+      ],
+      [
+        11,
+        29,
+        362
+      ]
+    ],
+    "labels": [
+      "Low_Trust",
+      "Neutral",
+      "High_Trust"
+    ],
+    "classification_report": {
+      "Low_Trust": {
+        "precision": 0.8640350877192983,
+        "recall": 0.8528138528138528,
+        "f1-score": 0.8583877995642701,
+        "support": 231.0
+      },
+      "Neutral": {
+        "precision": 0.7486910994764397,
+        "recall": 0.7009803921568627,
+        "f1-score": 0.7240506329113924,
+        "support": 204.0
+      },
+      "High_Trust": {
+        "precision": 0.8660287081339713,
+        "recall": 0.900497512437811,
+        "f1-score": 0.8829268292682927,
+        "support": 402.0
+      },
+      "accuracy": 0.8387096774193549,
+      "macro avg": {
+        "precision": 0.8262516317765698,
+        "recall": 0.8180972524695088,
+        "f1-score": 0.8217884205813184,
+        "support": 837.0
+      },
+      "weighted avg": {
+        "precision": 0.8368800839022795,
+        "recall": 0.8387096774193549,
+        "f1-score": 0.8374318950766118,
+        "support": 837.0
+      }
+    }
+  },
+  "aspect_classifier": {
+    "num_samples": 837,
+    "loss": 0.1303,
+    "accuracy": 0.9665,
+    "precision_macro": 0.8962,
+    "recall_macro": 0.8407,
+    "f1_macro": 0.8625,
+    "confusion_matrix": [
+      [
+        11,
+        0,
+        12,
+        3
+      ],
+      [
+        0,
+        166,
+        2,
+        1
+      ],
+      [
+        5,
+        0,
+        483,
+        0
+      ],
+      [
+        1,
+        0,
+        4,
+        149
+      ]
+    ],
+    "labels": [
+      "Sertifikasi_Halal_BPOM",
+      "Kandungan_Bahan_Sensitivitas",
+      "Klaim_Efikasi_Manfaat",
+      "Transparansi_Layanan_Harga"
+    ],
+    "classification_report": {
+      "Sertifikasi_Halal_BPOM": {
+        "precision": 0.6470588235294118,
+        "recall": 0.4230769230769231,
+        "f1-score": 0.5116279069767442,
+        "support": 26.0
+      },
+      "Kandungan_Bahan_Sensitivitas": {
+        "precision": 1.0,
+        "recall": 0.9822485207100592,
+        "f1-score": 0.991044776119403,
+        "support": 169.0
+      },
+      "Klaim_Efikasi_Manfaat": {
+        "precision": 0.9640718562874252,
+        "recall": 0.9897540983606558,
+        "f1-score": 0.9767441860465116,
+        "support": 488.0
+      },
+      "Transparansi_Layanan_Harga": {
+        "precision": 0.9738562091503268,
+        "recall": 0.9675324675324676,
+        "f1-score": 0.9706840390879479,
+        "support": 154.0
+      },
+      "accuracy": 0.966547192353644,
+      "macro avg": {
+        "precision": 0.8962467222417909,
+        "recall": 0.8406530024200264,
+        "f1-score": 0.8625252270576517,
+        "support": 837.0
+      },
+      "weighted avg": {
+        "precision": 0.9632789145629372,
+        "recall": 0.966547192353644,
+        "f1-score": 0.964068575335503,
+        "support": 837.0
+      }
+    }
+  }
+}

@@ -89,16 +89,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
-#### 8B. Fine-Tuning & Evaluasi
-- [x] **Task 8.4**: **Fine-Tune Klasifier Kepercayaan**: Fine-tune `indobenchmark/indobert-base-p1` untuk `label_kepercayaan` dengan loss per epoch dari training sungguhan.
-  - *Kriteria selesai:* log training asli tersimpan; bobot model tersimpan di luar git.
-  - *Bukti (2026-10-28):* Fine-tuning otentik 3 epoch terlaksana di GPU RTX 3050 Laptop (PyTorch FP16 AMP, AdamW lr=2e-5, batch 32, total durasi 244.1s); loss per epoch: Epoch 1 (Train 0.7243 / Val 0.4687 / Acc 0.8242 / F1 0.7920), Epoch 2 (Train 0.3547 / Val 0.4516 / Acc 0.8218 / F1 0.8027), Epoch 3 (Train 0.2408 / Val 0.4795 / Acc 0.8313 / F1 0.8107); bobot biner `model.safetensors` (498 MB) diabaikan git, riwayat json & log asli tersimpan; 125 pytest passed.
-- [x] **Task 8.5**: **Fine-Tune Klasifier Aspek**: Sama seperti 8.4 untuk `aspek_komunikasi`.
-  - *Kriteria selesai:* log training asli tersimpan; bobot model tersimpan di luar git.
-  - *Bukti (2026-10-28):* Fine-tuning otentik 3 epoch untuk 4 kelas `aspek_komunikasi` sukses di GPU RTX 3050 Laptop (PyTorch FP16 AMP, AdamW lr=2e-5, batch 32, durasi 236.43s); riwayat training otentik: Epoch 1 (Train 0.5663 / Val 0.2017 / Acc 0.9474 / F1 0.8298), Epoch 2 (Train 0.1450 / Val 0.1518 / Acc 0.9641 / F1 0.8455), Epoch 3 (Train 0.1121 / Val 0.1398 / Acc 0.9677 / F1 0.8708); bobot biner `model.safetensors` (498 MB) diabaikan git melalui `.gitignore`, log asli `train_aspect_indobert.log` & `training_history.json` tersimpan; 128 pytest passed.
-- [ ] **Task 8.6**: **Evaluator Jujur** (K2, K3): Metrik dihitung dari prediksi model pada `test.csv` dan ditulis ke JSON.
-  - *Kriteria selesai:* test membuktikan jumlah confusion matrix = jumlah baris `test.csv`; tidak ada angka metrik literal di kode.
-
 #### 8C. Integrasi Backend
 - [ ] **Task 8.7**: **Pemuat Model**: Lokasi bobot dibaca dari `.env` (folder lokal atau Hugging Face Hub), dimuat sekali saat dibutuhkan.
   - *Kriteria selesai:* test memuat model dari path konfigurasi; pesan error jelas bila bobot tidak ada.
@@ -216,6 +206,17 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
+#### 8B. Fine-Tuning & Evaluasi
+- [x] **Task 8.6**: **Evaluator Jujur** (K2, K3): Metrik dihitung dari prediksi model pada `test.csv` dan ditulis ke JSON.
+  - *Kriteria selesai:* test membuktikan jumlah confusion matrix = jumlah baris `test.csv`; tidak ada angka metrik literal di kode.
+  - *Bukti (2026-10-28):* Evaluator otentik `backend/services/indobert_evaluator.py` mengevaluasi model IndoBERT Kepercayaan (Akurasi 83,87%, Macro F1 0,8218) dan Aspek (Akurasi 96,65%, Macro F1 0,8625) pada 837 data uji `test.csv`; total elemen confusion matrix Kepercayaan (231+204+402 = 837) dan Aspek (26+169+488+154 = 837) persis 837 baris; nol konstanta literal di kode teruji via `test_no_hardcoded_fake_metrics_in_evaluator`; seluruh 130 pytest passed.
+- [x] **Task 8.5**: **Fine-Tune Klasifier Aspek**: Sama seperti 8.4 untuk `aspek_komunikasi`.
+  - *Kriteria selesai:* log training asli tersimpan; bobot model tersimpan di luar git.
+  - *Bukti (2026-10-28):* Fine-tuning otentik 3 epoch untuk 4 kelas `aspek_komunikasi` sukses di GPU RTX 3050 Laptop (PyTorch FP16 AMP, AdamW lr=2e-5, batch 32, durasi 236.43s); riwayat training otentik: Epoch 1 (Train 0.5663 / Val 0.2017 / Acc 0.9474 / F1 0.8298), Epoch 2 (Train 0.1450 / Val 0.1518 / Acc 0.9641 / F1 0.8455), Epoch 3 (Train 0.1121 / Val 0.1398 / Acc 0.9677 / F1 0.8708); bobot biner `model.safetensors` (498 MB) diabaikan git melalui `.gitignore`, log asli `train_aspect_indobert.log` & `training_history.json` tersimpan; 128 pytest passed.
+- [x] **Task 8.4**: **Fine-Tune Klasifier Kepercayaan**: Fine-tune `indobenchmark/indobert-base-p1` untuk `label_kepercayaan` dengan loss per epoch dari training sungguhan.
+  - *Kriteria selesai:* log training asli tersimpan; bobot model tersimpan di luar git.
+  - *Bukti (2026-10-28):* Fine-tuning otentik 3 epoch terlaksana di GPU RTX 3050 Laptop (PyTorch FP16 AMP, AdamW lr=2e-5, batch 32, total durasi 244.1s); loss per epoch: Epoch 1 (Train 0.7243 / Val 0.4687 / Acc 0.8242 / F1 0.7920), Epoch 2 (Train 0.3547 / Val 0.4516 / Acc 0.8218 / F1 0.8027), Epoch 3 (Train 0.2408 / Val 0.4795 / Acc 0.8313 / F1 0.8107); bobot biner `model.safetensors` (498 MB) diabaikan git, riwayat json & log asli tersimpan; 125 pytest passed.
+
 #### 8A. Data & Lingkungan
 - [x] **Task 8.3**: **Lingkungan Training**: Pilih Colab GPU atau torch CUDA lokal (RTX 3050 6 GB; torch terpasang saat ini versi CPU).
   - *Kriteria selesai:* output `torch.cuda.is_available()` = `True` di lingkungan terpilih.
