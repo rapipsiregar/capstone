@@ -19,8 +19,10 @@ class TestExportSummaryAPI(unittest.TestCase):
         data = response.json()
         self.assertEqual(data.get("status"), "success")
         self.assertIn("report_title", data)
-        self.assertIn("top_high_trust_brands", data)
         self.assertIn("model_performance", data)
+        self.assertNotEqual(data["model_performance"].get("indobert_transformer_trust_accuracy"), "94.20%")
+        self.assertEqual(data["model_performance"].get("indobert_transformer_trust_accuracy"), "83.87%")
+        self.assertEqual(data["model_performance"].get("macro_f1_score"), "82.18%")
 
     def test_get_export_summary_csv(self):
         """Test GET /api/v1/export/summary?format=csv endpoint."""

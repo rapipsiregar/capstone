@@ -87,18 +87,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ## TODO
 
-### Phase 8: Integritas Model IndoBERT (K1–K7)
-
-#### 8E. Pembersihan Model Palsu
-- [x] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
-  - *Kriteria selesai:* persetujuan per file; pytest tetap hijau.
-  - *Bukti (2026-10-28):* Dihapus file trainer/evaluator palsu (`female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py`, `models/female_daily_evaluation_results.json`, `models/evaluation_results.json`, serta test-test terkait) dengan pre-approval user; seluruh evaluasi dialihkan ke `indobert_evaluator.py` otentik; seluruh 140 pytest passed (100% green).
-- [x] **Task 8.14**: **Hapus Artefak TF-IDF** (K4): `indobert_*.joblib`, jalur TF-IDF di `indobert_trainer.py`, `model_metadata.json` palsu.
-  - *Kriteria selesai:* persetujuan per file; `grep` tidak menemukan `TfidfVectorizer` di `backend/`.
-  - *Bukti (2026-10-28):* Dihapus seluruh artefak `.joblib` lama (`indobert_aspect.joblib`, `indobert_trust.joblib`, `indobert_vectorizer.joblib`) dan metadata palsu (`metrics.json`, `model_metadata.json`) dengan pre-approval user; dihapus seluruh jalur `TfidfVectorizer` dan `LinearSVC` dari `backend/services/indobert_trainer.py` (103 LOC) dan `backend/services/xai_explainer.py` (55 LOC); `grep -r "TfidfVectorizer" backend/` menghasilkan 0 temuan; seluruh 140 pytest passed (100% green).
-- [ ] **Task 8.15**: **Koreksi Dokumen**: `docs/feature-list.md` dan dokumen lain disesuaikan dengan model yang benar-benar ada.
-  - *Kriteria selesai:* `grep` angka 0,942 / 94,20% tidak ditemukan di repo.
-
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 
 #### 9A. Arah Desain (ex Task 6.4)
@@ -192,6 +180,17 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
+#### 8E. Pembersihan Model Palsu
+- [x] **Task 8.15**: **Koreksi Dokumen** (K2, K5): `docs/feature-list.md` dan endpoint terkait disesuaikan dengan evaluasi IndoBERT otentik.
+  - *Kriteria selesai:* `grep` angka 0,942 / 94,20% tidak ditemukan di repo; seluruh metrik membaca hasil otentik.
+  - *Bukti (2026-10-28):* `backend/api/v1/export_summary.py` (136 LOC) membaca langsung dari `models/indobert_evaluation_results.json` tanpa konstanta statis; `tests/test_export_summary.py` memvalidasi asersi metrik otentik (83,87% & 82,18%); `docs/feature-list.md` diselaraskan dengan korpus 8.365 ulasan, partisi 6.692/836/837, dan XAI GPU Transformer; grep bebas angka fiktif 0,942 / 94,20%; seluruh 140 pytest passed (100% green); Phase 8 resmi **DONE 15/15**.
+- [x] **Task 8.14**: **Hapus Artefak TF-IDF** (K4): `indobert_*.joblib`, jalur TF-IDF di `indobert_trainer.py`, `model_metadata.json` palsu.
+  - *Kriteria selesai:* persetujuan per file; `grep` tidak menemukan `TfidfVectorizer` di `backend/`.
+  - *Bukti (2026-10-28):* Dihapus seluruh artefak `.joblib` lama (`indobert_aspect.joblib`, `indobert_trust.joblib`, `indobert_vectorizer.joblib`) dan metadata palsu (`metrics.json`, `model_metadata.json`) dengan pre-approval user; dihapus seluruh jalur `TfidfVectorizer` dan `LinearSVC` dari `backend/services/indobert_trainer.py` (103 LOC) dan `backend/services/xai_explainer.py` (55 LOC); `grep -r "TfidfVectorizer" backend/` menghasilkan 0 temuan; seluruh 140 pytest passed (100% green).
+- [x] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
+  - *Kriteria selesai:* persetujuan per file; pytest tetap hijau.
+  - *Bukti (2026-10-28):* Dihapus file trainer/evaluator palsu (`female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py`, `models/female_daily_evaluation_results.json`, `models/evaluation_results.json`, serta test-test terkait) dengan pre-approval user; seluruh evaluasi dialihkan ke `indobert_evaluator.py` otentik; seluruh 140 pytest passed (100% green).
+
 #### 8D. XAI Turunan & Tampilan Metrik
 - [x] **Task 8.12**: **Metrik UI dari API** (K5): Grafik dan label model membaca JSON evaluasi lewat API.
   - *Kriteria selesai:* tidak ada angka metrik literal di `frontend/`; screenshot menunjukkan angka = JSON.

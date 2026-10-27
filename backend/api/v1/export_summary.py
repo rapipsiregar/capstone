@@ -64,16 +64,32 @@ def generate_executive_summary_data() -> Dict[str, Any]:
         top_high_trust.sort(key=lambda x: x["high_trust_ratio"], reverse=True)
         top_low_trust.sort(key=lambda x: x["low_trust_ratio"], reverse=True)
         
+    model_perf = {
+        "model_architecture": "IndoBERT Transformer (Fine-Tuned)",
+        "indobert_transformer_trust_accuracy": "N/A",
+        "macro_f1_score": "N/A"
+    }
+    eval_json_path = os.path.join("models", "indobert_evaluation_results.json")
+    if os.path.exists(eval_json_path):
+        try:
+            with open(eval_json_path, "r", encoding="utf-8") as f:
+                eval_data = json.load(f)
+            t_obj = eval_data.get("trust_classifier", eval_data.get("trust_classification", {}))
+            t_acc = t_obj.get("accuracy")
+            t_f1 = t_obj.get("f1_macro", t_obj.get("macro_f1"))
+            if t_acc is not None:
+                model_perf["indobert_transformer_trust_accuracy"] = f"{t_acc * 100:.2f}%"
+            if t_f1 is not None:
+                model_perf["macro_f1_score"] = f"{t_f1 * 100:.2f}%"
+        except Exception:
+            pass
+
     return {
         "status": "success",
         "report_title": "Executive Summary: Halal Cosmetics Brand Trust Analysis",
         "generated_timestamp": int(time.time()),
         "total_analyzed_reviews": total_reviews,
-        "model_performance": {
-            "model_architecture": "IndoBERT Transformer (Fine-Tuned)",
-            "indobert_transformer_trust_accuracy": "94.20%",
-            "macro_f1_score": "93.95%"
-        },
+        "model_performance": model_perf,
         "top_high_trust_brands": top_high_trust[:10],
         "top_low_trust_brands": top_low_trust[:10]
     }
