@@ -11,12 +11,14 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - **Prioritas temuan:** HIGH = Hard Gate anti-slop / integritas data; MEDIUM = Purpose-Gate; LOW = Quality Lock / taste WARN.
 - **Penghapusan file:** hanya setelah initial commit (Task 7.1) dan dengan persetujuan per item.
 - **Nomor lama** (Phase 4 dan 6) ditulis dalam kurung agar riwayat tetap terlacak.
+- **Perpindahan ke DONE:** task selesai dicentang di tempat; seksi dipindah ke area DONE setelah ketiga task-nya selesai.
+- **Git:** setiap task selesai di-commit dan di-push ke `origin/master`.
 
 ## Ringkasan Status (2026-10-27)
 
 | Phase | Isi | Status |
 | --- | --- | --- |
-| 7 | Fondasi repo, aturan kerja, baseline | TODO 0/6 |
+| 7 | Fondasi repo, aturan kerja, baseline | 1/6 |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 0/15 |
 | 9 | Arah desain, angka jujur, aksesibilitas | TODO 0/12 |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
@@ -26,7 +28,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ## Keputusan User (2026-10-27)
 
-1. Repo GitHub: `https://github.com/rapipsiregar/capstone.git` (branch `master`, belum ada commit). Commit dan push hanya atas konfirmasi user.
+1. Repo GitHub publik: `https://github.com/rapipsiregar/capstone.git` (branch `master`). `data/` dan `models/` ikut di-commit.
 2. **Model hanya IndoBERT, di-fine-tune sungguhan.** Tidak ada perbandingan atau ensemble dengan model lain.
 3. Struktur backlog Opsi C: seksi kecil, masing-masing 3 task.
 4. Sumber aturan UI: `Leonxlnx/taste-skill` (`12af471`) dan `miqdadbadjuber/anti-slop` v3.2.23 (`5ca57fe`). CHARM diperlakukan sebagai **app screen**. Mode anti-slop **AFTER**: hanya temuan bernomor yang dikerjakan.
@@ -80,8 +82,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 7: Fondasi Repo & Aturan Kerja
 
 #### 7A. Git & Aturan
-- [ ] **Task 7.1**: **Initial Commit & Push**: Tetapkan isi commit pertama (`data/` 30 MB dan `models/` 3,1 MB ikut atau tidak), pastikan `.gitignore` menolak bobot model besar, lalu commit dan push ke `origin/master` setelah user konfirmasi.
+- [x] **Task 7.1**: **Initial Commit & Push**: Tetapkan isi commit pertama (`data/` 30 MB dan `models/` 3,1 MB ikut atau tidak), pastikan `.gitignore` menolak bobot model besar, lalu commit dan push ke `origin/master` setelah user konfirmasi.
   - *Kriteria selesai:* `git log` menunjukkan 1 commit; `git status` bersih; tidak ada file > 100 MB; push berhasil.
+  - *Bukti (2026-10-27):* commit `9ff9a8d` (177 file); `git ls-remote` = `9ff9a8d…`; file terbesar 5,9 MB; `.env` tidak ikut; pindai rahasia bersih; pytest 120 passed.
 - [ ] **Task 7.2**: **Selaraskan AGENTS.md**: Urutan prioritas aturan (AGENTS.md > DESIGN.md > anti-slop > taste-skill), definisi selesai UI (lint + inspect + Delivery Gate), arti "red" TDD untuk task visual (lint/inspector FAIL), stack ditulis vanilla JS (bukan React/Vite), placeholder §14 jadi teks.
   - *Kriteria selesai:* diff AGENTS.md ditinjau user; tidak ada pernyataan yang bertentangan dengan kode.
 - [ ] **Task 7.3**: **Perbaiki SKILLS.md**: Hapus rujukan ke `plans/next-enhancements.md` dan switch Demo/Live, Cloud/Local yang tidak ada; rujukan section AGENTS.md disesuaikan.
