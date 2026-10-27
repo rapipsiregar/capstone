@@ -18,7 +18,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 | Phase | Isi | Status |
 | --- | --- | --- |
-| 7 | Fondasi repo, aturan kerja, baseline | 5/6 |
+| 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 0/15 |
 | 9 | Arah desain, angka jujur, aksesibilitas | TODO 0/12 |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
@@ -85,18 +85,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ---
 
 ## TODO
-
-### Phase 7: Fondasi Repo & Aturan Kerja
-
-#### 7B. Skill & Baseline
-- [x] **Task 7.4**: **Pasang Skill UI**: Salin `taste-skill` dan 6 skill anti-slop ke `.agents/skills/`, tambah `.taste-skill/` ke `.gitignore`.
-  - *Kriteria selesai:* `lint.mjs` dan `inspect.mjs` berjalan dari `.agents/skills/`; `git status` tidak memuat `.taste-skill/`.
-  - *Bukti (2026-10-27):* 7 skill terpasang di `.agents/skills/` (`taste-skill`, `antislop*`); `.taste-skill/` masuk `.gitignore` & tidak terlacak git; `lint.mjs` jalan (82 FAIL, 48 WARN); `inspect.mjs` jalan di localhost:3000 (4 FAIL, 4 WARN); pytest 120 passed.
-- [x] **Task 7.5**: **Baseline Semua Layar**: `inspect.mjs --app` untuk Level 2, Level 3, dan 3 guidebook di 1440/768/390.
-  - *Kriteria selesai:* angka FAIL/WARN per layar tercatat di `docs/log/`; temuan baru masuk tabel F.
-  - *Bukti (2026-10-27):* 6 layar terukur via CDP Chrome di 1440/768/390: Level 1 (4F/4W), Level 2 (3F/3W), Level 3 (3F/4W), GB1 Insight (3F/4W), GB2 Sandbox (2F/4W), GB3 Metrik (3F/4W); temuan F19-F25 masuk tabel; pytest 120 passed.
-- [ ] **Task 7.6**: **Peta Sumber Angka**: Telusuri setiap angka statistik yang tampil di UI ke asalnya (hardcoded, API, atau berkas), termasuk asal selisih 215/797 dan klaim 10.826 ulasan.
-  - *Kriteria selesai:* tabel angka → sumber → nilai benar di `docs/log/`; tidak ada perubahan kode.
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
@@ -233,6 +221,17 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
 
 ### Phase 7: Fondasi Repo & Aturan Kerja
+#### 7B. Skill & Baseline
+- [x] **Task 7.6**: **Peta Sumber Angka**: Telusuri setiap angka statistik yang tampil di UI ke asalnya (hardcoded, API, atau berkas), termasuk asal selisih 215/797 dan klaim 10.826 ulasan.
+  - *Kriteria selesai:* tabel angka → sumber → nilai benar di `docs/log/`; tidak ada perubahan kode.
+  - *Bukti (2026-10-27):* Peta angka selesai di `docs/log/2026-10-27-2127-n.md`: 215/797 terbukti asal dari `00. InfoProduct.csv`, 10.826 terbukti korpus pra-deduplikasi; split 80/10/10 = 6.692/836/837 cocok dengan dataset aktif 8.365; tanpa perubahan kode.
+- [x] **Task 7.5**: **Baseline Semua Layar**: `inspect.mjs --app` untuk Level 2, Level 3, dan 3 guidebook di 1440/768/390.
+  - *Kriteria selesai:* angka FAIL/WARN per layar tercatat di `docs/log/`; temuan baru masuk tabel F.
+  - *Bukti (2026-10-27):* 6 layar terukur via CDP Chrome di 1440/768/390: Level 1 (4F/4W), Level 2 (3F/3W), Level 3 (3F/4W), GB1 Insight (3F/4W), GB2 Sandbox (2F/4W), GB3 Metrik (3F/4W); temuan F19-F25 masuk tabel; pytest 120 passed.
+- [x] **Task 7.4**: **Pasang Skill UI**: Salin `taste-skill` dan 6 skill anti-slop ke `.agents/skills/`, tambah `.taste-skill/` ke `.gitignore`.
+  - *Kriteria selesai:* `lint.mjs` dan `inspect.mjs` berjalan dari `.agents/skills/`; `git status` tidak memuat `.taste-skill/`.
+  - *Bukti (2026-10-27):* 7 skill terpasang di `.agents/skills/` (`taste-skill`, `antislop*`); `.taste-skill/` masuk `.gitignore` & tidak terlacak git; `lint.mjs` jalan (82 FAIL, 48 WARN); `inspect.mjs` jalan di localhost:3000 (4 FAIL, 4 WARN); pytest 120 passed.
+
 #### 7A. Git & Aturan
 - [x] **Task 7.3**: **Perbaiki SKILLS.md**: Hapus rujukan ke `plans/next-enhancements.md` dan switch Demo/Live, Cloud/Local yang tidak ada; rujukan section AGENTS.md disesuaikan.
   - *Kriteria selesai:* setiap path dan section yang dirujuk SKILLS.md benar-benar ada (dicek dengan `grep`).
