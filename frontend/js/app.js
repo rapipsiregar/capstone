@@ -273,20 +273,18 @@ function renderBrandTrustInsightCard(brandName = 'ALL', dynamicDrivers = null) {
 
   if (titleElem) titleElem.textContent = brandName === 'ALL' ? 'Semua Brand' : brandName;
 
-  let drivers = dynamicDrivers;
-  if (!drivers || (!drivers.high?.length && !drivers.low?.length)) {
-    const driversSource = typeof BRAND_DRIVERS !== 'undefined' ? BRAND_DRIVERS : {};
-    drivers = driversSource[brandName] || driversSource.DEFAULT || { high: [], low: [] };
-  }
+  const drivers = (dynamicDrivers && (dynamicDrivers.high?.length || dynamicDrivers.low?.length))
+    ? dynamicDrivers
+    : { high: [], low: [] };
 
   if (highTrustContainer) {
-    highTrustContainer.innerHTML = drivers.high.map(d => 
-      `<span class="badge badge-green" title="TF-IDF × Model Weight: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
+    highTrustContainer.innerHTML = (drivers.high || []).map(d => 
+      `<span class="badge badge-green" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
     ).join(' ');
   }
   if (lowTrustContainer) {
-    lowTrustContainer.innerHTML = drivers.low.map(d => 
-      `<span class="badge badge-red" title="TF-IDF × Model Weight: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
+    lowTrustContainer.innerHTML = (drivers.low || []).map(d => 
+      `<span class="badge badge-red" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
     ).join(' ');
   }
 }

@@ -19,10 +19,10 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 12/15 (TODO 3/15) |
-| 9 | Arah desain, angka jujur, aksesibilitas | TODO 0/12 |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 3/12 (Seksi 9B DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
-| 11 | Pembersihan file duplikat & yatim | TODO 0/3 |
+| 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
 | 1–6 | Riwayat | DONE (dengan koreksi audit) |
 
@@ -139,18 +139,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [ ] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
   - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`.
 
-### Phase 11: Pembersihan File
-
-#### 11A. Duplikat & Yatim (persetujuan per item)
-- [x] **Task 11.1**: **Splitter Ganda**: `splitter.py` vs `female_daily_splitter.py` (aplikasi memakai yang kedua).
-  - *Kriteria selesai:* satu splitter tersisa; pytest hijau.
-  - *Bukti (2026-10-28):* Modul duplikat `backend/services/splitter.py` dan `tests/test_splitter.py` dihapus dengan pre-approval user; modul resmi `backend/services/female_daily_splitter.py` tetap aktif digunakan oleh API; 142 pytest passed (100% green).
-- [x] **Task 11.2**: **Modul Yatim**: `female_daily_xai.py` dan `frontend/js/empirical_drivers.json` tidak dirujuk aplikasi.
-  - *Kriteria selesai:* `grep` membuktikan tidak ada rujukan sebelum dihapus; pytest hijau.
-  - *Bukti (2026-10-28):* Dihapus file modul yatim `backend/services/female_daily_xai.py`, `tests/test_female_daily_xai.py`, dan `frontend/js/empirical_drivers.json` dengan pre-approval user; seluruh layanan XAI aktif ditangani oleh `indobert_explainer.py` dan `empirical_drivers.py`; 139 pytest passed (100% green).
-- [ ] **Task 11.3**: **Sisa Data Statis**: Bagian `frontend/js/data.js` yang tidak terpakai lagi setelah Phase 9C.
-  - *Kriteria selesai:* UI tetap berfungsi (screenshot); tidak ada data benchmark statis tersisa.
-
 ### Backlog Ditunda (sisa Phase 4)
 
 Dipecah ulang menjadi task kecil saat diaktifkan.
@@ -172,6 +160,18 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 11: Pembersihan File
+#### 11A. Duplikat & Yatim
+- [x] **Task 11.3**: **Sisa Data Statis**: Bagian `frontend/js/data.js` yang tidak terpakai lagi setelah Phase 9C.
+  - *Kriteria selesai:* UI tetap berfungsi (screenshot); tidak ada data benchmark statis tersisa.
+  - *Bukti (2026-10-28):* `frontend/js/data.js` dirampingkan dari 1.817 LOC menjadi 18 LOC, menghapus 1.737 baris array `BRAND_DRIVERS` lama dan data benchmark statis; `frontend/js/app.js` dialihkan sepenuhnya ke endpoint API dinamis `GET /api/v1/analytics/brands` dan `GET /api/v1/catalog/stats`; verifikasi visual browser sukses tercatat di `hero_pills_verified_1793131053720.png`; seluruh 139 pytest passed (100% green); Phase 11 resmi **DONE 3/3**.
+- [x] **Task 11.2**: **Modul Yatim**: `female_daily_xai.py` dan `frontend/js/empirical_drivers.json` tidak dirujuk aplikasi.
+  - *Kriteria selesai:* `grep` membuktikan tidak ada rujukan sebelum dihapus; pytest hijau.
+  - *Bukti (2026-10-28):* Dihapus file modul yatim `backend/services/female_daily_xai.py`, `tests/test_female_daily_xai.py`, dan `frontend/js/empirical_drivers.json` dengan pre-approval user; seluruh layanan XAI aktif ditangani oleh `indobert_explainer.py` dan `empirical_drivers.py`; 139 pytest passed (100% green).
+- [x] **Task 11.1**: **Splitter Ganda**: `splitter.py` vs `female_daily_splitter.py` (aplikasi memakai yang kedua).
+  - *Kriteria selesai:* satu splitter tersisa; pytest hijau.
+  - *Bukti (2026-10-28):* Modul duplikat `backend/services/splitter.py` dan `tests/test_splitter.py` dihapus dengan pre-approval user; modul resmi `backend/services/female_daily_splitter.py` tetap aktif digunakan oleh API; 142 pytest passed (100% green).
 
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 #### 9B. Angka Jujur di Beranda
