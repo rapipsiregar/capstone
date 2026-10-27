@@ -76,7 +76,13 @@ def test_train_indobert_model(temp_indobert_environment):
 
     assert os.path.exists(os.path.join(model_dir, "config.json"))
     assert os.path.exists(os.path.join(model_dir, "metrics.json"))
-    assert os.path.exists(os.path.join(model_dir, "model_metadata.json"))
+
+    # Verify zero TfidfVectorizer in indobert_trainer module
+    import inspect
+    import backend.services.indobert_trainer as it_mod
+    src = inspect.getsource(it_mod)
+    assert "TfidfVectorizer" not in src, "indobert_trainer must not contain TfidfVectorizer"
+    assert "LinearSVC" not in src, "indobert_trainer must not contain LinearSVC"
 
 
 def test_predict_indobert(temp_indobert_environment):
