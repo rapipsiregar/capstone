@@ -18,7 +18,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 | Phase | Isi | Status |
 | --- | --- | --- |
-| 7 | Fondasi repo, aturan kerja, baseline | 2/6 |
+| 7 | Fondasi repo, aturan kerja, baseline | 3/6 |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 0/15 |
 | 9 | Arah desain, angka jujur, aksesibilitas | TODO 0/12 |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
@@ -80,16 +80,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ## TODO
 
 ### Phase 7: Fondasi Repo & Aturan Kerja
-
-#### 7A. Git & Aturan
-- [x] **Task 7.1**: **Initial Commit & Push**: Tetapkan isi commit pertama (`data/` 30 MB dan `models/` 3,1 MB ikut atau tidak), pastikan `.gitignore` menolak bobot model besar, lalu commit dan push ke `origin/master` setelah user konfirmasi.
-  - *Kriteria selesai:* `git log` menunjukkan 1 commit; `git status` bersih; tidak ada file > 100 MB; push berhasil.
-  - *Bukti (2026-10-27):* commit `9ff9a8d` (177 file); `git ls-remote` = `9ff9a8d…`; file terbesar 5,9 MB; `.env` tidak ikut; pindai rahasia bersih; pytest 120 passed.
-- [x] **Task 7.2**: **Selaraskan AGENTS.md**: Urutan prioritas aturan (AGENTS.md > DESIGN.md > anti-slop > taste-skill), definisi selesai UI (lint + inspect + Delivery Gate), arti "red" TDD untuk task visual (lint/inspector FAIL), stack ditulis vanilla JS (bukan React/Vite), placeholder §14 jadi teks.
-  - *Kriteria selesai:* diff AGENTS.md ditinjau user; tidak ada pernyataan yang bertentangan dengan kode.
-  - *Bukti (2026-10-27):* AGENTS.md diselaraskan: stack Vanilla JS/SQLite, IndoBERT murni, SHAP empiris, layout pohon direktori riil, rules prioritas §15, kriteria selesai UI 4 lapis, Red visual TDD, placeholder foto teks polos; pytest 120 passed.
-- [ ] **Task 7.3**: **Perbaiki SKILLS.md**: Hapus rujukan ke `plans/next-enhancements.md` dan switch Demo/Live, Cloud/Local yang tidak ada; rujukan section AGENTS.md disesuaikan.
-  - *Kriteria selesai:* setiap path dan section yang dirujuk SKILLS.md benar-benar ada (dicek dengan `grep`).
 
 #### 7B. Skill & Baseline
 - [ ] **Task 7.4**: **Pasang Skill UI**: Salin `taste-skill` dan 6 skill anti-slop ke `.agents/skills/`, tambah `.taste-skill/` ke `.gitignore`.
@@ -232,6 +222,18 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 7: Fondasi Repo & Aturan Kerja
+#### 7A. Git & Aturan
+- [x] **Task 7.3**: **Perbaiki SKILLS.md**: Hapus rujukan ke `plans/next-enhancements.md` dan switch Demo/Live, Cloud/Local yang tidak ada; rujukan section AGENTS.md disesuaikan.
+  - *Kriteria selesai:* setiap path dan section yang dirujuk SKILLS.md benar-benar ada (dicek dengan `grep`).
+  - *Bukti (2026-10-27):* SKILLS.md diselaraskan: rujukan NEXT_AND_ENHANCEMENT.md & AGENTS.md terverifikasi valid (`True`), 5 peran (Architect, Backend, Frontend, QA, Hardware) bebas rujukan fiktif, LOC 87 baris; pytest 120 passed.
+- [x] **Task 7.2**: **Selaraskan AGENTS.md**: Urutan prioritas aturan (AGENTS.md > DESIGN.md > anti-slop > taste-skill), definisi selesai UI (lint + inspect + Delivery Gate), arti "red" TDD untuk task visual (lint/inspector FAIL), stack ditulis vanilla JS (bukan React/Vite), placeholder §14 jadi teks.
+  - *Kriteria selesai:* diff AGENTS.md ditinjau user; tidak ada pernyataan yang bertentangan dengan kode.
+  - *Bukti (2026-10-27):* AGENTS.md diselaraskan: stack Vanilla JS/SQLite, IndoBERT murni, SHAP empiris, layout pohon direktori riil, rules prioritas §15, kriteria selesai UI 4 lapis, Red visual TDD, placeholder foto teks polos; pytest 120 passed.
+- [x] **Task 7.1**: **Initial Commit & Push**: Tetapkan isi commit pertama (`data/` 30 MB dan `models/` 3,1 MB ikut atau tidak), pastikan `.gitignore` menolak bobot model besar, lalu commit dan push ke `origin/master` setelah user konfirmasi.
+  - *Kriteria selesai:* `git log` menunjukkan 1 commit; `git status` bersih; tidak ada file > 100 MB; push berhasil.
+  - *Bukti (2026-10-27):* commit `9ff9a8d` (177 file); `git ls-remote` = `9ff9a8d…`; file terbesar 5,9 MB; `.env` tidak ikut; pindai rahasia bersih; pytest 120 passed.
 
 ### Phase 6: Homepage Cleanup & Insight Reputasi
 - [x] **Task 6.5**: **Parameter Kepercayaan per Produk**: 3 KPI dan 2 grafik bulat di Level 3, dihitung backend dari seluruh ulasan produk (`backend/services/product_summary.py`, `frontend/js/catalog-summary.js`).

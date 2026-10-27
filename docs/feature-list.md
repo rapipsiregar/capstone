@@ -9,6 +9,7 @@ Dokumen ini mencatat seluruh fitur yang telah diimplementasikan pada aplikasi pl
 - **Workflow & Rules Engine**: Sistem pengerjaan otomatis dengan shortcut `n`/`next` dan `e`/`enhance`.
 - **Version Control**: Repo publik `github.com/rapipsiregar/capstone` (branch `master`), commit awal `9ff9a8d` berisi kode, dataset, dan artefak model saat ini.
 - **Project Rules & Governance (`AGENTS.md`)**: Pedoman diselaraskan 100% dengan kondisi nyata (Vanilla JS, SQLite, IndoBERT murni, SHAP empiris, rules prioritas: AGENTS.md > DESIGN.md > anti-slop > taste-skill, kriteria selesai UI 4 lapis).
+- **Execution Roles Alignment (`SKILLS.md`)**: 5 peran eksekusi (Architect, Backend, Frontend, QA, Hardware) diselaraskan tanpa rujukan fiktif (menghapus switcher Demo/Live dan path `plans/`).
 
 ## 2. Data Engineering & Preprocessing
 - **Kaggle Female Daily Skincare Dataset Ingestion Pipeline (`backend/services/ingest_female_daily.py`, `tests/test_ingest_female_daily.py`)**: Pipeline utama pemrosesan korpus ulasan bersumber tunggal dari dataset ekstraksi Kaggle Female Daily (`00. InfoProduct.csv` dan `00. Review.csv` di `data/raw/`) yang memuat **10.826 ulasan**, 861 produk skincare, 22 kategori, dan 80+ brand (Wardah, Emina, Safi, Mustika Ratu, Viva, dll.). Menggabungkan metadata produk dengan teks ulasan, validasi integritas skema (Merk, Category, Product, Rating, Review), serta eliminasi missing values secara otomatis.
