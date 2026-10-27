@@ -84,8 +84,22 @@ function renderTrustChart(trustData) {
   });
 }
 
-function renderComparisonChart() {
-  const ctx = document.getElementById('comparisonChart').getContext('2d');
+async function renderComparisonChart(preloadedMetrics = null) {
+  const canvas = document.getElementById('comparisonChart');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+
+  let metrics = preloadedMetrics;
+  if (!metrics && typeof fetchModelEvaluationMetrics === 'function') {
+    metrics = await fetchModelEvaluationMetrics();
+  }
+
+  // Extract authentic evaluation values directly from API JSON
+  const trustAcc = metrics?.trust_classifier?.accuracy ?? 0.0;
+  const trustF1 = metrics?.trust_classifier?.f1_macro ?? 0.0;
+  const aspectAcc = metrics?.aspect_classifier?.accuracy ?? 0.0;
+  const aspectF1 = metrics?.aspect_classifier?.f1_macro ?? 0.0;
+  const numSamples = metrics?.total_test_samples ?? 837;
 
   if (comparisonChartInstance) comparisonChartInstance.destroy();
 
@@ -95,8 +109,8 @@ function renderComparisonChart() {
       labels: ['Akurasi Kepercayaan (Trust)', 'Macro F1 Kepercayaan', 'Akurasi Aspek Komunikasi', 'Macro F1 Aspek'],
       datasets: [
         {
-          label: 'IndoBERT Transformer (Fine-Tuned) - 837 Data Uji (test.csv)',
-          data: [0.9420, 0.9395, 0.9180, 0.9150],
+          label: `IndoBERT Transformer (Fine-Tuned) - ${numSamples} Data Uji (test.csv)`,
+          data: [trustAcc, trustF1, aspectAcc, aspectF1],
           backgroundColor: [
             'rgba(15, 118, 110, 0.85)',
             'rgba(16, 185, 129, 0.85)',
@@ -143,3 +157,4 @@ function renderComparisonChart() {
     }
   });
 }
+

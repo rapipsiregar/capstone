@@ -87,11 +87,14 @@ function switchToTab(targetId, updateHash = true) {
     }
   }
 
-  // Refresh Chart.js dimensions if switching to insight or metrics
+  // Refresh Chart.js dimensions and dynamic metrics if switching to insight or metrics
   setTimeout(() => {
     window.dispatchEvent(new Event('resize'));
     if (targetId === 'tab-content-insight' && typeof window.refreshCurrentAnalyticsCharts === 'function') {
       window.refreshCurrentAnalyticsCharts();
+    }
+    if (targetId === 'tab-content-metrics' && typeof renderComparisonChart === 'function') {
+      renderComparisonChart();
     }
   }, 30);
 }

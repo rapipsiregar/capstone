@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 async function initDashboard() {
   // 1. Immediately render initial benchmark charts and cards (0ms latency, instant paint)
   loadAnalyticsData('ALL', 'ALL', 'ALL', true);
-  renderComparisonChart();
+  await renderComparisonChart();
   renderRightSidebarAnalytics('ALL');
 
   // 2. Initialize tabs right away so active tab matches URL hash

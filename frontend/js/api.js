@@ -145,3 +145,15 @@ async function fetchReviewFeed(params = {}) {
   }
 }
 
+async function fetchModelEvaluationMetrics() {
+  try {
+    const res = await fetch(`${API_BASE_URL}/model/metrics`);
+    if (!res.ok) throw new Error('Failed to fetch model metrics');
+    return await res.json();
+  } catch (err) {
+    console.error('Error fetching model evaluation metrics:', err);
+    return null;
+  }
+}
+
+
