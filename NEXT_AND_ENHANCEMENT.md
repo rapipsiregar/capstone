@@ -90,8 +90,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
 #### 8C. Integrasi Backend
-- [ ] **Task 8.7**: **Pemuat Model**: Lokasi bobot dibaca dari `.env` (folder lokal atau Hugging Face Hub), dimuat sekali saat dibutuhkan.
+- [x] **Task 8.7**: **Pemuat Model**: Lokasi bobot dibaca dari `.env` (folder lokal atau Hugging Face Hub), dimuat sekali saat dibutuhkan.
   - *Kriteria selesai:* test memuat model dari path konfigurasi; pesan error jelas bila bobot tidak ada.
+  - *Bukti (2026-10-28):* Layanan `backend/services/model_loader.py` mengimplementasikan lazy singleton caching untuk model & tokenizer IndoBERT Kepercayaan dan Aspek; konfigurasi path dibaca dari `.env` (`INDOBERT_TRUST_MODEL_PATH`, `INDOBERT_ASPECT_MODEL_PATH`); test `tests/test_model_loader.py` (6 passed) membuktikan pemuatan sukses dari path konfigurasi, singleton caching identik, dan error `FileNotFoundError` deskriptif saat bobot tidak ditemukan; 136 pytest passed.
 - [ ] **Task 8.8**: **`/predict` Memakai IndoBERT** (K4).
   - *Kriteria selesai:* test API membuktikan prediksi berasal dari model IndoBERT; waktu respons tercatat.
 - [ ] **Task 8.9**: **SHAP Sungguhan di `/explain`** (K6): Pakai pustaka `shap` pada model IndoBERT, dengan cache.
