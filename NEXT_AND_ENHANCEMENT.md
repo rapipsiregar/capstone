@@ -19,7 +19,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 0/15 |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 1/15 |
 | 9 | Arah desain, angka jujur, aksesibilitas | TODO 0/12 |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | TODO 0/3 |
@@ -35,6 +35,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 5. Klaim "100% Teranotasi" diganti angka terukur dari API. Teal `#0F766E` dipertahankan, peran rose `#E11D48` dievaluasi ulang (R-29).
 6. Favicon dibuat ulang setelah arah desain ada dan konsepnya disetujui (R-23).
 7. Kedua skill dipasang penuh ke `.agents/skills/`. Placeholder AGENTS.md §14 diubah menjadi teks tanpa emoji.
+8. **Sumber Label Model (Task 8.1 / K7)**: Memilih **Opsi A (Weak Supervision / Distant Supervision)**. Dataset ulasan (8.365 baris) menggunakan label hasil aturan leksikon kata kunci dan rating konsumen dari `annotator.py`. Di skripsi (Bab 3 & Bab 4), metode ini diakui secara jujur dan terbuka sebagai *Rule-Based Weak Supervision* tanpa anotasi manual tambahan.
 
 ## Temuan Audit (2026-10-27)
 
@@ -89,8 +90,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
 #### 8A. Data & Lingkungan
-- [ ] **Task 8.1**: **Keputusan Sumber Label** (K7): Ajukan opsi ke user (mis. anotasi manual subset sebagai gold test set + Cohen's kappa, atau label lemah yang dinyatakan terbuka di skripsi) beserta dampaknya.
+- [x] **Task 8.1**: **Keputusan Sumber Label** (K7): Ajukan opsi ke user (mis. anotasi manual subset sebagai gold test set + Cohen's kappa, atau label lemah yang dinyatakan terbuka di skripsi) beserta dampaknya.
   - *Kriteria selesai:* keputusan user tercatat di bagian Keputusan User.
+  - *Bukti (2026-10-27):* Keputusan tercatat di Keputusan User poin 8; user memilih Opsi A (Weak Supervision / Distant Supervision) berbasis leksikon kata kunci + rating `annotator.py` yang dinyatakan terbuka di skripsi tanpa anotasi manual tambahan.
 - [ ] **Task 8.2**: **Split Deterministik**: Split ulang dengan seed tetap, catat jumlah baris dan SHA256 tiap berkas split.
   - *Kriteria selesai:* test membuktikan split dapat direproduksi (hash sama pada dua kali jalan).
 - [ ] **Task 8.3**: **Lingkungan Training**: Pilih Colab GPU atau torch CUDA lokal (RTX 3050 6 GB; torch terpasang saat ini versi CPU).
