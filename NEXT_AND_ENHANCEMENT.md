@@ -19,7 +19,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 2/15 |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 3/15 |
 | 9 | Arah desain, angka jujur, aksesibilitas | TODO 0/12 |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | TODO 0/3 |
@@ -88,16 +88,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ## TODO
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
-
-#### 8A. Data & Lingkungan
-- [x] **Task 8.1**: **Keputusan Sumber Label** (K7): Ajukan opsi ke user (mis. anotasi manual subset sebagai gold test set + Cohen's kappa, atau label lemah yang dinyatakan terbuka di skripsi) beserta dampaknya.
-  - *Kriteria selesai:* keputusan user tercatat di bagian Keputusan User.
-  - *Bukti (2026-10-27):* Keputusan tercatat di Keputusan User poin 8; user memilih Opsi A (Weak Supervision / Distant Supervision) berbasis leksikon kata kunci + rating `annotator.py` yang dinyatakan terbuka di skripsi tanpa anotasi manual tambahan.
-- [x] **Task 8.2**: **Split Deterministik**: Split ulang dengan seed tetap, catat jumlah baris dan SHA256 tiap berkas split.
-  - *Kriteria selesai:* test membuktikan split dapat direproduksi (hash sama pada dua kali jalan).
-  - *Bukti (2026-10-27):* Partisi 80/10/10 deterministik (seed 42) diverifikasi: `train.csv` 6.692 baris (`d1a1c0ea90b7b6a728883801da13f3a8fb9b35240691e4883987a331674d2ed7`), `val.csv` 836 baris (`17708160c5aa1fb93f6fed6139d774caf3edbe5f5fde410201c30411cfa524f5`), `test.csv` 837 baris (`f11b0b811f597ba4dfa8ed6efe8b698159a4cd18fca31855910f4d81b65277c9`); test `test_split_deterministic_reproducibility` dan `test_repository_split_files_integrity` membuktikan hash SHA256 100% identik pada pengulangan.
-- [ ] **Task 8.3**: **Lingkungan Training**: Pilih Colab GPU atau torch CUDA lokal (RTX 3050 6 GB; torch terpasang saat ini versi CPU).
-  - *Kriteria selesai:* output `torch.cuda.is_available()` = `True` di lingkungan terpilih.
 
 #### 8B. Fine-Tuning & Evaluasi
 - [ ] **Task 8.4**: **Fine-Tune Klasifier Kepercayaan**: Fine-tune `indobenchmark/indobert-base-p1` untuk `label_kepercayaan` dengan loss per epoch dari training sungguhan.
@@ -222,6 +212,18 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 8: Integritas Model IndoBERT (K1–K7)
+#### 8A. Data & Lingkungan
+- [x] **Task 8.3**: **Lingkungan Training**: Pilih Colab GPU atau torch CUDA lokal (RTX 3050 6 GB; torch terpasang saat ini versi CPU).
+  - *Kriteria selesai:* output `torch.cuda.is_available()` = `True` di lingkungan terpilih.
+  - *Bukti (2026-10-28):* PyTorch 2.6.0+cu124 terpasang di `.venv` lokal (Python 3.12); `torch.cuda.is_available()` = `True`; GPU: `NVIDIA GeForce RTX 3050 6GB Laptop GPU` (VRAM 6.0 GB); matmul tensor GPU teruji sukses; seluruh 122 pytest passed.
+- [x] **Task 8.2**: **Split Deterministik**: Split ulang dengan seed tetap, catat jumlah baris dan SHA256 tiap berkas split.
+  - *Kriteria selesai:* test membuktikan split dapat direproduksi (hash sama pada dua kali jalan).
+  - *Bukti (2026-10-27):* Partisi 80/10/10 deterministik (seed 42) diverifikasi: `train.csv` 6.692 baris (`d1a1c0ea90b7b6a728883801da13f3a8fb9b35240691e4883987a331674d2ed7`), `val.csv` 836 baris (`17708160c5aa1fb93f6fed6139d774caf3edbe5f5fde410201c30411cfa524f5`), `test.csv` 837 baris (`f11b0b811f597ba4dfa8ed6efe8b698159a4cd18fca31855910f4d81b65277c9`); test `test_split_deterministic_reproducibility` dan `test_repository_split_files_integrity` membuktikan hash SHA256 100% identik pada pengulangan.
+- [x] **Task 8.1**: **Keputusan Sumber Label** (K7): Ajukan opsi ke user (mis. anotasi manual subset sebagai gold test set + Cohen's kappa, atau label lemah yang dinyatakan terbuka di skripsi) beserta dampaknya.
+  - *Kriteria selesai:* keputusan user tercatat di bagian Keputusan User.
+  - *Bukti (2026-10-27):* Keputusan tercatat di Keputusan User poin 8; user memilih Opsi A (Weak Supervision / Distant Supervision) berbasis leksikon kata kunci + rating `annotator.py` yang dinyatakan terbuka di skripsi tanpa anotasi manual tambahan.
 
 ### Phase 7: Fondasi Repo & Aturan Kerja
 #### 7B. Skill & Baseline
