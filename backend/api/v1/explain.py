@@ -2,7 +2,7 @@ import time
 from typing import Optional, List
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from backend.services.xai_explainer import explain_text_shap
+from backend.services.indobert_explainer import explain_text_with_shap
 
 
 router = APIRouter(prefix="/explain", tags=["Explainable AI (XAI)"])
@@ -37,12 +37,10 @@ class ExplainResponse(BaseModel):
 def explain_review_shap(request: ExplainRequest):
     """
     Returns Explainable AI (SHAP) word-level attributions and UI color highlights 
-    for public trust sentiment analysis.
+    for public trust sentiment analysis computed via authentic SHAP explainer.
     """
-    start_time = time.perf_counter()
     try:
-        explanation = explain_text_shap(text=request.text)
-        execution_time_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        explanation = explain_text_with_shap(text=request.text)
 
         return ExplainResponse(
             raw_text=explanation["raw_text"],
@@ -54,7 +52,7 @@ def explain_review_shap(request: ExplainRequest):
             attributions=explanation["attributions"],
             base_value=explanation["base_value"],
             explanation_summary=explanation["explanation_summary"],
-            execution_time_ms=execution_time_ms
+            execution_time_ms=explanation["execution_time_ms"]
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"XAI calculation error: {str(e)}")

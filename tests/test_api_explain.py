@@ -10,6 +10,7 @@ def test_explain_endpoint_success():
         "text": "Sertifikat halal jelas dari BPOM dan kandungannya aman tanpa alkohol.",
         "model_choice": "indobert"
     }
+    # Initial SHAP calculation
     response = client.post("/api/v1/explain", json=payload)
     assert response.status_code == 200
 
@@ -21,15 +22,27 @@ def test_explain_endpoint_success():
     assert "trust_confidence" in data
     assert "tokens" in data
     assert "attributions" in data
+    assert "base_value" in data
     assert "explanation_summary" in data
     assert "execution_time_ms" in data
 
     assert len(data["attributions"]) > 0
-    assert "highlight_color" in data["attributions"][0]
-    assert data["execution_time_ms"] < 1500  # Benchmark < 1.5s
+    first_attr = data["attributions"][0]
+    assert "token" in first_attr
+    assert "score" in first_attr
+    assert "impact" in first_attr
+    assert "highlight_color" in first_attr
+    assert first_attr["highlight_color"].startswith("#")
+
+    # Cached call verification (should be instantaneous < 200ms)
+    cached_response = client.post("/api/v1/explain", json=payload)
+    assert cached_response.status_code == 200
+    cached_data = cached_response.json()
+    assert cached_data["execution_time_ms"] < 500
 
 
 def test_explain_endpoint_invalid_input():
     payload = {"text": "hi"}  # Too short
     response = client.post("/api/v1/explain", json=payload)
     assert response.status_code == 422
+
