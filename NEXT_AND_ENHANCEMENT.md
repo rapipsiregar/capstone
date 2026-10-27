@@ -18,7 +18,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 | Phase | Isi | Status |
 | --- | --- | --- |
-| 7 | Fondasi repo, aturan kerja, baseline | 4/6 |
+| 7 | Fondasi repo, aturan kerja, baseline | 5/6 |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | TODO 0/15 |
 | 9 | Arah desain, angka jujur, aksesibilitas | TODO 0/12 |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
@@ -72,8 +72,15 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | F16 | LOW | Angka rata kiri (50/50 sel) | Inspector `numeric-align` | taste app §7.4 |
 | F17 | LOW | 13 `transition: all` | `lint.mjs` | taste motion |
 | F18 | LOW | State empty/loading/error tanpa penyebab & langkah lanjut | Audit kode | R-27 |
+| F19 | HIGH | Teks "Foto belum tersedia" kontras rendah 2.5:1 (#94A3B8 on #F8FAFC) | `inspect.mjs` Level 2 | R-25 |
+| F20 | MEDIUM | Border panel terlalu tegas/gelap (#0F766E pada putih, 5.47:1) di Level 3 | `inspect.mjs` Level 3 (`heavy-borders`) | taste app §5 |
+| F21 | MEDIUM | Tombol aksi dengan shadow/glow di Guidebook Insight, Sandbox, Metrik | `inspect.mjs` (`button-fx`) | R-12, taste button |
+| F22 | LOW | Kartu pendorong reputasi beda tinggi 139px (ragged-row) di Guidebook 1 | `inspect.mjs` Guidebook 1 | taste layout |
+| F23 | LOW | Area kosong 40% (hero-void) pada Sandbox sebelum simulasi | `inspect.mjs` Guidebook 2 | taste layout |
+| F24 | LOW | Angka pada tabel metrik belum memakai `font-variant-numeric: tabular-nums` | `inspect.mjs` Guidebook 3 (`tabular` 0%) | taste app §7.4 |
+| F25 | LOW | Teks tepi (<16px dari margin kiri) di breakpoint 768px dan 390px | `inspect.mjs` Level 2, 3, Guidebooks | antislop-layoutmobile |
 
-> Baseline baru mencakup beranda. Layar lain diukur di Task 7.5; temuan baru diberi nomor lanjutan.
+> Baseline seluruh 6 layar lengkap diukur pada Task 7.5 (Level 1: 4F/4W, Level 2: 3F/3W, Level 3: 3F/4W, GB1: 3F/4W, GB2: 2F/4W, GB3: 3F/4W). Temuan baru tercatat pada F19–F25.
 
 ---
 
@@ -85,8 +92,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [x] **Task 7.4**: **Pasang Skill UI**: Salin `taste-skill` dan 6 skill anti-slop ke `.agents/skills/`, tambah `.taste-skill/` ke `.gitignore`.
   - *Kriteria selesai:* `lint.mjs` dan `inspect.mjs` berjalan dari `.agents/skills/`; `git status` tidak memuat `.taste-skill/`.
   - *Bukti (2026-10-27):* 7 skill terpasang di `.agents/skills/` (`taste-skill`, `antislop*`); `.taste-skill/` masuk `.gitignore` & tidak terlacak git; `lint.mjs` jalan (82 FAIL, 48 WARN); `inspect.mjs` jalan di localhost:3000 (4 FAIL, 4 WARN); pytest 120 passed.
-- [ ] **Task 7.5**: **Baseline Semua Layar**: `inspect.mjs --app` untuk Level 2, Level 3, dan 3 guidebook di 1440/768/390.
+- [x] **Task 7.5**: **Baseline Semua Layar**: `inspect.mjs --app` untuk Level 2, Level 3, dan 3 guidebook di 1440/768/390.
   - *Kriteria selesai:* angka FAIL/WARN per layar tercatat di `docs/log/`; temuan baru masuk tabel F.
+  - *Bukti (2026-10-27):* 6 layar terukur via CDP Chrome di 1440/768/390: Level 1 (4F/4W), Level 2 (3F/3W), Level 3 (3F/4W), GB1 Insight (3F/4W), GB2 Sandbox (2F/4W), GB3 Metrik (3F/4W); temuan F19-F25 masuk tabel; pytest 120 passed.
 - [ ] **Task 7.6**: **Peta Sumber Angka**: Telusuri setiap angka statistik yang tampil di UI ke asalnya (hardcoded, API, atau berkas), termasuk asal selisih 215/797 dan klaim 10.826 ulasan.
   - *Kriteria selesai:* tabel angka → sumber → nilai benar di `docs/log/`; tidak ada perubahan kode.
 

@@ -4,13 +4,11 @@
  */
 
 const CATEGORY_ICONS = (typeof window !== 'undefined' && window.CATEGORY_ICONS) ? window.CATEGORY_ICONS : {
-  "Acne Treatment": "🎯", "Brow & Lash Treatment": "👁️‍🗨️", "Cream & Lotion": "🧴",
-  "Day Cream": "☀️", "Eye Treatment": "👁️", "Face Mist": "💦", "Face Oil": "🌿",
-  "Facial Wash": "🫧", "Lotion & Emulsion": "🥛", "Makeup Remover": "🧻",
-  "Mask Sheet": "🧖‍♀️", "Night Cream": "🌙", "Nose Pack": "👃", "Oil": "🫒",
-  "Peeling": "🧪", "Scrub & Exfoliator": "✨", "Serum & Essence": "💧",
-  "Skin Soothing Treatment": "🍃", "Skincare General": "🌸", "Sleeping Mask": "🛌",
-  "Sun Protection": "🛡️", "Toner": "🍶", "Wash-Off": "🧼"
+  "Acne Treatment": "🎯", "Brow & Lash Treatment": "👁️‍🗨️", "Cream & Lotion": "🧴", "Day Cream": "☀️",
+  "Eye Treatment": "👁️", "Face Mist": "💦", "Face Oil": "🌿", "Facial Wash": "🫧", "Lotion & Emulsion": "🥛",
+  "Makeup Remover": "🧻", "Mask Sheet": "🧖‍♀️", "Night Cream": "🌙", "Nose Pack": "👃", "Oil": "🫒",
+  "Peeling": "🧪", "Scrub & Exfoliator": "✨", "Serum & Essence": "💧", "Skin Soothing Treatment": "🍃",
+  "Skincare General": "🌸", "Sleeping Mask": "🛌", "Sun Protection": "🛡️", "Toner": "🍶", "Wash-Off": "🧼"
 };
 
 const catalogState = {
@@ -241,14 +239,11 @@ function backToProducts() {
   }
 }
 
-window.catalogApp = {
-  loadCatalogCategories,
-  openCategoryProducts,
-  openProductReviews,
-  backToCategories,
-  backToProducts
-};
+window.catalogApp = { loadCatalogCategories, openCategoryProducts, openProductReviews, backToCategories, backToProducts };
 
 document.addEventListener("DOMContentLoaded", () => {
-  loadCatalogCategories();
+  const p = new URLSearchParams(window.location.search);
+  if (p.get('product')) openProductReviews(p.get('product'));
+  else if (p.get('category')) openCategoryProducts(p.get('category'));
+  else loadCatalogCategories();
 });
