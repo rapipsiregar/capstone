@@ -90,8 +90,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
 #### 8E. Pembersihan Model Palsu
-- [ ] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
+- [x] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
   - *Kriteria selesai:* persetujuan per file; pytest tetap hijau.
+  - *Bukti (2026-10-28):* Dihapus file trainer/evaluator palsu (`female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py`, `models/female_daily_evaluation_results.json`, `models/evaluation_results.json`, serta test-test terkait) dengan pre-approval user; seluruh evaluasi dialihkan ke `indobert_evaluator.py` otentik; seluruh 140 pytest passed (100% green).
 - [ ] **Task 8.14**: **Hapus Artefak TF-IDF** (K4): `indobert_*.joblib`, jalur TF-IDF di `indobert_trainer.py`, `model_metadata.json` palsu.
   - *Kriteria selesai:* persetujuan per file; `grep` tidak menemukan `TfidfVectorizer` di `backend/`.
 - [ ] **Task 8.15**: **Koreksi Dokumen**: `docs/feature-list.md` dan dokumen lain disesuaikan dengan model yang benar-benar ada.
