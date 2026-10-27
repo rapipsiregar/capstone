@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CHARM - Consumer Halal Awareness & Reputation Monitor</title>
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg?v=1">
+  <link rel="alternate icon" type="image/svg+xml" href="./favicon.svg">
+  
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+
+  <!-- Google Fonts: Inter & Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="./css/styles.css?v=11">
+  <link rel="stylesheet" href="./css/sidebar.css?v=8">
+  <link rel="stylesheet" href="./css/tabs.css?v=4.0">
+  <link rel="stylesheet" href="./css/xai-explainer.css?v=7">
+  <link rel="stylesheet" href="./css/catalog.css?v=7.0">
+  <link rel="stylesheet" href="./css/catalog-summary.css?v=1">
+  <link rel="stylesheet" href="./css/catalog-hero.css?v=7.0">
+  <style>
+    .editorial-hero-banner {
+      overflow: visible !important;
+      position: relative !important;
+      z-index: 30 !important;
+    }
+    .hero-search-wrapper {
+      position: relative !important;
+      z-index: 100 !important;
+    }
+    .hero-search-results-dropdown {
+      position: absolute !important;
+      top: calc(100% + 8px) !important;
+      left: 0 !important;
+      right: 0 !important;
+      background: #ffffff !important;
+      border: 1.5px solid #CBD5E1 !important;
+      border-radius: 16px !important;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.18), 0 4px 12px rgba(15, 118, 110, 0.08) !important;
+      z-index: 9999 !important;
+      max-height: 420px !important;
+      overflow-y: auto !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container">
+    <!-- Sticky Header Navigation (Clean Centered CHARM & Discrete Guidebook Actions) -->
+    <header class="navbar sticky-header glass-card header-centered" role="banner">
+      <!-- Left Slot: Quick Back to Home button (visible when in Guidebook / Thesis tabs) -->
+      <div class="header-left-slot">
+        <button type="button" id="btn-back-to-home" class="btn-guidebook-return" onclick="tabNavigation.switchToTab('tab-content-reputation')" style="display: none;" title="Kembali ke Beranda Utama">
+          <span>← Beranda</span>
+        </button>
+      </div>
+
+      <!-- Center: Clean Brand Logo, Name, & Tagline -->
+      <div class="brand brand-center" onclick="tabNavigation.switchToTab('tab-content-reputation')" style="cursor: pointer;" title="Beranda CHARM">
+        <div class="brand-logo" aria-hidden="true">✨</div>
+        <div class="brand-text">
+          <h1>CHARM</h1>
+          <p>Consumer Halal Awareness & Reputation Monitor</p>
+        </div>
+      </div>
+
+      <!-- Right: Discrete Guidebook & Research Modul Buttons -->
+      <div class="header-guidebook-actions" role="navigation" aria-label="Alat Riset & Panduan Skripsi">
+        <button type="button" class="btn-guidebook" id="btn-guidebook-insight" data-tab-target="tab-content-insight" onclick="tabNavigation.switchToTab('tab-content-insight')" title="Insight Reputasi Brand untuk Produsen UMKM">
+          <span class="guidebook-icon">📊</span>
+          <span class="guidebook-label">Insight Reputasi</span>
+        </button>
+        <button type="button" class="btn-guidebook" id="btn-guidebook-sandbox" data-tab-target="tab-content-sandbox" onclick="tabNavigation.switchToTab('tab-content-sandbox')" title="Panduan & Simulator Ulasan Baru (XAI)">
+          <span class="guidebook-icon">💡</span>
+          <span class="guidebook-label">Simulasi XAI</span>
+        </button>
+        <button type="button" class="btn-guidebook" id="btn-guidebook-metrics" data-tab-target="tab-content-metrics" onclick="tabNavigation.switchToTab('tab-content-metrics')" title="Metrik & Evaluasi Model AI (Skripsi)">
+          <span class="guidebook-icon">🔬</span>
+          <span class="guidebook-label">Metrik Skripsi</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- =========================================================================
+         TAB 1: Analisis Reputasi Brand & Ulasan Konsumen (Active by Default)
+         ========================================================================= -->
+    <div id="tab-content-reputation" class="tab-content-panel active" role="tabpanel" aria-labelledby="tab-btn-reputation">
+      
+      <!-- Female Daily Inspired 3-Level Drill-Down Catalog -->
+      <section id="catalog-drilldown-container" class="catalog-drilldown-container" aria-label="Katalog Skincare Bertingkat Female Daily" style="margin-bottom: 2rem;">
+        
+        <!-- LEVEL 1: Circular Skincare Categories Grid (Female Daily Style) -->
+        <div id="catalog-level-categories" class="catalog-level-view">
+          <!-- Editorial Hero Banner -->
+          <div class="editorial-hero-banner">
+            <span class="hero-editorial-badge">✨ Monitor Reputasi & Sentimen Kosmetik Halal</span>
+            <h2 class="hero-editorial-headline">Eksplorasi Skincare Terverifikasi & Suara Nyata Konsumen</h2>
+            <p class="hero-editorial-desc">
+              Pantau persepsi kepercayaan konsumen dari 8.300+ ulasan Female Daily dengan kecerdasan buatan Explainable AI.
+            </p>
+            
+            <div class="hero-search-wrapper">
+              <div class="hero-search-input-box">
+                <span class="hero-search-icon" aria-hidden="true">🔍</span>
+                <input type="text" id="homepageQuickSearch" placeholder="Cari nama produk atau brand (misal: Wardah, DHC, Night Cream...)" autocomplete="off" />
+                <button type="button" id="btnHeroSearchClear" class="btn-hero-search-clear" title="Bersihkan pencarian">✕</button>
+              </div>
+              <div id="heroSearchResultsDropdown" class="hero-search-results-dropdown"></div>
+            </div>
+
+            <div class="hero-stats-row">
+              <span class="hero-stat-pill">📦 <strong>801</strong> Produk Skincare</span>
+              <span class="hero-stat-pill">🏷️ <strong>216</strong> Brand Terdaftar</span>
+              <span class="hero-stat-pill">💬 <strong>8.365</strong> Ulasan Konsumen</span>
+              <span class="hero-stat-pill">🛡️ <strong>100%</strong> Teranotasi Halal & BPOM</span>
+            </div>
+          </div>
+
+          <div class="catalog-section-header">
+            <h2>Kategori Skincare Pilihan</h2>
+            <p>Pilih kategori skincare untuk melihat katalog produk dan rincian ulasan konsumen.</p>
+          </div>
+          <div id="categoryGridContainer" class="category-grid-femaledaily">
+            <!-- Dynamically populated from /api/v1/catalog/categories -->
+          </div>
+        </div>
+
+        <!-- LEVEL 2: Products per Category Grid -->
+        <div id="catalog-level-products" class="catalog-level-view" style="display: none;">
+          <nav class="catalog-breadcrumb" aria-label="Breadcrumb Kategori">
+            <button type="button" class="btn-breadcrumb" onclick="catalogApp.backToCategories()">← Kembali ke Semua Kategori</button>
+            <span class="breadcrumb-separator">/</span>
+            <span id="currentCategoryBreadcrumb" class="breadcrumb-current">Kategori Skincare</span>
+          </nav>
+
+          <div class="catalog-toolbar-bar">
+            <div>
+              <h2 id="catalogCategoryTitle" style="font-family: 'Outfit', sans-serif; font-size: 1.35rem; font-weight: 700; color: var(--text-dark, #1E293B);">Kategori Produk</h2>
+              <p id="catalogCategorySubtitle" style="font-size: 0.88rem; color: var(--text-muted, #64748B);">Menampilkan produk kosmetik halal dari brand terverifikasi</p>
+            </div>
+          </div>
+
+          <div id="catalogProductsGrid" class="catalog-products-grid">
+            <!-- Dynamically populated from /api/v1/catalog/products -->
+          </div>
+          <div id="catalogProductsPagination" class="catalog-pagination"></div>
+        </div>
+
+        <!-- LEVEL 3: Product Consumer Reviews & XAI Explainer -->
+        <div id="catalog-level-reviews" class="catalog-level-view" style="display: none;">
+          <nav class="catalog-breadcrumb" aria-label="Breadcrumb Ulasan Produk">
+            <button type="button" class="btn-breadcrumb" onclick="catalogApp.backToCategories()">Kategori</button>
+            <span class="breadcrumb-separator">/</span>
+            <button type="button" class="btn-breadcrumb" onclick="catalogApp.backToProducts()">← Kembali ke Daftar Produk</button>
+            <span class="breadcrumb-separator">/</span>
+            <span id="currentProductBreadcrumb" class="breadcrumb-current">Nama Produk</span>
+          </nav>
+
+          <div id="productHeroContainer" class="product-hero-card" style="margin-top: 1rem; margin-bottom: 1.25rem;">
+            <!-- Dynamically populated product hero info -->
+          </div>
+
+          <!-- Task 6.5: Per-product trust parameters (KPI + 2 doughnut charts) -->
+          <div id="productSummaryContainer" aria-label="Parameter Kepercayaan Produk"></div>
+
+          <div style="margin-bottom: 1rem;">
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text-dark, #1E293B);">💬 Feed Ulasan Konsumen & Visualisasi Explainable AI</h3>
+            <p style="font-size: 0.85rem; color: var(--text-muted, #64748B);">Analisis sentimen ulasan asli konsumen Female Daily dengan sorotan kata Explainable AI dan kotak rekomendasi UMKM.</p>
+          </div>
+
+          <div id="catalogReviewsFeed" class="catalog-reviews-feed">
+            <!-- Dynamically populated from /api/v1/catalog/reviews -->
+          </div>
+          <div id="catalogReviewsPagination" class="catalog-pagination"></div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =========================================================================
+         GUIDEBOOK: 📊 Insight Reputasi (Analitik Brand untuk Produsen UMKM)
+         ========================================================================= -->
+    <div id="tab-content-insight" class="tab-content-panel" role="tabpanel" aria-labelledby="btn-guidebook-insight" hidden>
+      <!-- Main Content Grid with 2-Column Dashboard Layout -->
+      <main class="dashboard-grid" role="main">
+        <div class="dashboard-layout-container">
+          <!-- Left Main Content Feed (~70% width) -->
+          <div class="main-content-feed" style="display: flex; flex-direction: column; gap: 1.5rem;">
+            <!-- Filter Controls & Export Toolbar -->
+            <section class="toolbar-section glass-card" aria-label="Toolbar Filter & Ekspor Data" style="padding: 1rem 1.5rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+              <div class="filter-controls" style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="brandFilter" style="font-weight: 500; font-size: 0.9rem; color: var(--text-muted, #64748B);">Brand Kosmetik:</label>
+                  <select id="brandFilter" class="form-control" style="padding: 0.4rem 0.8rem; border-radius: 8px; background: #ffffff; border: 1px solid var(--border-light, #E2E8F0); color: var(--text-dark, #1E293B);">
+                    <option value="ALL">Semua Brand (All Brands)</option>
+                    <option value="Wardah">Wardah</option>
+                    <option value="Emina">Emina</option>
+                    <option value="Safi">Safi</option>
+                    <option value="Mustika Ratu">Mustika Ratu</option>
+                    <option value="Viva Cosmetics">Viva Cosmetics</option>
+                    <option value="Hada Labo">Hada Labo</option>
+                    <option value="Garnier">Garnier</option>
+                  </select>
+                </div>
+
+                <div class="form-group" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="categoryFilter" style="font-weight: 500; font-size: 0.9rem; color: var(--text-muted, #64748B);">Kategori Skincare:</label>
+                  <select id="categoryFilter" class="form-control" style="padding: 0.4rem 0.8rem; border-radius: 8px; background: #ffffff; border: 1px solid var(--border-light, #E2E8F0); color: var(--text-dark, #1E293B);">
+                    <option value="ALL">Semua Kategori (All Categories)</option>
+                    <option value="Acne Treatment">Acne Treatment</option>
+                    <option value="Brow & Lash Treatment">Brow & Lash Treatment</option>
+                    <option value="Cream & Lotion">Cream & Lotion</option>
+                    <option value="Day Cream">Day Cream</option>
+                    <option value="Eye Treatment">Eye Treatment</option>
+                    <option value="Face Mist">Face Mist</option>
+                    <option value="Face Oil">Face Oil</option>
+                    <option value="Facial Wash">Facial Wash</option>
+                    <option value="Lotion & Emulsion">Lotion & Emulsion</option>
+                    <option value="Makeup Remover">Makeup Remover</option>
+                    <option value="Mask Sheet">Mask Sheet</option>
+                    <option value="Night Cream">Night Cream</option>
+                    <option value="Nose Pack">Nose Pack</option>
+                    <option value="Oil">Oil</option>
+                    <option value="Peeling">Peeling</option>
+                    <option value="Scrub & Exfoliator">Scrub & Exfoliator</option>
+                    <option value="Serum & Essence">Serum & Essence</option>
+                    <option value="Skin Soothing Treatment">Skin Soothing Treatment</option>
+                    <option value="Skincare General">Skincare General</option>
+                    <option value="Sleeping Mask">Sleeping Mask</option>
+                    <option value="Sun Protection">Sun Protection</option>
+                    <option value="Toner">Toner</option>
+                    <option value="Wash-Off">Wash-Off</option>
+                  </select>
+                </div>
+
+                <div class="form-group" id="productFilterGroup" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <label for="productFilter" style="font-weight: 500; font-size: 0.9rem; color: var(--text-muted, #64748B);">Produk Spesifik:</label>
+                  <select id="productFilter" class="form-control" style="padding: 0.4rem 0.8rem; border-radius: 8px; background: #ffffff; border: 1px solid var(--border-light, #E2E8F0); color: var(--text-dark, #1E293B); max-width: 230px;">
+                    <option value="ALL">Semua Produk Brand Ini</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="export-controls">
+                <a id="btnExportSummary" href="/api/v1/export/summary?format=csv" target="_blank" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; background: #ffffff; border: 1px solid var(--border-light, #E2E8F0); color: var(--halal-teal, #0F766E); font-size: 0.88rem; font-weight: 600;">
+                  📥 Unduh Laporan Eksekutif CSV
+                </a>
+              </div>
+            </section>
+
+            <!-- Summary KPI Cards (Dynamic 10,826 Dataset Benchmark) -->
+            <section class="kpi-grid" aria-label="Ringkasan Statistik KPI">
+              <div class="kpi-card glass-card">
+                <div class="kpi-icon icon-reviews" aria-hidden="true">📊</div>
+                <div class="kpi-data">
+                  <span class="kpi-title">Total Ulasan Teranalisis</span>
+                  <h2 id="stat-total-reviews" class="kpi-value">8,365</h2>
+                </div>
+              </div>
+
+              <div class="kpi-card glass-card">
+                <div class="kpi-icon icon-trust" aria-hidden="true">⭐</div>
+                <div class="kpi-data">
+                  <span class="kpi-title">Tingkat Kepercayaan Konsumen</span>
+                  <h2 id="stat-high-trust" class="kpi-value">48%</h2>
+                </div>
+              </div>
+
+              <div class="kpi-card glass-card">
+                <div class="kpi-icon icon-aspect" aria-hidden="true">🏷️</div>
+                <div class="kpi-data">
+                  <span class="kpi-title">Aspek Paling Dominan</span>
+                  <h2 id="stat-top-aspect" class="kpi-value">Klaim Efikasi & Manfaat</h2>
+                </div>
+              </div>
+            </section>
+
+            <!-- Analytics Charts Section -->
+            <section class="charts-grid" aria-label="Grafik Analisis Visual">
+              <div class="chart-card glass-card">
+                <div class="card-header">
+                  <h3>Distribusi Aspek Komunikasi Produk</h3>
+                </div>
+                <div class="chart-container">
+                  <canvas id="aspectChart" aria-label="Grafik Distribusi Aspek Komunikasi"></canvas>
+                </div>
+              </div>
+
+              <div class="chart-card glass-card">
+                <div class="card-header">
+                  <h3>Distribusi Sentimen Kepercayaan Publik</h3>
+                </div>
+                <div class="chart-container">
+                  <canvas id="trustChart" aria-label="Grafik Sentimen Kepercayaan"></canvas>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- Right Sidebar Analytics Container (Fixed & No-Scroll) -->
+          <aside id="rightSidebarAnalytics" class="sidebar-analytics" aria-label="Sidebar Analytics & Insights">
+            <!-- Brand Trust SHAP Insight Card -->
+            <div class="chart-card glass-card">
+              <div class="card-header">
+                <h3>💡 XAI Brand Trust Insight (<span id="insightCardBrandTitle">Semua Brand</span>)</h3>
+                <p>Kata pendorong utama kepercayaan (*High Trust*) vs pemicu keluhan (*Low Trust*).</p>
+              </div>
+
+              <div style="display: flex; flex-direction: column; gap: 0.65rem; margin-top: 0.65rem;">
+                <!-- High Trust Box -->
+                <div class="sidebar-driver-box high-trust">
+                  <h4 class="sidebar-driver-title text-teal">
+                    🟢 Pendorong Kepercayaan (High Trust)
+                  </h4>
+                  <div id="highTrustDriversList" class="sidebar-badge-list">
+                    <!-- Populated dynamically from empirical model weights and dataset -->
+                  </div>
+                </div>
+
+                <!-- Low Trust Box -->
+                <div class="sidebar-driver-box low-trust">
+                  <h4 class="sidebar-driver-title text-rose">
+                    🔴 Pemicu Keluhan (Low Trust)
+                  </h4>
+                  <div id="lowTrustDriversList" class="sidebar-badge-list">
+                    <!-- Populated dynamically from empirical model weights and dataset -->
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Halal & BPOM Compliance Summary Card -->
+            <div class="chart-card glass-card">
+              <div class="card-header">
+                <h3>🛡️ Compliance Halal & BPOM</h3>
+                <p>Tingkat kepatuhan sertifikasi resmi & keaslian produk kosmetik.</p>
+              </div>
+
+              <div style="margin-top: 0.65rem; display: flex; flex-direction: column; gap: 0.65rem;">
+                <div>
+                  <div class="compliance-metric-row">
+                    <span>Rasio Terdaftar BPOM / Halal MUI</span>
+                    <span style="color: var(--halal-teal, #0F766E);">96.4%</span>
+                  </div>
+                  <div class="compliance-progress-bar-bg">
+                    <div id="halalComplianceProgressBar" class="compliance-progress-bar-fill" style="width: 96.4%;"></div>
+                  </div>
+                </div>
+
+                <div class="compliance-info-box">
+                  ℹ️ <strong>Informasi Kepatuhan:</strong> Dari 8.365 ulasan Female Daily, ulasan konsumen mengonfirmasi pentingnya klaim kehalalan sah dan izin BPOM resmi untuk memicu kepercayaan.
+                </div>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <!-- =========================================================================
+         TAB 2: Cek & Simulasi Ulasan Baru (Interactive XAI Sandbox)
+         ========================================================================= -->
+    <div id="tab-content-sandbox" class="tab-content-panel" role="tabpanel" aria-labelledby="btn-guidebook-sandbox" hidden>
+      <section id="xai-sandbox-section" class="sandbox-section" aria-label="Interactive XAI Sandbox">
+        <div class="sandbox-card glass-card full-width">
+          <div class="card-header">
+            <h3>💡 Interactive XAI Sandbox (Uji Kalimat Ulasan & Highlight SHAP)</h3>
+            <p class="subtitle">Ketik ulasan kosmetik halal untuk melihat prediksi aspek, kepercayaan publik, dan sorotan kontribusi bobot kata SHAP.</p>
+          </div>
+
+          <div class="sandbox-body">
+            <div class="sandbox-input-group">
+              <label for="input-review-text">Masukkan Teks Ulasan Produk Kosmetik:</label>
+              <textarea id="input-review-text" rows="3" placeholder="Contoh: Produk Wardah ini sudah ada sertifikat halal BPOM dan kandungannya aman tanpa paraben." aria-label="Teks ulasan produk kosmetik halal"></textarea>
+              
+              <div class="sample-presets">
+                <span>Contoh Presets:</span>
+                <button type="button" class="preset-btn" data-sample="Sertifikat halal jelas dari BPOM resmi dan produk asli." aria-label="Preset Sertifikasi Halal">Sertifikasi Halal</button>
+                <button type="button" class="preset-btn" data-sample="Kandungan alami tanpa alkohol aman untuk kulit sensitif." aria-label="Preset Kandungan Bahan">Kandungan Bahan</button>
+                <button type="button" class="preset-btn" data-sample="Barang datang tanpa dus segel dan tidak ada logo BPOM palsu." aria-label="Preset Layanan Meragukan">Layanan Meragukan</button>
+              </div>
+
+              <div class="form-controls" style="align-items: center;">
+                <div class="model-badge-info" style="display: flex; align-items: center; gap: 0.5rem;">
+                  <span class="badge badge-green" style="font-size: 0.85rem; padding: 0.45rem 0.9rem; font-weight: 600;">🤖 Model: IndoBERT Transformer (Fine-Tuned)</span>
+                </div>
+                <button id="btn-analyze-review" class="btn btn-primary" aria-label="Analisis Teks dan Sorot Kata SHAP">🔍 Analisis & Sorot Kata SHAP</button>
+              </div>
+            </div>
+
+            <!-- XAI Output Container -->
+            <div id="xai-result-card" class="xai-result-card hidden">
+              <div class="result-header">
+                <div class="result-badges">
+                  <span id="xai-aspect-badge" class="badge badge-blue">-</span>
+                  <span id="xai-trust-badge" class="badge badge-green">-</span>
+                </div>
+                <div class="result-metrics">
+                  <span>Confidence: <strong id="xai-confidence-val">0%</strong></span>
+                  <span>Latency: <strong id="xai-latency-val">0 ms</strong></span>
+                </div>
+              </div>
+
+              <div class="xai-highlight-box">
+                <h4>Atribusi Bobot Kata SHAP (Explainable AI):</h4>
+                <div id="xai-highlighted-text" class="highlighted-tokens-container" role="region" aria-label="Hasil Sorotan Kata SHAP XAI">
+                  <!-- Highlighted token spans generated dynamically -->
+                </div>
+              </div>
+
+              <div class="xai-summary-box">
+                <p id="xai-summary-text" class="summary-text">-</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- =========================================================================
+         TAB 3: Metrik & Evaluasi Model AI (Skripsi & Audit Riset)
+         ========================================================================= -->
+    <div id="tab-content-metrics" class="tab-content-panel" role="tabpanel" aria-labelledby="btn-guidebook-metrics" hidden>
+      <!-- Research Dataset Overview Banner -->
+      <div class="research-dataset-banner">
+        <div>
+          <h3 style="font-family: var(--font-heading); color: var(--halal-teal); font-size: 1.15rem; margin-bottom: 0.25rem;">
+            📚 Ringkasan Partisi Dataset Riset (Female Daily Skincare)
+          </h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">
+            Dataset 8.365 ulasan asli tanpa duplikasi dari 215 brand dan 797 produk skincare yang dibagi secara terstratifikasi (stratified split).
+          </p>
+        </div>
+        <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
+          <span class="research-stat-pill">Total: 8.365</span>
+          <span class="research-stat-pill">Train: 6.692 (80%)</span>
+          <span class="research-stat-pill">Val: 836 (10%)</span>
+          <span class="research-stat-pill">Test: 837 (10%)</span>
+        </div>
+      </div>
+
+      <!-- Model Performance Comparison Section -->
+      <section class="comparison-section" aria-label="Evaluasi Model AI">
+        <div class="chart-card glass-card full-width">
+          <div class="card-header">
+            <h3>Evaluasi Metrik Performa Model: IndoBERT Transformer (Fine-Tuned)</h3>
+            <p class="subtitle">Pengujian komprehensif pada 837 data uji (test.csv) menunjukkan performa tinggi IndoBERT dalam mendeteksi sentimen kepercayaan publik dan aspek komunikasi.</p>
+          </div>
+          <div class="chart-container tall">
+            <canvas id="comparisonChart" aria-label="Grafik Perbandingan Performa Model"></canvas>
+          </div>
+        </div>
+      </section>
+
+      <!-- History Table Section -->
+      <section class="history-section" aria-label="Tabel Riwayat Ulasan">
+        <div class="table-card glass-card full-width">
+          <div class="card-header flex-header">
+            <div>
+              <h3>Riwayat Inferensi Interaktif & Predictions Log</h3>
+              <p class="subtitle">Log ulasan yang pernah diproses secara langsung via API atau Sandbox.</p>
+            </div>
+            <button id="btn-refresh-history" class="btn btn-secondary" aria-label="Refresh Riwayat Ulasan">🔄 Refresh Logs</button>
+          </div>
+          <div class="table-wrapper">
+            <table class="data-table" role="table" aria-label="Tabel Predictions Log">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Teks Ulasan</th>
+                  <th>Aspek Prediksi</th>
+                  <th>Kepercayaan</th>
+                  <th>Confidence</th>
+                  <th>Model</th>
+                  <th>Latensi</th>
+                </tr>
+              </thead>
+              <tbody id="historyTableBody">
+                <tr>
+                  <td colspan="7" class="text-center">Memuat riwayat ulasan...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Pagination Bar (25 items per page) -->
+          <div class="pagination-container" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; margin-top: 1rem; padding-top: 0.85rem; border-top: 1px solid var(--border-color, #E2E8F0);">
+            <div id="paginationInfoText" style="font-size: 0.85rem; color: var(--text-muted, #64748B);">
+              Memuat status halaman...
+            </div>
+            <div style="display: flex; gap: 0.4rem; align-items: center;">
+              <button id="btnPrevPage" class="btn btn-secondary" style="padding: 0.3rem 0.75rem; font-size: 0.82rem;" disabled aria-label="Halaman Sebelumnya">&laquo; Sebelumnya</button>
+              <div id="pageNumberButtons" style="display: flex; gap: 0.3rem;"></div>
+              <button id="btnNextPage" class="btn btn-secondary" style="padding: 0.3rem 0.75rem; font-size: 0.82rem;" aria-label="Halaman Selanjutnya">Selanjutnya &raquo;</button>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer text-center">
+      <p>&copy; 2026 CHARM (Consumer Halal Awareness & Reputation Monitor) - Explainable AI</p>
+    </footer>
+  </div>
+
+  <!-- JavaScript Modules (Cache-busted v=5.4) -->
+  <script src="./js/api.js?v=5.4"></script>
+  <script src="./js/data.js?v=5.4"></script>
+  <script src="./js/charts.js?v=5.4"></script>
+  <script src="./js/tabs.js?v=5.4"></script>
+  <script src="./js/pagination.js?v=5.4"></script>
+  <script src="./js/sandbox.js?v=5.4"></script>
+  <script src="./js/catalog-summary.js?v=5.4"></script>
+  <script src="./js/catalog-hero.js?v=5.4"></script>
+  <script src="./js/catalog.js?v=5.4"></script>
+  <script src="./js/app.js?v=5.4"></script>
+</body>
+</html>

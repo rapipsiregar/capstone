@@ -1,0 +1,19 @@
+{
+  "aspect": {
+    "accuracy": 0.9188,
+    "precision_macro": 0.8664,
+    "recall_macro": 0.7433,
+    "macro_f1": 0.7774
+  },
+  "trust": {
+    "accuracy": 0.7885,
+    "precision_macro": 0.7992,
+    "recall_macro": 0.7474,
+    "macro_f1": 0.7649
+  },
+  "train_samples": 6692,
+  "test_samples": 837,
+  "base_model": "indobenchmark/indobert-base-p1",
+  "epochs": 3,
+  "batch_size": 16
+}

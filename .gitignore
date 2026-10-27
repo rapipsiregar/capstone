@@ -1,0 +1,66 @@
+# ==========================================
+# Byte-compiled / optimized / Python cache
+# ==========================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# ==========================================
+# Virtual Environments
+# ==========================================
+.venv/
+venv/
+ENV/
+env/
+env.bak/
+venv.bak/
+
+# ==========================================
+# Environment Variables & Secrets
+# ==========================================
+.env
+.env.local
+.env.*.local
+!.env.example
+
+# ==========================================
+# Databases & Local Logs
+# ==========================================
+*.db
+*.sqlite
+*.sqlite3
+data/history.db
+*.log
+logs/
+
+# ==========================================
+# Large Binary Weights & Checkpoints (>100MB)
+# ==========================================
+*.bin
+*.pt
+*.pth
+*.safetensors
+*.ckpt
+
+# ==========================================
+# IDE & Operating System
+# ==========================================
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ==========================================
+# Agent & IDE System Artifacts
+# ==========================================
+.system_generated/
+scratch/

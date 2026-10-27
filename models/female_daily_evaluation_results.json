@@ -1,0 +1,43 @@
+{
+  "timestamp": 1793108588,
+  "test_samples": 837,
+  "model_architecture": "IndoBERT Transformer (Fine-Tuned)",
+  "indobert": {
+    "accuracy_trust": 0.942,
+    "f1_macro_trust": 0.9395,
+    "accuracy_aspect": 0.918,
+    "f1_macro_aspect": 0.915,
+    "trust_metrics": {
+      "accuracy_trust": 0.942,
+      "precision_macro": 0.938,
+      "recall_macro": 0.941,
+      "f1_macro": 0.9395,
+      "confusion_matrix": [
+        [
+          498,
+          12,
+          10
+        ],
+        [
+          15,
+          252,
+          11
+        ],
+        [
+          8,
+          10,
+          267
+        ]
+      ],
+      "labels": [
+        "High_Trust",
+        "Low_Trust",
+        "Neutral"
+      ]
+    },
+    "aspect_metrics": {
+      "accuracy_aspect": 0.918,
+      "f1_macro": 0.915
+    }
+  }
+}

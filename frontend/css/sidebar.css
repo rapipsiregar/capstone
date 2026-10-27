@@ -1,0 +1,174 @@
+/* ==========================================================================
+   Right Sidebar Analytics Component - Clean Grid & Sticky-Fixed Layout
+   ========================================================================== */
+
+/* 2-Column Dashboard Layout Grid */
+.dashboard-layout-container {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: 1.5rem;
+  align-items: start;
+}
+
+.main-content-feed {
+  grid-column: 1;
+  min-width: 0;
+}
+
+/* Sticky-Fixed Right Sidebar (Starts cleanly below pills, sticks on scroll) */
+.sidebar-analytics {
+  grid-column: 2;
+  width: 380px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  position: sticky;
+  top: 80px;
+  align-self: start;
+  max-height: calc(100vh - 95px);
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.sidebar-analytics::-webkit-scrollbar {
+  display: none;
+}
+
+/* Sidebar Cards Aesthetic & Spacing */
+.sidebar-analytics .chart-card {
+  padding: 0.95rem 1.15rem;
+  border-radius: 12px;
+  background: var(--card-bg, #FFFFFF);
+  border: 1px solid var(--border-light, #E2E8F0);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.sidebar-analytics .card-header {
+  display: block !important;
+}
+
+.sidebar-analytics .card-header h3 {
+  display: block !important;
+  font-size: 0.96rem;
+  font-weight: 700;
+  color: var(--text-dark, #1E293B);
+  line-height: 1.35;
+  margin-bottom: 0.2rem;
+}
+
+.sidebar-analytics .card-header p {
+  font-size: 0.76rem;
+  color: var(--text-muted, #64748B);
+  margin-top: 0.1rem;
+  line-height: 1.35;
+}
+
+/* Driver Attribute Boxes */
+.sidebar-driver-box {
+  border-radius: 8px;
+  padding: 0.55rem 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.sidebar-driver-box.high-trust {
+  background: var(--halal-mint-bg, #F0FDFA);
+  border: 1px solid #99F6E4;
+}
+
+.sidebar-driver-box.low-trust {
+  background: #FFF1F2;
+  border: 1px solid #FECDD3;
+}
+
+.sidebar-driver-title {
+  margin-bottom: 0.35rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sidebar-driver-title.text-teal {
+  color: var(--halal-teal, #0F766E);
+}
+
+.sidebar-driver-title.text-rose {
+  color: var(--rose-gold, #E11D48);
+}
+
+.sidebar-badge-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.sidebar-badge-list .badge {
+  font-size: 0.76rem;
+  padding: 0.22rem 0.55rem;
+  font-weight: 500;
+  border-radius: 6px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  line-height: 1.25;
+}
+
+.sidebar-badge-list .badge-green {
+  background: #DCFCE7;
+  color: #15803D;
+  border: 1px solid #BBF7D0;
+}
+
+.sidebar-badge-list .badge-red {
+  background: #FEE2E2;
+  color: #B91C1C;
+  border: 1px solid #FECACA;
+}
+
+/* Compliance Card Elements */
+.compliance-metric-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-dark, #1E293B);
+}
+
+.compliance-progress-bar-bg {
+  width: 100%;
+  height: 7px;
+  background: var(--border-light, #E2E8F0);
+  border-radius: 9999px;
+  overflow: hidden;
+  margin-top: 0.35rem;
+}
+
+.compliance-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #16a34a, #0f766e);
+  border-radius: 9999px;
+  transition: width 0.4s ease;
+}
+
+.compliance-info-box {
+  font-size: 0.76rem;
+  color: var(--text-muted, #64748B);
+  line-height: 1.35;
+  background: var(--bg-slate, #F8FAFC);
+  padding: 0.5rem 0.7rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-light, #E2E8F0);
+}
+
+/* Mobile & Tablet Fallback */
+@media (max-width: 1024px) {
+  .dashboard-layout-container {
+    grid-template-columns: 1fr;
+  }
+  .sidebar-analytics {
+    position: static;
+    width: 100%;
+    max-height: none;
+    margin-top: 1rem;
+  }
+}

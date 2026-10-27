@@ -1,0 +1,22 @@
+{
+  "model_type": "indobert",
+  "base_model": "indobenchmark/indobert-base-p1",
+  "max_seq_length": 128,
+  "aspect_classes": [
+    "Kandungan_Bahan_Sensitivitas",
+    "Klaim_Efikasi_Manfaat",
+    "Sertifikasi_Halal_BPOM",
+    "Transparansi_Layanan_Harga"
+  ],
+  "trust_classes": [
+    "High_Trust",
+    "Low_Trust",
+    "Neutral"
+  ],
+  "hyperparameters": {
+    "epochs": 3,
+    "batch_size": 16,
+    "learning_rate": 2e-05,
+    "optimizer": "AdamW"
+  }
+}

@@ -1,0 +1,141 @@
+import os
+import json
+from typing import Dict, Any
+
+
+def generate_colab_notebook(output_path: str = "docs/notebooks/IndoBERT_Halal_Cosmetics_Finetuning.ipynb") -> str:
+    """
+    Generates an executable Google Colab Jupyter Notebook (.ipynb) 
+    for fine-tuning IndoBERT Transformer on GPU.
+    """
+    notebook_structure: Dict[str, Any] = {
+        "cells": [
+            {
+                "cell_type": "markdown",
+                "metadata": {},
+                "source": [
+                    "# Fine-Tuning IndoBERT Transformer untuk Analisis Kepercayaan UMKM Kosmetik Halal\n",
+                    "**Capstone Design Project**: Explainable AI & NLP Kosmetik Halal\n",
+                    "\n",
+                    "Notebook ini digunakan untuk melatih model Transformer `indobenchmark/indobert-base-p1` pada GPU Google Colab."
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# 1. Install Library Dependencies\n",
+                    "!pip install -q transformers torch datasets shap accelerate pandas scikit-learn joblib"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# 2. Import Module & Inisialisasi Device GPU\n",
+                    "import os\n",
+                    "import json\n",
+                    "import torch\n",
+                    "import pandas as pd\n",
+                    "from torch.utils.data import Dataset, DataLoader\n",
+                    "from transformers import AutoTokenizer, AutoModelForSequenceClassification, AdamW\n",
+                    "from sklearn.metrics import accuracy_score, f1_score\n",
+                    "\n",
+                    "device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')\n",
+                    "print(f'Using device: {device}')"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# 3. Load Dataset Training & Validation\n",
+                    "train_df = pd.read_csv('data/annotated/train.csv')\n",
+                    "val_df = pd.read_csv('data/annotated/val.csv')\n",
+                    "test_df = pd.read_csv('data/annotated/test.csv')\n",
+                    "\n",
+                    "print(f'Train size: {len(train_df)}, Val size: {len(val_df)}, Test size: {len(test_df)}')"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# 4. Inisialisasi Tokenizer & PyTorch Dataset Class\n",
+                    "MODEL_NAME = 'indobenchmark/indobert-base-p1'\n",
+                    "tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)\n",
+                    "\n",
+                    "class HalalDataset(Dataset):\n",
+                    "    def __init__(self, texts, labels, tokenizer, max_len=128):\n",
+                    "        self.texts = texts\n",
+                    "        self.labels = labels\n",
+                    "        self.tokenizer = tokenizer\n",
+                    "        self.max_len = max_len\n",
+                    "        \n",
+                    "    def __len__(self):\n",
+                    "        return len(self.texts)\n",
+                    "        \n",
+                    "    def __getitem__(self, item):\n",
+                    "        text = str(self.texts[item])\n",
+                    "        inputs = self.tokenizer(\n",
+                    "            text,\n",
+                    "            max_length=self.max_len,\n",
+                    "            padding='max_length',\n",
+                    "            truncation=True,\n",
+                    "            return_tensors='pt'\n",
+                    "        )\n",
+                    "        return {\n",
+                    "            'input_ids': inputs['input_ids'].flatten(),\n",
+                    "            'attention_mask': inputs['attention_mask'].flatten(),\n",
+                    "            'labels': torch.tensor(self.labels[item], dtype=torch.long)\n",
+                    "        }"
+                ]
+            },
+            {
+                "cell_type": "code",
+                "execution_count": None,
+                "metadata": {},
+                "outputs": [],
+                "source": [
+                    "# 5. Training Loop IndoBERT Model\n",
+                    "def train_epoch(model, data_loader, optimizer, device):\n",
+                    "    model.train()\n",
+                    "    total_loss = 0\n",
+                    "    for batch in data_loader:\n",
+                    "        optimizer.zero_grad()\n",
+                    "        input_ids = batch['input_ids'].to(device)\n",
+                    "        attention_mask = batch['attention_mask'].to(device)\n",
+                    "        labels = batch['labels'].to(device)\n",
+                    "        outputs = model(input_ids=input_ids, attention_mask=attention_mask, labels=labels)\n",
+                    "        loss = outputs.loss\n",
+                    "        loss.backward()\n",
+                    "        optimizer.step()\n",
+                    "        total_loss += loss.item()\n",
+                    "    return total_loss / len(data_loader)\n",
+                    "\n",
+                    "print('Prosedur training siap dieksekusi di Colab GPU!')"
+                ]
+            }
+        ],
+        "metadata": {
+            "language_info": {
+                "name": "python"
+            }
+        },
+        "nbformat": 4,
+        "nbformat_minor": 2
+    }
+
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    with open(output_path, "w", encoding="utf-8") as f:
+        json.dump(notebook_structure, f, indent=2)
+
+    return os.path.abspath(output_path)
