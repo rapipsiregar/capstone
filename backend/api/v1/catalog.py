@@ -12,6 +12,7 @@ from functools import lru_cache
 from fastapi import APIRouter, Query, HTTPException
 from backend.services.review_explainer import generate_review_xai_explanation
 from backend.services.product_summary import build_product_summary
+from backend.services.catalog_shap_cacher import get_cached_review_shap
 
 router = APIRouter(prefix="/catalog", tags=["Catalog"])
 
@@ -34,14 +35,19 @@ def load_dataset_dataframe() -> pd.DataFrame:
 
 
 def highlight_keywords(text: str) -> str:
-    """Highlights SHAP trust words in review text."""
+    """Highlights SHAP trust words in review text, prioritizing authentic cached SHAP attributions."""
     if not isinstance(text, str) or not text:
         return ""
+    cached = get_cached_review_shap(text)
+    pos = cached.get("top_positive_words", []) if cached else HIGH_TRUST_WORDS
+    neg = cached.get("top_negative_words", []) if cached else LOW_TRUST_WORDS
     res = text
-    for kw in HIGH_TRUST_WORDS:
-        res = re.sub(rf"\b({re.escape(kw)})\b", r'<span class="xai-highlight-green">\1</span>', res, flags=re.IGNORECASE)
-    for kw in LOW_TRUST_WORDS:
-        res = re.sub(rf"\b({re.escape(kw)})\b", r'<span class="xai-highlight-red">\1</span>', res, flags=re.IGNORECASE)
+    for kw in pos:
+        if kw and len(kw) > 1:
+            res = re.sub(rf"\b({re.escape(kw)})\b", r'<span class="xai-highlight-green">\1</span>', res, flags=re.IGNORECASE)
+    for kw in neg:
+        if kw and len(kw) > 1:
+            res = re.sub(rf"\b({re.escape(kw)})\b", r'<span class="xai-highlight-red">\1</span>', res, flags=re.IGNORECASE)
     return res
 
 

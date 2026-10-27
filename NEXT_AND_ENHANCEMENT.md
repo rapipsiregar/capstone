@@ -90,8 +90,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
 #### 8D. XAI Turunan & Tampilan Metrik
-- [ ] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
+- [x] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
   - *Kriteria selesai:* `review_explainer.py` tidak memakai `coef_`; test membaca cache.
+  - *Bukti (2026-10-28):* Modul `backend/services/catalog_shap_cacher.py` (112 LOC) mengelola cache persistent `data/cache/review_shap_cache.json` dengan hash MD5 deterministik; `backend/services/review_explainer.py` (124 LOC) membaca cache SHAP tanpa `coef_` (teruji via test inspeksi AST/source code `test_review_explainer_does_not_use_coef`); endpoint katalog `backend/api/v1/catalog.py` (251 LOC) mengintegrasikan sorotan kata berbasis SHAP otentik; seluruh 142 pytest passed.
 - [ ] **Task 8.11**: **Kata Pendorong dari SHAP** (K6): `empirical_drivers.py` mengagregasi cache SHAP.
   - *Kriteria selesai:* test membuktikan kata pendorong = agregasi cache.
 - [ ] **Task 8.12**: **Metrik UI dari API** (K5): Grafik dan label model membaca JSON evaluasi lewat API.

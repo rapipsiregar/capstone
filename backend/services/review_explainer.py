@@ -39,10 +39,13 @@ def _detect_skin_profile(profile_str: str, text: str) -> str:
     return " & ".join(detected[:2])
 
 
+from backend.services.catalog_shap_cacher import get_cached_review_shap
+
+
 def generate_review_xai_explanation(review_data: Dict[str, Any], raw_text: str) -> Dict[str, str]:
     """
     Generates a clear 3-point XAI narrative explanation for an individual review:
-    1. Alasan Tingkat Kepercayaan (Trust Reason)
+    1. Alasan Tingkat Kepercayaan (Trust Reason, utilizing precomputed SHAP if available)
     2. Analisis Karakteristik Kulit (Skin Analysis)
     3. Rekomendasi Aksi untuk UMKM (MSME Actionable Takeaway)
     """
@@ -52,22 +55,34 @@ def generate_review_xai_explanation(review_data: Dict[str, Any], raw_text: str) 
     brand = str(review_data.get("merek_umkm", "UMKM"))
     skin_profile = _detect_skin_profile(str(review_data.get("kondisi_kulit_usia", "")), text_lower)
     
-    # 1. Alasan Kepercayaan
     has_halal = any(k in text_lower for k in ["halal", "mui", "bpom", "segel", "resmi", "original", "ori"])
     has_breakout = any(k in text_lower for k in ["breakout", "beruntusan", "bruntusan", "iritasi", "gatal", "perih", "panas"])
-    
-    if trust == "High_Trust":
-        if has_halal:
-            trust_reason = "Tingkat Kepercayaan Tinggi: Kehadiran kata kunci legalitas & sertifikasi resmi (Halal MUI / BPOM) serta respon kepuasan tekstur memberikan bobot atribusi positif terbesar."
+
+    # 1. Alasan Kepercayaan (Checks authentic SHAP cache first)
+    cached_shap = get_cached_review_shap(raw_text)
+    if cached_shap:
+        top_pos = cached_shap.get("top_positive_words", [])
+        top_neg = cached_shap.get("top_negative_words", [])
+        if trust == "High_Trust" and top_pos:
+            trust_reason = f"Tingkat Kepercayaan Tinggi (SHAP Transformer): Kata pendorong utama '{', '.join(top_pos[:3])}' memberikan atribusi Shapley positif tertinggi."
+        elif trust == "Low_Trust" and top_neg:
+            trust_reason = f"Tingkat Kepercayaan Rendah (SHAP Transformer): Kata pemicu keluhan '{', '.join(top_neg[:3])}' memberikan atribusi negatif signifikan."
         else:
-            trust_reason = "Tingkat Kepercayaan Tinggi: Ulasan didominasi oleh kata pendorong positif terkait efektivitas formula, kelembaban, dan kenyamanan pemakaian jangka panjang."
-    elif trust == "Low_Trust":
-        if has_breakout:
-            trust_reason = "Tingkat Kepercayaan Rendah: Sistem mendeteksi kata pemicu keluhan sensitivitas kulit (breakout, beruntusan, perih) yang menurunkan skor kepercayaan publik secara signifikan."
-        else:
-            trust_reason = "Tingkat Kepercayaan Rendah: Konsumen menyatakan kekecewaan terhadap hasil pemakaian atau kemasan yang tidak memenuhi ekspektasi klaim produk."
+            trust_reason = cached_shap.get("explanation_summary", "Analisis SHAP menunjukkan atribusi fitur yang seimbang.")
     else:
-        trust_reason = "Tingkat Kepercayaan Netral: Konsumen mengevaluasi produk dengan sentimen berimbang; produk dinilai cukup baik namun efikasinya belum optimal."
+        
+        if trust == "High_Trust":
+            if has_halal:
+                trust_reason = "Tingkat Kepercayaan Tinggi: Kehadiran kata kunci legalitas & sertifikasi resmi (Halal MUI / BPOM) serta respon kepuasan tekstur memberikan bobot atribusi positif terbesar."
+            else:
+                trust_reason = "Tingkat Kepercayaan Tinggi: Ulasan didominasi oleh kata pendorong positif terkait efektivitas formula, kelembaban, dan kenyamanan pemakaian jangka panjang."
+        elif trust == "Low_Trust":
+            if has_breakout:
+                trust_reason = "Tingkat Kepercayaan Rendah: Sistem mendeteksi kata pemicu keluhan sensitivitas kulit (breakout, beruntusan, perih) yang menurunkan skor kepercayaan publik secara signifikan."
+            else:
+                trust_reason = "Tingkat Kepercayaan Rendah: Konsumen menyatakan kekecewaan terhadap hasil pemakaian atau kemasan yang tidak memenuhi ekspektasi klaim produk."
+        else:
+            trust_reason = "Tingkat Kepercayaan Netral: Konsumen mengevaluasi produk dengan sentimen berimbang; produk dinilai cukup baik namun efikasinya belum optimal."
 
     # 2. Analisis Karakteristik Kulit
     if "Kering" in skin_profile:
