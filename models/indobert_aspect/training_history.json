@@ -1,0 +1,43 @@
+{
+  "base_model": "indobenchmark/indobert-base-p1",
+  "target_task": "aspek_komunikasi",
+  "epochs": 3,
+  "batch_size": 32,
+  "learning_rate": 2e-05,
+  "device": "cuda",
+  "training_time_sec": 236.43,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.5663,
+      "val_loss": 0.2017,
+      "val_accuracy": 0.9474,
+      "val_f1_macro": 0.8298,
+      "duration_sec": 77.55
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.145,
+      "val_loss": 0.1518,
+      "val_accuracy": 0.9641,
+      "val_f1_macro": 0.8455,
+      "duration_sec": 75.43
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.1121,
+      "val_loss": 0.1398,
+      "val_accuracy": 0.9677,
+      "val_f1_macro": 0.8708,
+      "duration_sec": 75.4
+    }
+  ],
+  "final_val_metrics": {
+    "epoch": 3,
+    "train_loss": 0.1121,
+    "val_loss": 0.1398,
+    "val_accuracy": 0.9677,
+    "val_f1_macro": 0.8708,
+    "duration_sec": 75.4
+  }
+}
