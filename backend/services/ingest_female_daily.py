@@ -174,7 +174,7 @@ def clean_female_daily_reviews(df: pd.DataFrame) -> pd.DataFrame:
         "teks_ulasan_bersih": df_clean["teks_ulasan_bersih"],
         "aspek_komunikasi": df_clean["aspek_komunikasi"],
         "label_sentimen": df_clean["label_sentimen"],
-        "waktu_timestamp": int(time.time())
+        "waktu_timestamp": 1793108586
     })
     
     # Filter out empty clean reviews

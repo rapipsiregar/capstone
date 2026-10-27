@@ -2,6 +2,8 @@
 Integration Tests for Dataset Ingestion REST API Endpoint.
 """
 
+import os
+import tempfile
 import unittest
 from fastapi.testclient import TestClient
 from backend.main import app
@@ -12,16 +14,21 @@ class TestDatasetIngestAPI(unittest.TestCase):
         self.client = TestClient(app)
 
     def test_post_dataset_ingest_endpoint(self):
-        """Test POST /api/v1/dataset/ingest endpoint."""
-        response = self.client.post("/api/v1/dataset/ingest")
-        self.assertEqual(response.status_code, 200)
-        
-        data = response.json()
-        self.assertEqual(data.get("status"), "success")
-        self.assertIn("processed_records", data)
-        self.assertGreater(data.get("processed_records", 0), 1000)
-        self.assertIn("cleaned_csv_path", data)
-        self.assertIn("annotated_csv_path", data)
+        """Test POST /api/v1/dataset/ingest endpoint with isolated output directory."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            cleaned_tmp = os.path.join(tmpdir, "cleaned.csv")
+            annotated_tmp = os.path.join(tmpdir, "annotated.csv")
+            response = self.client.post(
+                f"/api/v1/dataset/ingest?cleaned_path={cleaned_tmp}&annotated_path={annotated_tmp}&split_dir={tmpdir}"
+            )
+            self.assertEqual(response.status_code, 200)
+            
+            data = response.json()
+            self.assertEqual(data.get("status"), "success")
+            self.assertIn("processed_records", data)
+            self.assertGreater(data.get("processed_records", 0), 1000)
+            self.assertIn("cleaned_csv_path", data)
+            self.assertIn("annotated_csv_path", data)
 
 if __name__ == "__main__":
     unittest.main()

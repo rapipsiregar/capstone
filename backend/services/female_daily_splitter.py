@@ -1,16 +1,27 @@
 """
 Stratified Dataset Splitter & Sampling Engine Service.
-Splits 10,826 annotated Female Daily reviews into train (80%), val (10%), and test (10%)
+Splits annotated Female Daily reviews into train (80%), val (10%), and test (10%)
 with balanced stratification on trust sentiment labels and communication aspects.
+Ensures deterministic reproducibility via fixed random seed and SHA256 checksum validation.
 """
 
 import os
+import hashlib
 import pandas as pd
 from typing import Dict, Any, Tuple
 from sklearn.model_selection import train_test_split
 
 ANNOTATED_DATA_DIR = os.path.join("data", "annotated")
 os.makedirs(ANNOTATED_DATA_DIR, exist_ok=True)
+
+
+def compute_file_sha256(file_path: str) -> str:
+    """Computes SHA256 checksum for a given file path."""
+    hasher = hashlib.sha256()
+    with open(file_path, "rb") as f:
+        for chunk in iter(lambda: f.read(65536), b""):
+            hasher.update(chunk)
+    return hasher.hexdigest()
 
 
 def split_female_daily_dataset(
@@ -78,7 +89,10 @@ def split_female_daily_dataset(
         "total_rows": total_count,
         "train_path": os.path.abspath(train_path),
         "val_path": os.path.abspath(val_path),
-        "test_path": os.path.abspath(test_path)
+        "test_path": os.path.abspath(test_path),
+        "train_sha256": compute_file_sha256(train_path),
+        "val_sha256": compute_file_sha256(val_path),
+        "test_sha256": compute_file_sha256(test_path),
     }
     
     print(f"  -> Train set saved : {len(train_df)} rows ({len(train_df)/total_count*100:.1f}%) -> {train_path}")
