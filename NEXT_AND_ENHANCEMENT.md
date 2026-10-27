@@ -90,8 +90,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
 #### 8B. Fine-Tuning & Evaluasi
-- [ ] **Task 8.4**: **Fine-Tune Klasifier Kepercayaan**: Fine-tune `indobenchmark/indobert-base-p1` untuk `label_kepercayaan` dengan loss per epoch dari training sungguhan.
+- [x] **Task 8.4**: **Fine-Tune Klasifier Kepercayaan**: Fine-tune `indobenchmark/indobert-base-p1` untuk `label_kepercayaan` dengan loss per epoch dari training sungguhan.
   - *Kriteria selesai:* log training asli tersimpan; bobot model tersimpan di luar git.
+  - *Bukti (2026-10-28):* Fine-tuning otentik 3 epoch terlaksana di GPU RTX 3050 Laptop (PyTorch FP16 AMP, AdamW lr=2e-5, batch 32, total durasi 244.1s); loss per epoch: Epoch 1 (Train 0.7243 / Val 0.4687 / Acc 0.8242 / F1 0.7920), Epoch 2 (Train 0.3547 / Val 0.4516 / Acc 0.8218 / F1 0.8027), Epoch 3 (Train 0.2408 / Val 0.4795 / Acc 0.8313 / F1 0.8107); bobot biner `model.safetensors` (498 MB) diabaikan git, riwayat json & log asli tersimpan; 125 pytest passed.
 - [ ] **Task 8.5**: **Fine-Tune Klasifier Aspek**: Sama seperti 8.4 untuk `aspek_komunikasi`.
   - *Kriteria selesai:* log training asli tersimpan; bobot model tersimpan di luar git.
 - [ ] **Task 8.6**: **Evaluator Jujur** (K2, K3): Metrik dihitung dari prediksi model pada `test.csv` dan ditulis ke JSON.

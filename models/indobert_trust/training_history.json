@@ -1,0 +1,43 @@
+{
+  "base_model": "indobenchmark/indobert-base-p1",
+  "target_task": "label_kepercayaan",
+  "epochs": 3,
+  "batch_size": 32,
+  "learning_rate": 2e-05,
+  "device": "cuda",
+  "training_time_sec": 244.1,
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7243,
+      "val_loss": 0.4687,
+      "val_accuracy": 0.8242,
+      "val_f1_macro": 0.792,
+      "duration_sec": 77.92
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.3547,
+      "val_loss": 0.4516,
+      "val_accuracy": 0.8218,
+      "val_f1_macro": 0.8027,
+      "duration_sec": 75.83
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.2408,
+      "val_loss": 0.4795,
+      "val_accuracy": 0.8313,
+      "val_f1_macro": 0.8107,
+      "duration_sec": 76.07
+    }
+  ],
+  "final_val_metrics": {
+    "epoch": 3,
+    "train_loss": 0.2408,
+    "val_loss": 0.4795,
+    "val_accuracy": 0.8313,
+    "val_f1_macro": 0.8107,
+    "duration_sec": 76.07
+  }
+}

@@ -37,6 +37,7 @@ venv.bak/
 *.sqlite3
 data/history.db
 *.log
+!models/training_logs/*.log
 logs/
 
 # ==========================================
