@@ -7,12 +7,13 @@ Dokumen ini berisi pedoman utama, standar pengkodean, dan aturan yang WAJIB dipa
 
 ## 1. Identitas & Standar Proyek
 * **Judul Proyek**: Pengembangan Aplikasi NLP dan Explainable AI untuk Analisis Kepercayaan Publik terhadap Komunikasi UMKM Kosmetik Halal
-* **Target Utama**: Aplikasi Web Dashboard Interaktif, Model Fine-Tuned IndoBERT, dan Visualisasi Explainable AI (SHAP/LIME).
+* **Target Utama**: Aplikasi Web Dashboard Interaktif, Model Fine-Tuned IndoBERT, dan Visualisasi Explainable AI (SHAP).
+* **Model**: Hanya **IndoBERT** (`indobenchmark/indobert-base-p1`) yang di-fine-tune sungguhan. Tidak ada perbandingan, baseline, atau ensemble dengan model lain (keputusan user 2026-10-27).
 * **Bahasa Pemrograman Utama**: Python 3.10+, JavaScript / HTML5 / CSS3.
 * **Framework & Library Utama**:
-  * **NLP / ML**: `PyTorch`, `Hugging Face Transformers`, `scikit-learn`, `pandas`, `numpy`, `shap`.
-  * **Backend**: `FastAPI`, `Uvicorn`, `Pydantic`, `SQLite` / `PostgreSQL`.
-  * **Frontend**: `Vite` + `React` (atau Vanilla JS/HTML5 + `Chart.js`).
+  * **NLP / ML**: `PyTorch`, `Hugging Face Transformers`, `scikit-learn` (metrik evaluasi), `pandas`, `numpy`, `shap`.
+  * **Backend**: `FastAPI`, `Uvicorn`, `Pydantic`, `SQLite`.
+  * **Frontend**: Vanilla JS / HTML5 / CSS3 tanpa build tool, `Chart.js` via CDN.
 
 ---
 
@@ -22,18 +23,20 @@ Dokumen ini berisi pedoman utama, standar pengkodean, dan aturan yang WAJIB dipa
    * Sertakan docstring pada setiap fungsi backend dan model.
    * Hindari hardcode API key, kredensial, atau path lokal absolut. Gunakan file `.env`.
 2. **Penanganan Bahasa & Teks (NLP Standard)**:
-   * Semua data ulasan harus melalui tahap cleaning standar (lowercase, hapus URL/emoji/mention, normalisasi kata slang Bahasa Indonesia).
+   * Semua data ulasan harus melalui tahap cleaning standar (lowercase, hapus URL/mention, emoji/emoticon diubah menjadi kata bersentimen, normalisasi kata slang Bahasa Indonesia).
    * Tanda kehalalan & klaim BPOM harus diperlakukan sebagai entitas kata kunci penting (jangan terhapus pada tahap stopword removal).
 3. **Standar Explainable AI (XAI)**:
-   * Modul XAI utama menggunakan **SHAP (SHapley Additive exPlanations)** berbasis matematika *Game Theory* untuk mengukur bobot kontribusi tiap kata terhadap prediksi model IndoBERT.
-   * Modul XAI wajib mengembalikan bobot atribusi dalam format JSON yang dikonsumsi langsung oleh frontend untuk kalkulasi highlight warna (sorotan **Hijau** untuk kontribusi *High Trust*, **Merah/Kuning** untuk kontribusi *Low Trust*).
+   * Modul XAI utama menggunakan **SHAP (SHapley Additive exPlanations)** berbasis matematika *Game Theory* untuk mengukur bobot kontribusi tiap kata terhadap prediksi model IndoBERT. Bobot linear (`coef_`) atau daftar kata statis tidak boleh disebut SHAP.
+   * Modul XAI wajib mengembalikan bobot atribusi dalam format JSON yang dikonsumsi langsung oleh frontend untuk kalkulasi highlight warna (sorotan **Hijau** untuk *High Trust*, **Merah** untuk *Low Trust*, **Kuning** untuk *Neutral*). Nilai warna final mengikuti `DESIGN.md`.
+4. **Integritas Metrik Model**:
+   * Metrik evaluasi (accuracy, F1, confusion matrix) wajib dihitung dari prediksi model pada `test.csv`. Dilarang menulis angka metrik literal di kode backend maupun frontend.
 
 
 ---
 
 ## 3. Struktur Proyek (Directory Layout)
 ```text
-c:\z_Siregar\4. CD\Kosmetik Halal\
+Kosmetik Halal/
 ├── .agents/                        <-- Folder Konfigurasi Custom Agent & Rules
 │   └── skills/
 │       └── halal-cosmetics-capstone/
@@ -41,23 +44,25 @@ c:\z_Siregar\4. CD\Kosmetik Halal\
 ├── AGENTS.md                       <-- Aturan Main, Shortcut & Standards
 ├── SKILLS.md                       <-- 5 Peran Eksekusi (Architect, Backend, Frontend, QA, Hardware)
 ├── NEXT_AND_ENHANCEMENT.md         <-- Roadmap TODO & DONE Checklist
-├── Rencana_Implementasi_Capstone.pdf <-- Berkas PDF Implementasi (Siap Cetak)
+├── Rencana_Implementasi_Capstone_Kosmetik_Halal.pdf <-- Berkas PDF Implementasi
 ├── docs/                           <-- Dokumentasi Proyek
 │   ├── feature-list.md             <-- Katalog Fitur Aktif
-│   ├── log/                        <-- Log Harian Setiap Iterasi e/n (Project Diary)
+│   ├── log/                        <-- Log Setiap Iterasi e/n (Project Diary)
+│   ├── notebooks/                  <-- Notebook Fine-Tuning IndoBERT (Colab)
 │   └── vibe-coding/                <-- Panduan Integrasi IDE/AI Coding Tools
 ├── data/                           <-- Folder Penyimpanan Data
-
 │   ├── raw/                        <-- Data Mentah Ekstrak Kaggle (Female Daily Dataset)
 │   ├── cleaned/                    <-- Data Hasil Pembersihan Teks
-│   └── annotated/                  <-- Data Hasil Anotasi Aspek & Trust
-├── models/                         <-- Folder Penyimpanan Bobot Model AI
-│   └── indobert_halal/             <-- Weights Model Fine-Tuned IndoBERT
+│   └── annotated/                  <-- Data Hasil Anotasi Aspek & Trust + split train/val/test
+├── models/                         <-- Folder Artefak Model
+│   └── indobert_halal/             <-- Model Fine-Tuned IndoBERT (bobot besar tidak di-commit)
 ├── backend/                        <-- Source Code Server API (Python)
 │   ├── main.py                     <-- Entrypoint Server FastAPI
-│   ├── api/                        <-- Endpoint API (/predict, /explain)
-│   └── services/                   <-- Logic Loading Model IndoBERT & SHAP
-└── frontend/                       <-- Source Code Web Dashboard (React/Vite)
+│   ├── api/                        <-- Endpoint API (/predict, /explain, /catalog, dll.)
+│   └── services/                   <-- Logic Data, Model & XAI
+├── scripts/                        <-- Skrip Utilitas Jangka Panjang
+├── tests/                          <-- Test Suite pytest
+└── frontend/                       <-- Web Dashboard (Vanilla JS/HTML/CSS)
 ```
 
 
@@ -74,15 +79,16 @@ If the user types "e", "enhance", or requests an enhancement plan:
 - The plan must cover each main section/module of the application.
 - Inside the tasks list, define **exactly 3 new enhancements per section** with:
   1. A unique number (e.g., `1.1`, `1.2`, `1.3`).
-  2. A clear, specific description of the functional change.
-  3. A status (initially set to `[TODO]`).
+  2. A clear, specific description of the functional change, small enough for one goal and one proof.
+  3. A provable acceptance criterion (*Kriteria selesai*).
+  4. A status checkbox (initially `[ ]`; `[x]` = done; `[~]` = merged/cancelled with reason).
 - Present this plan to the user in your final summary response.
 
 ## 2. Trigger "n", "next", or "n{x}"
 If the user types "n", "next", "n{x}" (where `{x}` is a positive integer representing the number of enhancements, e.g., "n3"), or requests execution of the next enhancement task(s):
 - Read `NEXT_AND_ENHANCEMENT.md` to check the status of tasks.
-- If all enhancement tasks in `NEXT_AND_ENHANCEMENT.md` are marked `[DONE]` (or there are no tasks marked `[TODO]`), automatically execute the **Trigger "e" or "enhance"** workflow to generate a new set of tasks.
-- Otherwise, identify and select the most impactful enhancement task(s) currently marked `[TODO]` (evaluating which tasks have the highest strategic value, functional impact, or user experience contribution). If `{x}` is specified, select the top `{x}` most impactful enhancement tasks and execute them sequentially.
+- If no task is marked `[ ]` in `NEXT_AND_ENHANCEMENT.md`, automatically execute the **Trigger "e" or "enhance"** workflow to generate a new set of tasks.
+- Otherwise, execute the first `[ ]` task from the top of the TODO area (the backlog order is already the priority order). If `{x}` is specified, execute the next `{x}` tasks sequentially.
 ### 2a. Clarify before building ("Grill Me" step)
 Before implementing a task, check whether its scope or acceptance criteria are genuinely ambiguous (multiple valid interpretations, unspecified UI/data behavior, no clear "done" condition). If so:
 - Ask clarifying questions **one at a time** until the task is unambiguous — use your tool's native mechanism (`ask_question` / `AskUserQuestion`) where available, otherwise ask inline and wait for the answer before continuing.
@@ -91,9 +97,10 @@ Before implementing a task, check whether its scope or acceptance criteria are g
 
 - Implement the selected enhancement task(s) fully in the codebase, applying the relevant role(s) from `SKILLS.md` (Architect, Backend, Frontend, QA, Hardware/Compatibility).
 - Once completed:
-  1. Update the specific task(s) status of `NEXT_AND_ENHANCEMENT.md` to `[DONE]`.
+  1. Update the specific task(s) checkbox in `NEXT_AND_ENHANCEMENT.md` to `[x]` and add a short evidence line.
   2. Document the new or updated feature(s) in the `docs/feature-list.md` file (maintaining an organized list of all platform features under the appropriate section heading).
-- Verify the build integrity of the workspace (Automated tests + Browser subagent verification).
+  3. Commit and push to `origin/master` with a message that names the task number.
+- Verify the build integrity of the workspace (Automated tests + Browser subagent verification; for UI tasks also the UI definition of done in §15).
 - In your final response, state which task(s) have been completed and inform the user of the exact menu or navigation path where they can view and interact with the new/updated feature(s).
 - Write an iteration log per §2b before finishing.
 
@@ -135,12 +142,12 @@ Every run of "e"/"enhance" or "n"/"next"/"n{x}" must produce its own log file in
 ## 9. Workflow Test-Driven Development (TDD)
 - **TDD Workflow Protocol**: AI WAJIB menerapkan pendekatan Test-Driven Development (TDD) dalam pengembangan komponen backend & frontend:
   1. Tulis pengujian (unit test / integration test) terlebih dahulu sebelum mengimplementasikan logika fitur.
-  2. Eksekusi test di terminal untuk memastikan status awal terverifikasi *fail* (Red state).
+  2. Eksekusi test di terminal untuk memastikan status awal terverifikasi *fail* (Red state). Untuk task visual, Red state boleh berupa FAIL dari `lint.mjs` / `inspect.mjs` (lihat §15) yang tercatat sebelum perubahan.
   3. Implementasikan kode fitur hingga pengujian lulus 100% (Green state).
   4. Lakukan refactoring kode dengan mempertahankan seluruh test tetap passing.
 
 ## 10. Penggunaan Slash Command /goal
-- **Autonomous Execution via `/goal`**: AI WAJIB mendukung dan menggunakan slash command `/goal` sesuai dengan tupoksinya untuk tugas-tugas berdurasi panjang (*long-running autonomous tasks*). Saat mode `/goal` diaktifkan oleh user, AI akan bekerja ekstra menyeluruh, melakukan audit mandiri secara iteratif, dan tidak berhenti hingga seluruh target tercapai secara sempurna (ditandai dengan `<!-- GOAL_COMPLETE -->`).
+- **Autonomous Execution via `/goal`**: `/goal` diaktifkan oleh user untuk tugas berdurasi panjang. Saat mode ini aktif, AI bekerja menyeluruh, melakukan audit mandiri secara iteratif, dan tidak berhenti hingga seluruh target tercapai (ditandai dengan `<!-- GOAL_COMPLETE -->`). AI boleh menyarankan `/goal`, tetapi tidak dapat menjalankannya sendiri.
 
 ## 11. Format Output & Prompt Tugas Berikutnya (Next Task Prompting Format)
 - **Kondisi Khusus**: Format penutup opsi langkah berikutnya (`Cara Melanjutkan: Ketik n atau next...`) HANYA dicantumkan ketika user secara eksplisit memicu workflow enhancement melalui tombol/perintah `n`, `next`, `e`, atau `enhance`. Jangan tampilkan format penutup ini pada percakapan/pertanyaan biasa.
@@ -170,7 +177,7 @@ Every run of "e"/"enhance" or "n"/"next"/"n{x}" must produce its own log file in
   - Dilarang menggunakan skrip crawler yang mengambil fallback otomatis (`murls[0]`) dari mesin pencari web umum tanpa validasi domain resmi dan verifikasi visual.
   - Dilarang memasang foto non-kosmetik (seperti jok mobil, karabiner, poster, dokumen edaran dinas, buku, atau adegan drama) pada katalog kosmetik.
 - **PRINSIP KEJUJURAN MEDIA (HONEST PLACEHOLDER PRINCIPLE)**:
-  - Lebih baik membiarkan produk menampilkan status **"🧴 Foto belum tersedia"** daripada menampilkan kemasan fisik yang salah atau menyesatkan.
+  - Lebih baik membiarkan produk menampilkan status teks **"Foto belum tersedia"** (tanpa emoji) daripada menampilkan kemasan fisik yang salah atau menyesatkan. Kode lama masih memakai ikon emoji pada placeholder ini; dibersihkan di Task 10.1.
   - Pengguna memahami bentuk fisik asli produk di pasaran; menampilkan foto yang salah akan menghancurkan kepercayaan pengguna terhadap aplikasi.
 - **PROTOKOL VERIFIKASI PACKSHOT RESMI**:
   - Seluruh foto produk wajib bersumber dari katalog resmi (Female Daily / Official Store).
@@ -178,4 +185,16 @@ Every run of "e"/"enhance" or "n"/"next"/"n{x}" must produce its own log file in
 - **DILARANG MEMBUAT KLAIM STATUS TANPA AUDIT VISUAL**:
   - Agent dilarang mengklaim kumpulan foto "sudah beres" atau "foto asli" hanya berdasarkan jumlah file atau ukuran byte di disk.
   - Klaim keberhasilan foto produk hanya sah jika didukung oleh bukti audit sampel visual nyata.
+
+## 15. Aturan Desain UI (Anti-Slop & Taste-Skill)
+- **Urutan prioritas aturan** bila bertentangan: `AGENTS.md` > `DESIGN.md` > anti-slop (`miqdadbadjuber/anti-slop`) > taste-skill (`Leonxlnx/taste-skill`).
+- **Jenis layar**: CHARM adalah *app screen*, bukan landing page. Pakai taste-skill `references/app-screens.md`; kelonggaran app screen (border 1px, label kecil, satu set ikon outline abu-abu) berlaku.
+- **Arah desain** ditulis di `DESIGN.md` (dibuat di Task 9.2). Setiap keputusan visual wajib punya alasan tertulis (anti-slop R-31). Sebelum `DESIGN.md` ada, jangan menambah gaya visual baru.
+- **Mode AFTER**: hanya temuan bernomor (F*, K*) di `NEXT_AND_ENHANCEMENT.md` yang dikerjakan. Temuan lain dicatat dulu, tidak langsung diperbaiki.
+- **Lokasi skill**: `.agents/skills/` (dipasang di Task 7.4). Folder output `.taste-skill/` tidak di-commit.
+- **Definisi selesai task UI** (semua wajib, dengan bukti):
+  1. `lint.mjs --app` tanpa FAIL baru pada file yang disentuh.
+  2. `inspect.mjs --app` 0 FAIL di lebar 1440, 768, dan 390 untuk layar yang disentuh.
+  3. Delivery Gate anti-slop: PASS/FAIL per butir dengan bukti.
+  4. Screenshot `browser_subagent` di ketiga lebar (§8).
 
