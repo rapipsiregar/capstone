@@ -2,7 +2,7 @@ import time
 from typing import Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
-from backend.services.indobert_trainer import predict_indobert
+from backend.services.indobert_predictor import predict_indobert_authentic
 from backend.services.database import save_review_log
 
 
@@ -31,13 +31,8 @@ def predict_sentiment_and_aspect(request: PredictRequest):
     Performs NLP dual-target inference predicting Aspect category and Public Trust sentiment
     using the fine-tuned IndoBERT Transformer model.
     """
-    start_time = time.perf_counter()
-
     try:
-        prediction = predict_indobert(request.text)
-        model_type_name = "IndoBERT Transformer Fine-Tuned Model"
-
-        execution_time_ms = round((time.perf_counter() - start_time) * 1000, 2)
+        prediction = predict_indobert_authentic(request.text)
 
         result_payload = {
             "raw_text": prediction["raw_text"],
@@ -46,8 +41,8 @@ def predict_sentiment_and_aspect(request: PredictRequest):
             "aspect_confidence": prediction["aspect_confidence"],
             "predicted_trust": prediction["predicted_trust"],
             "trust_confidence": prediction["trust_confidence"],
-            "model_type": model_type_name,
-            "execution_time_ms": execution_time_ms
+            "model_type": prediction["model_type"],
+            "execution_time_ms": prediction["execution_time_ms"]
         }
 
         # Log inference to SQLite history database
@@ -59,3 +54,4 @@ def predict_sentiment_and_aspect(request: PredictRequest):
         return PredictResponse(**result_payload)
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Inference error: {str(e)}")
+
