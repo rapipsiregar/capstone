@@ -145,7 +145,7 @@
 
 .compliance-progress-bar-fill {
   height: 100%;
-  background: linear-gradient(90deg, #16a34a, #0f766e);
+  background: var(--halal-teal, #0F766E);
   border-radius: 9999px;
   transition: width 0.4s ease;
 }

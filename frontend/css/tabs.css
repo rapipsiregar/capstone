@@ -154,7 +154,7 @@
 
 /* Research Dataset Banner for Tab 3 */
 .research-dataset-banner {
-  background: linear-gradient(135deg, #F0FDFA 0%, #FFFFFF 100%);
+  background: #F0FDFA;
   border: 1px solid var(--halal-teal-light, #0D9488);
   border-radius: 12px;
   padding: 1.25rem 1.5rem;

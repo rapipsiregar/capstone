@@ -107,8 +107,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 #### 10A. Emoji & Hero
 - [x] **Task 10.1**: **Emoji Keluar dari UI** (F8): Diganti kata, atau ikon dengan alasan tertulis di `DESIGN.md`.
   - *Kriteria selesai:* `lint.mjs --app` 0 FAIL `emoji`. (Selesai 2026-10-28: 62 emoji diganti teks semantik, test_zero_emoji_ui passed, lint.mjs 0 FAIL emoji).
-- [ ] **Task 10.2**: **Eyebrow & Gradient** (F9, F10).
-  - *Kriteria selesai:* lint 0 FAIL `gradient`; inspector 0 `micro-label`.
+- [x] **Task 10.2**: **Eyebrow & Gradient** (F9, F10).
+  - *Kriteria selesai:* lint 0 FAIL `gradient`; inspector 0 `micro-label`. (Selesai 2026-10-28: 5 gradient dibersihkan, micro-label uppercase diubah ke sentence case, test_zero_gradient_and_microlabel passed).
 - [ ] **Task 10.3**: **Shadow & Blur** (F11): Shadow hanya pada overlay (menu, dialog, tooltip).
   - *Kriteria selesai:* WARN `shadow` tersisa hanya pada overlay; 0 `backdrop-filter`.
 
