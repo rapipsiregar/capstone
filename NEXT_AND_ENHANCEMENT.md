@@ -21,7 +21,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
 | 9 | Arah desain, angka jujur, aksesibilitas | 9/12 (Seksi 9B, 9C, 9D DONE 9/9 aktif; 9A ditahan) |
-| 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
+| 10 | Pembersihan slop visual & gerbang akhir | 7/9 (7/7 aktif DONE; Task 10.4, 10.5 ditahan) |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
 | 1–6 | Riwayat | DONE (dengan koreksi audit) |
@@ -125,8 +125,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
   - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot. (Selesai 2026-10-28: Seluruh state katalog 3-level dan guidebook diperjelas penyebab dan tombol lanjut, 7 screenshot diverifikasi di artefak, test_complete_states passed).
 - [x] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
   - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC. (Selesai 2026-10-28: catalog.css 431 LOC dipecah menjadi catalog-nav.css 75 LOC, catalog-categories.css 124 LOC, catalog-products.css 151 LOC, catalog-reviews.css 91 LOC, catalog.css 9 LOC; seluruh berkas kode repo 100% <= 256 LOC; test_file_size_and_modular_css passed; gerbang lint dan inspect 0 FAIL/WARN pada kategori tugas).
-- [ ] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
-  - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`.
+- [x] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
+  - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`. (Selesai 2026-10-28: Delivery Gate anti-slop audit lengkap dengan bukti per butir; click-through interaktif semua kontrol via CDP lolos 100% dengan 0 error console; test_delivery_gate 4/4 passed; laporan before/after komprehensif tertulis di docs/log/2026-10-28-1045-task-10.9-final-delivery.md).
 
 ### Backlog Ditunda (sisa Phase 4)
 
