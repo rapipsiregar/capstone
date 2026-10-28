@@ -40,3 +40,17 @@ def test_every_cache_entry_comes_from_dataset(real_cache, dataset_texts):
 def test_cache_keys_match_text_hash(real_cache):
     mismatched = [k for k, v in real_cache.items() if hash_review_text(v.get("raw_text", "")) != k]
     assert mismatched == []
+
+
+def test_cache_coverage_full_dataset(real_cache, dataset_texts):
+    """Task 8.10: Cache must cover all 8,365 active dataset reviews with word-level method."""
+    assert len(dataset_texts) == 8365
+    assert len(real_cache) == 8365
+    missing = [text for text in dataset_texts if hash_review_text(text) not in real_cache]
+    assert missing == [], f"Ada {len(missing)} ulasan belum ada di cache"
+    wrong_method = [
+        k for k, v in real_cache.items()
+        if v.get("attribution_method") != "word_shap_high_minus_low_v1"
+    ]
+    assert wrong_method == [], f"Ada {len(wrong_method)} entri cache dengan metode lama/salah"
+

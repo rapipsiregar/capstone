@@ -7,8 +7,8 @@ eliminating repetitive transformer computation during browsing.
 import os
 import json
 import hashlib
-from typing import Dict, Any, Optional, List
-from backend.services.indobert_explainer import explain_text_with_shap
+from typing import Callable, Dict, Any, Optional, List
+from backend.services.shap_word_attribution import ATTRIBUTION_METHOD, compute_word_shap_record
 
 CACHE_DIR = os.path.join("data", "cache")
 CACHE_FILE = os.path.join(CACHE_DIR, "review_shap_cache.json")
@@ -47,7 +47,7 @@ def save_shap_cache(cache_data: Dict[str, Any]) -> None:
     os.makedirs(CACHE_DIR, exist_ok=True)
     temp_file = CACHE_FILE + ".tmp"
     with open(temp_file, "w", encoding="utf-8") as f:
-        json.dump(cache_data, f, ensure_ascii=False, indent=2)
+        json.dump(cache_data, f, ensure_ascii=False, separators=(",", ":"))
     os.replace(temp_file, CACHE_FILE)
 
 
@@ -63,50 +63,58 @@ def get_cached_review_shap(text: str) -> Optional[Dict[str, Any]]:
     return cache.get(key)
 
 
-def compute_and_cache_review_shap(text: str) -> Dict[str, Any]:
+def compute_and_cache_review_shap(text: str, persist: bool = True) -> Dict[str, Any]:
     """
-    Computes SHAP attribution via authentic IndoBERT explainer and stores it in disk cache.
+    Computes word-level SHAP attribution (score = SHAP High_Trust - SHAP Low_Trust)
+    via the fine-tuned IndoBERT model and stores it in the cache.
+    With persist=False the record is kept in memory only (batch jobs save periodically).
     """
     cache = load_shap_cache()
     key = hash_review_text(text)
-    if key in cache:
-        return cache[key]
+    cached = cache.get(key)
+    if cached and cached.get("attribution_method") == ATTRIBUTION_METHOD:
+        return cached
 
-    shap_res = explain_text_with_shap(text)
-    pos_words = [a["token"] for a in shap_res.get("attributions", []) if a.get("impact") == "High_Trust"]
-    neg_words = [a["token"] for a in shap_res.get("attributions", []) if a.get("impact") == "Low_Trust"]
-
-    record = {
-        "text_hash": key,
-        "raw_text": text,
-        "predicted_trust": shap_res.get("predicted_trust"),
-        "predicted_aspect": shap_res.get("predicted_aspect"),
-        "trust_confidence": shap_res.get("trust_confidence"),
-        "tokens": shap_res.get("tokens", []),
-        "attributions": shap_res.get("attributions", []),
-        "base_value": shap_res.get("base_value", 0.0),
-        "top_positive_words": pos_words[:5],
-        "top_negative_words": neg_words[:5],
-        "explanation_summary": shap_res.get("explanation_summary", "")
-    }
-
+    record = compute_word_shap_record(text, key)
     cache[key] = record
-    save_shap_cache(cache)
+    if persist:
+        save_shap_cache(cache)
     return record
 
 
-def precompute_sample_catalog_cache(reviews: List[str], max_count: int = 50) -> int:
+def is_current_record(record: Optional[Dict[str, Any]]) -> bool:
+    """True if the cached record was built with the current attribution method."""
+    return bool(record) and record.get("attribution_method") == ATTRIBUTION_METHOD
+
+
+def precompute_review_cache(
+    reviews: List[str],
+    save_every: int = 200,
+    progress: Optional[Callable[[int, int], None]] = None,
+) -> int:
     """
-    Batch computes and saves SHAP cache for sample catalog reviews.
-    Returns count of newly cached items.
+    Computes SHAP for every review not yet cached with the current method.
+    Saves to disk every `save_every` new records and at the end (resumable).
+    Returns count of newly computed records.
     """
-    added = 0
-    for rev in reviews[:max_count]:
-        if not rev or not rev.strip():
+    cache = load_shap_cache()
+    todo = []
+    seen = set()
+    for rev in reviews:
+        if not isinstance(rev, str) or not rev.strip():
             continue
         key = hash_review_text(rev)
-        cache = load_shap_cache()
-        if key not in cache:
-            compute_and_cache_review_shap(rev)
-            added += 1
-    return added
+        if key in seen or is_current_record(cache.get(key)):
+            continue
+        seen.add(key)
+        todo.append(rev)
+
+    for i, rev in enumerate(todo, start=1):
+        compute_and_cache_review_shap(rev, persist=False)
+        if i % save_every == 0:
+            save_shap_cache(cache)
+        if progress:
+            progress(i, len(todo))
+    if todo:
+        save_shap_cache(cache)
+    return len(todo)

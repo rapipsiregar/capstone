@@ -63,6 +63,34 @@ def test_cached_review_shap_lookup():
     assert "top_positive_words" in retrieved
 
 
+def test_precompute_review_cache_is_resumable_and_recomputes_old_method(monkeypatch):
+    """Batch job: skips current-method records, recomputes old ones, saves periodically."""
+    import json
+    from backend.services.shap_word_attribution import ATTRIBUTION_METHOD
+
+    calls = []
+
+    def fake_record(text, key):
+        calls.append(text)
+        return {"text_hash": key, "raw_text": text, "attribution_method": ATTRIBUTION_METHOD,
+                "attributions": [], "top_positive_words": [], "top_negative_words": []}
+
+    monkeypatch.setattr(cacher_module, "compute_word_shap_record", fake_record)
+    cache = load_shap_cache()
+    done_key, old_key = hash_review_text("sudah"), hash_review_text("lama")
+    cache[done_key] = {"raw_text": "sudah", "attribution_method": ATTRIBUTION_METHOD}
+    cache[old_key] = {"raw_text": "lama"}  # built with the old per-class method
+    save_shap_cache(cache)
+
+    added = cacher_module.precompute_review_cache(["sudah", "lama", "baru", "baru", " "], save_every=1)
+    assert added == 2
+    assert calls == ["lama", "baru"]
+    with open(cacher_module.CACHE_FILE, encoding="utf-8") as f:
+        on_disk = json.load(f)
+    assert all(cacher_module.is_current_record(v) for v in on_disk.values())
+    assert len(on_disk) == 3
+
+
 def test_generate_review_xai_explanation_uses_cache():
     sample_text = "Ulasan produk dengan atribusi SHAP tersimpan."
     key = hash_review_text(sample_text)

@@ -19,7 +19,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 13/15 (8.10, 8.11 dibuka kembali) |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 14/15 (8.11 dibuka kembali) |
 | 9 | Arah desain, angka jujur, aksesibilitas | 3/12 (Seksi 9B DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
@@ -95,9 +95,10 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
 
 #### 8D. XAI Turunan & Tampilan Metrik
-- [ ] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
+- [x] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
   - *Kriteria selesai:* `review_explainer.py` tidak memakai `coef_`; test membaca cache; test cakupan membuktikan cache berisi 8.365 / 8.365 ulasan.
   - *Koreksi audit 2026-10-28:* `data/cache/review_shap_cache.json` hanya berisi 41 entri dari 8.365 ulasan (`precompute_sample_catalog_cache` default `max_count=50`), jadi "hitung SHAP untuk ulasan katalog" belum terpenuhi. `tests/test_catalog_shap_cacher.py` juga menulis ke berkas cache asli. Perbaikan (Opsi 1): hitung SHAP untuk seluruh 8.365 ulasan di GPU, test memakai berkas cache sementara.
+  - *Bukti (2026-10-28, setelah perbaikan):* Komputasi batch offline selesai 100% di GPU RTX 3050 (`scripts/precompute_shap_cache.py`, durasi 33,7 menit); berkas cache persisten `data/cache/review_shap_cache.json` berisi persis 8.365 / 8.365 ulasan aktif (ukuran 24,42 MB, aman di git); test `tests/test_shap_cache_integrity.py::test_cache_coverage_full_dataset` membuktikan 0 ulasan yang hilang dan semua memakai metode `word_shap_high_minus_low_v1`; `tests/test_catalog_shap_cacher.py` menggunakan cache dummy di `tmp_path` terisolasi; `backend/services/catalog_shap_cacher.py` dan `review_explainer.py` bebas linear `coef_`; seluruh 153 pytest passed.
 - [ ] **Task 8.11**: **Kata Pendorong dari SHAP** (K6): `empirical_drivers.py` mengagregasi cache SHAP.
   - *Kriteria selesai:* test membuktikan kata pendorong = agregasi cache milik brand itu sendiri; brand tanpa data menampilkan state jujur.
   - *Koreksi audit 2026-10-28:* fallback di `backend/services/empirical_drivers.py` baris 74–89 mengambil kata dari cache global lalu melabelinya sebagai driver brand yang tidak punya ulasan di cache (salah atribusi). Perbaikan: fallback dihapus; agregasi ulang setelah cache Task 8.10 lengkap.
