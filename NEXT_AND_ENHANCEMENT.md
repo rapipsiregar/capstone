@@ -121,8 +121,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
   - *Kriteria selesai:* inspector 0 WARN `numeric-align`; lint 0 WARN `transition-all`. (Selesai 2026-10-28: 10 transition: all diganti spesifik, tabular-nums dan num-cell/col rata kanan diterapkan, test_zero_transition_all_and_tabular_nums passed).
 
 #### 10C. State & Gerbang Akhir
-- [ ] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.
-  - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot.
+- [x] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.
+  - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot. (Selesai 2026-10-28: Seluruh state katalog 3-level dan guidebook diperjelas penyebab dan tombol lanjut, 7 screenshot diverifikasi di artefak, test_complete_states passed).
 - [ ] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
   - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC.
 - [ ] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.

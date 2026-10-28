@@ -12,10 +12,17 @@ function bindSandboxEvents() {
 
   document.getElementById('btn-analyze-review')?.addEventListener('click', async () => {
     const text = document.getElementById('input-review-text')?.value?.trim();
-    if (!text) { alert('Silakan masukkan teks ulasan terlebih dahulu.'); return; }
-    const model = 'indobert';
     const resultCard = document.getElementById('xai-result-card');
+    if (!text) {
+      if (resultCard) {
+        resultCard.classList.remove('hidden');
+        document.getElementById('xai-summary-text').textContent = 'Teks ulasan masih kosong. Ketik teks ulasan kosmetik atau pilih salah satu contoh preset di atas untuk menganalisis.';
+      }
+      return;
+    }
+    const model = 'indobert';
     resultCard?.classList.remove('hidden');
+    document.getElementById('xai-summary-text').textContent = 'Memproses inferensi model IndoBERT dan menghitung bobot SHAP...';
 
     try {
       const pred = await requestPrediction(text, model);
@@ -34,7 +41,7 @@ function bindSandboxEvents() {
       }
       document.getElementById('xai-summary-text').textContent = explain.summary || 'Analisis selesai.';
     } catch (e) {
-      document.getElementById('xai-summary-text').textContent = 'Inferensi berhasil disimulasikan.';
+      document.getElementById('xai-summary-text').textContent = `Gagal menganalisis ulasan: ${e.message}. Pastikan server backend aktif di port 8000.`;
     }
   });
 }

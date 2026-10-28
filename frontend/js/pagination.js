@@ -18,7 +18,7 @@ async function renderHistoryWithPagination(page = 1) {
     const totalPages = data.total_pages || Math.max(1, Math.ceil(totalCount / HISTORY_PAGE_SIZE));
 
     if (logs.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="padding: 1.5rem; color: var(--text-muted);">Belum ada riwayat ulasan pada halaman ini.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="padding: 2rem 1rem; color: #475569;"><div style="font-weight:700;">Belum ada log inferensi tersimpan</div><div style="font-size:0.85rem; color:#64748B; margin-bottom:0.75rem;">Uji kalimat ulasan baru di tab Simulasi XAI untuk melihat riwayat log di sini.</div><button type="button" class="btn btn-secondary" onclick="tabNavigation.switchToTab(\'tab-content-sandbox\')" style="padding:0.35rem 0.85rem; font-size:0.82rem;">Buka Simulasi XAI</button></td></tr>';
       updatePaginationControls(0, 0, 1, 1);
       return;
     }
@@ -38,7 +38,7 @@ async function renderHistoryWithPagination(page = 1) {
     updatePaginationControls(logs.length, totalCount, currentHistoryPage, totalPages);
   } catch (err) {
     console.error('Error loading paginated history:', err);
-    tbody.innerHTML = '<tr><td colspan="7" class="text-center" style="color: var(--danger-color);">Gagal memuat data riwayat ulasan.</td></tr>';
+    tbody.innerHTML = `<tr><td colspan="7" class="text-center" style="padding: 2rem 1rem; color: #DC2626;"><div style="font-weight:700;">Gagal memuat log riwayat ulasan: ${err.message}</div><div style="font-size:0.85rem; color:#64748B; margin-bottom:0.75rem;">Pastikan server backend FastAPI berjalan normal.</div><button type="button" class="btn btn-secondary" onclick="renderHistoryWithPagination(${currentHistoryPage})" style="padding:0.35rem 0.85rem; font-size:0.82rem;">Coba Lagi</button></td></tr>`;
   }
 }
 

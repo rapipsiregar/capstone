@@ -38,12 +38,15 @@ function trustBadgeHtml(trust) {
 async function loadCatalogCategories() {
   const container = document.getElementById("categoryGridContainer");
   if (!container) return;
-  container.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #64748B;">Memuat kategori skincare...</div>';
+  container.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #64748B;"><div style="font-weight:600;">Memuat kategori skincare...</div><div style="font-size:0.82rem;">Mengambil 23 kategori dari database Female Daily.</div></div>';
 
   try {
     const res = await fetch(`${getCatalogApiBase()}/catalog/categories`);
     const data = await res.json();
-    if (data.status !== "success" || !data.categories) throw new Error("Gagal mengambil kategori");
+    if (data.status !== "success" || !data.categories || data.categories.length === 0) {
+      container.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #475569;"><div style="font-weight:700;">Belum ada kategori terindeks</div><div style="font-size:0.82rem; margin-bottom:0.75rem;">Database kosong atau belum terhubung.</div><button type="button" class="btn btn-secondary" onclick="catalogApp.loadCatalogCategories()">Muat Ulang</button></div>';
+      return;
+    }
 
     container.innerHTML = data.categories.map(cat => {
       const icon = (CATEGORY_ICONS[cat.category_name] || (cat.category_name || '').slice(0, 2)).toUpperCase();
@@ -59,7 +62,7 @@ async function loadCatalogCategories() {
         </button>`;
     }).join("");
   } catch (err) {
-    container.innerHTML = `<div style="grid-column: 1/-1; color: #DC2626; text-align: center;">Gagal memuat kategori: ${err.message}</div>`;
+    container.innerHTML = `<div class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #DC2626;"><div style="font-weight:700;">Gagal memuat kategori: ${err.message}</div><div style="font-size:0.82rem; margin-bottom:0.75rem;">Pastikan server backend aktif di port 8000.</div><button type="button" class="btn btn-secondary" onclick="catalogApp.loadCatalogCategories()">Coba Lagi</button></div>`;
   }
 }
 
@@ -81,7 +84,7 @@ async function openCategoryProducts(categoryName, page = 1) {
 
   const grid = document.getElementById("catalogProductsGrid");
   if (!grid) return;
-  grid.innerHTML = '<div class="text-center" style="grid-column: 1/-1; padding: 2rem; color: #64748B;">Memuat produk...</div>';
+  grid.innerHTML = `<div class="text-center" style="grid-column: 1/-1; padding: 2.5rem; color: #64748B;"><div style="font-weight:600;">Memuat produk ${categoryName}...</div><div style="font-size:0.82rem;">Mengambil daftar produk dan ulasan terverifikasi.</div></div>`;
 
   try {
     const res = await fetch(`${getCatalogApiBase()}/catalog/products?category=${encodeURIComponent(categoryName)}&page=${page}&limit=12`);
@@ -91,7 +94,7 @@ async function openCategoryProducts(categoryName, page = 1) {
     if (subtitle) subtitle.textContent = `Ditemukan ${data.total_products} produk kosmetik dari brand terverifikasi`;
 
     if (!data.products || data.products.length === 0) {
-      grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 2rem;">Tidak ada produk ditemukan.</div>';
+      grid.innerHTML = `<div class="text-center" style="grid-column: 1/-1; padding: 2.5rem; color: #475569;"><div style="font-weight:700;">Tidak ada produk untuk kategori "${categoryName}"</div><div style="font-size:0.82rem; margin-bottom:0.75rem;">Pilih kategori lain dari 23 kategori skincare.</div><button type="button" class="btn btn-secondary" onclick="catalogApp.backToCategories()">Kembali ke Kategori</button></div>`;
       return;
     }
 
@@ -116,7 +119,7 @@ async function openCategoryProducts(categoryName, page = 1) {
 
     renderPagination("catalogProductsPagination", data.page, data.total_pages, p => openCategoryProducts(categoryName, p));
   } catch (err) {
-    grid.innerHTML = `<div style="grid-column: 1/-1; color: #DC2626;">Gagal memuat produk: ${err.message}</div>`;
+    grid.innerHTML = `<div class="text-center" style="grid-column: 1/-1; padding: 2.5rem; color: #DC2626;"><div style="font-weight:700;">Gagal memuat produk: ${err.message}</div><div style="font-size:0.82rem; margin-bottom:0.75rem;">Endpoint API katalog tidak merespons.</div><button type="button" class="btn btn-secondary" onclick="catalogApp.openCategoryProducts('${categoryName.replace(/'/g, "\\'")}', ${page})">Coba Lagi</button></div>`;
   }
 }
 
@@ -133,7 +136,7 @@ async function openProductReviews(productName, page = 1) {
 
   const hero = document.getElementById("productHeroContainer");
   const feed = document.getElementById("catalogReviewsFeed");
-  if (feed) feed.innerHTML = '<div class="text-center" style="padding: 2rem; color: #64748B;">Memuat ulasan dan analisis XAI...</div>';
+  if (feed) feed.innerHTML = `<div class="text-center" style="padding: 2.5rem; color: #64748B;"><div style="font-weight:600;">Memuat ulasan untuk "${productName}"...</div><div style="font-size:0.82rem;">Menghubungkan bobot SHAP untuk setiap kata ulasan.</div></div>`;
 
   try {
     const res = await fetch(`${getCatalogApiBase()}/catalog/reviews?product_name=${encodeURIComponent(productName)}&page=${page}&limit=8`);
@@ -157,7 +160,7 @@ async function openProductReviews(productName, page = 1) {
     if (window.catalogSummary) window.catalogSummary.render(info, data.total_reviews);
 
     if (!data.reviews || data.reviews.length === 0) {
-      if (feed) feed.innerHTML = '<div style="text-align: center; padding: 2rem;">Belum ada ulasan untuk produk ini.</div>';
+      if (feed) feed.innerHTML = `<div class="text-center" style="padding: 2.5rem; color: #475569;"><div style="font-weight:700;">Belum ada ulasan untuk "${productName}"</div><div style="font-size:0.82rem; margin-bottom:0.75rem;">Uji ulasan baru di tab Simulasi XAI untuk melihat prediksi.</div><button type="button" class="btn btn-secondary" onclick="tabNavigation.switchToTab('tab-content-sandbox')">Buka Simulasi XAI</button></div>`;
       return;
     }
 
@@ -195,7 +198,7 @@ async function openProductReviews(productName, page = 1) {
 
     renderPagination("catalogReviewsPagination", data.page, data.total_pages, p => openProductReviews(productName, p));
   } catch (err) {
-    if (feed) feed.innerHTML = `<div style="color: #DC2626;">Gagal memuat ulasan: ${err.message}</div>`;
+    if (feed) feed.innerHTML = `<div class="text-center" style="padding: 2.5rem; color: #DC2626;"><div style="font-weight:700;">Gagal memuat ulasan: ${err.message}</div><div style="font-size:0.82rem; margin-bottom:0.75rem;">Layanan API ulasan tidak dapat dijangkau.</div><button type="button" class="btn btn-secondary" onclick="catalogApp.openProductReviews('${productName.replace(/'/g, "\\'")}', ${page})">Coba Lagi</button></div>`;
   }
 }
 
