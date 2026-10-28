@@ -177,7 +177,7 @@ Every run of "e"/"enhance" or "n"/"next"/"n{x}" must produce its own log file in
   - Dilarang menggunakan skrip crawler yang mengambil fallback otomatis (`murls[0]`) dari mesin pencari web umum tanpa validasi domain resmi dan verifikasi visual.
   - Dilarang memasang foto non-kosmetik (seperti jok mobil, karabiner, poster, dokumen edaran dinas, buku, atau adegan drama) pada katalog kosmetik.
 - **PRINSIP KEJUJURAN MEDIA (HONEST PLACEHOLDER PRINCIPLE)**:
-  - Lebih baik membiarkan produk menampilkan status teks **"Foto belum tersedia"** (tanpa emoji) daripada menampilkan kemasan fisik yang salah atau menyesatkan. Kode lama masih memakai ikon emoji pada placeholder ini; dibersihkan di Task 10.1.
+  - Lebih baik membiarkan produk menampilkan status teks **"Foto belum tersedia"** (tanpa emoji) daripada menampilkan kemasan fisik yang salah atau menyesatkan. Ikon emoji pada placeholder ini telah dibersihkan secara tuntas pada Task 10.1 dan digantikan teks semantik.
   - Pengguna memahami bentuk fisik asli produk di pasaran; menampilkan foto yang salah akan menghancurkan kepercayaan pengguna terhadap aplikasi.
 - **PROTOKOL VERIFIKASI PACKSHOT RESMI**:
   - Seluruh foto produk wajib bersumber dari katalog resmi (Female Daily / Official Store).

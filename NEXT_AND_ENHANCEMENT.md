@@ -14,17 +14,17 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - **Perpindahan ke DONE:** task selesai dicentang di tempat; seksi dipindah ke area DONE setelah ketiga task-nya selesai.
 - **Git:** setiap task selesai di-commit dan di-push ke `origin/master`.
 
-## Ringkasan Status (2026-10-28, setelah koreksi audit)
+## Ringkasan Status (2026-10-28, setelah pembaruan backlog & eliminasi enhancement)
 
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 9/12 (Seksi 9B, 9C, 9D DONE 9/9 aktif; 9A ditahan) |
-| 10 | Pembersihan slop visual & gerbang akhir | 7/9 (7/7 aktif DONE; Task 10.4, 10.5 ditahan) |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan & full SHAP precompute GPU) | 15/15 (DONE) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 9/12 (Seksi 9B, 9C, 9D DONE 9/9 aktif; 9A ditahan menunggu inspirasi desain user) |
+| 10 | Pembersihan slop visual & gerbang akhir | 5/9 (Seksi 10A DONE 3/3; Task 10.6 & 10.7 DONE; 4 task tersisa) |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
-| Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
-| 1–6 | Riwayat | DONE (dengan koreksi audit) |
+| 1–6 | Riwayat implementasi awal | DONE (dengan koreksi audit) |
+| **Total Sisa** | **Sisa TODO Aktif (Task 9.1–9.3, 10.4, 10.5, 10.8, 10.9)** | **7 Task Tersisa** |
 
 ## Keputusan User (2026-10-27)
 
@@ -90,32 +90,24 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ## TODO
 
-> **Status Eksekusi 2026-10-28**: Phase 8 resmi selesai tuntas (15/15 DONE). Seksi 9B resmi selesai (3/3 DONE). Task 9.1, 9.2, 9.3, 10.4, 10.5 ditahan menunggu keputusan desain user.
+> **Status Eksekusi 2026-10-28**: Phase 8 resmi selesai tuntas (15/15 DONE). Seksi 9B, 9C, 9D selesai (9/9 DONE). Seksi 10A selesai (3/3 DONE). Task 10.6 & 10.7 selesai. Tersisa tepat **7 task TODO aktif** (Task 9.1, 9.2, 9.3, 10.4, 10.5, 10.8, 10.9). Backlog enhancement Phase 4 telah dihapus permanen sesuai arahan user.
 
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 
 #### 9A. Arah Desain (ex Task 6.4)
-- [ ] **Task 9.1**: **Pilih Gaya**: `draw.mjs --app --keep palette`, ajukan 3 opsi ke user.
+- [ ] **Task 9.1**: **Pilih Gaya**: Dokumen proposal V1, V2, dan V3 (`Proposal_Mockup_Desain_Kustom_CHARM.pdf`) telah disusun; menunggu inspirasi & keputusan gaya visual final dari user.
   - *Kriteria selesai:* pilihan user tercatat.
-- [ ] **Task 9.2**: **Tulis `DESIGN.md`** (F7): Gaya, typeface, peran warna, dial ENERGY/RHYTHM/MOTION, alasan per keputusan.
+- [ ] **Task 9.2**: **Tulis `DESIGN.md`** (F7): Formalisasi gaya terpilih, typeface (Playfair Display / Inter / Outfit), peran warna (Terracotta #C26D53, Teal #0F766E, Trust Green #1E6B47), dial ENERGY 1 / RHYTHM 1 / MOTION 1, dan layout L-frame monolith.
   - *Kriteria selesai:* setiap keputusan punya alasan tertulis (R-31); user menyetujui.
-- [ ] **Task 9.3**: **Favicon Baru** (F13): Ajukan konsep, buat setelah disetujui.
+- [ ] **Task 9.3**: **Favicon & Logo Baru** (F13): Memproduksi berkas vektor `frontend/favicon.svg` berbasis Konsep D (*The Purity Droplet & Crescent*) pada squircle terracotta `#C26D53` tanpa gradient/glow.
   - *Kriteria selesai:* tanpa gradient/glow; disetujui user; tampil di tab browser (screenshot).
 
 ### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
 
-#### 10A. Emoji & Hero
-- [x] **Task 10.1**: **Emoji Keluar dari UI** (F8): Diganti kata, atau ikon dengan alasan tertulis di `DESIGN.md`.
-  - *Kriteria selesai:* `lint.mjs --app` 0 FAIL `emoji`. (Selesai 2026-10-28: 62 emoji diganti teks semantik, test_zero_emoji_ui passed, lint.mjs 0 FAIL emoji).
-- [x] **Task 10.2**: **Eyebrow & Gradient** (F9, F10).
-  - *Kriteria selesai:* lint 0 FAIL `gradient`; inspector 0 `micro-label`. (Selesai 2026-10-28: 5 gradient dibersihkan, micro-label uppercase diubah ke sentence case, test_zero_gradient_and_microlabel passed).
-- [x] **Task 10.3**: **Shadow & Blur** (F11): Shadow hanya pada overlay (menu, dialog, tooltip).
-  - *Kriteria selesai:* WARN `shadow` tersisa hanya pada overlay; 0 `backdrop-filter`. (Selesai 2026-10-28: Seluruh card diam tanpa shadow, backdrop blur 0, test_zero_heavy_shadow_and_blur passed).
-
 #### 10B. Chart, Tipografi & Gerak
-- [ ] **Task 10.4**: **Warna Chart** (F12): Satu hue data per chart dari `DESIGN.md`.
+- [ ] **Task 10.4**: **Warna Chart** (F12): Satu hue data per chart dari `DESIGN.md` (menggantikan warna default violet/indigo).
   - *Kriteria selesai:* lint 0 FAIL `purple`, 0 WARN `framework-colour`.
-- [ ] **Task 10.5**: **Tipografi** (F14, F15): Maks 2 typeface, ≤ 5 ukuran, headline ≤ 2 baris.
+- [ ] **Task 10.5**: **Tipografi** (F14, F15): Maks 2 typeface, ≤ 5 ukuran, headline ≤ 2 baris sesuai acuan `DESIGN.md`.
   - *Kriteria selesai:* inspector 0 WARN `font-count` dan `headline-lines`.
 - [x] **Task 10.6**: **Angka & Transisi** (F16, F17): Angka rata kanan dengan tabular figures; `transition: all` diganti properti spesifik.
   - *Kriteria selesai:* inspector 0 WARN `numeric-align`; lint 0 WARN `transition-all`. (Selesai 2026-10-28: 10 transition: all diganti spesifik, tabular-nums dan num-cell/col rata kanan diterapkan, test_zero_transition_all_and_tabular_nums passed).
@@ -123,32 +115,28 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 #### 10C. State & Gerbang Akhir
 - [x] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.
   - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot. (Selesai 2026-10-28: Seluruh state katalog 3-level dan guidebook diperjelas penyebab dan tombol lanjut, 7 screenshot diverifikasi di artefak, test_complete_states passed).
-- [x] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
-  - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC. (Selesai 2026-10-28: catalog.css 431 LOC dipecah menjadi catalog-nav.css 75 LOC, catalog-categories.css 124 LOC, catalog-products.css 151 LOC, catalog-reviews.css 91 LOC, catalog.css 9 LOC; seluruh berkas kode repo 100% <= 256 LOC; test_file_size_and_modular_css passed; gerbang lint dan inspect 0 FAIL/WARN pada kategori tugas).
-- [x] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
-  - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`. (Selesai 2026-10-28: Delivery Gate anti-slop audit lengkap dengan bukti per butir; click-through interaktif semua kontrol via CDP lolos 100% dengan 0 error console; test_delivery_gate 4/4 passed; laporan before/after komprehensif tertulis di docs/log/2026-10-28-1045-task-10.9-final-delivery.md).
-
-### Backlog Ditunda (sisa Phase 4)
-
-Dipecah ulang menjadi task kecil saat diaktifkan.
-
-- [ ] (P4 Task 1.2) Active Learning Uncertainty Sampling Selector.
-- [ ] (P4 Task 1.3) Kaggle Dataset Batch Ingestion & Sync API.
-- [~] (P4 Task 2.1) IndoBERT & RoBERTa Ensemble: **dibatalkan**, bertentangan dengan keputusan model hanya IndoBERT.
-- [ ] (P4 Task 2.2) Brand Aspect Sentiment Drift Detector.
-- [ ] (P4 Task 2.3) Counterfactual XAI Generator (bergantung pada Phase 8).
-- [ ] (P4 Task 3.1) Brand Reputation Benchmark API.
-- [ ] (P4 Task 3.2) Model Health & Latency Endpoint.
-- [ ] (P4 Task 3.3) Executive Summary PDF Exporter.
-- [ ] (P4 Task 4.1) Brand Reputation Radar Chart.
-- [ ] (P4 Task 4.2) Model Health Monitoring Panel.
-- [ ] (P4 Task 4.3) Interactive Counterfactual Simulator.
+- [ ] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
+  - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC.
+- [ ] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
+  - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`.
 
 ---
 
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
+#### 10A. Emoji & Hero
+- [x] **Task 10.1**: **Emoji Keluar dari UI** (F8): Diganti kata, atau ikon dengan alasan tertulis di `DESIGN.md`.
+  - *Kriteria selesai:* `lint.mjs --app` 0 FAIL `emoji`.
+  - *Bukti (2026-10-28):* 62 emoji diganti teks semantik dan simbol universal, unit test `tests/test_zero_emoji_ui.py` passed, `lint.mjs --app` membuktikan 0 FAIL emoji.
+- [x] **Task 10.2**: **Eyebrow & Gradient** (F9, F10): Bersihkan gradient dekoratif dan normalisasi micro-label.
+  - *Kriteria selesai:* lint 0 FAIL `gradient`; inspector 0 `micro-label`.
+  - *Bukti (2026-10-28):* 5 gradient dibersihkan menjadi solid neutral, micro-label uppercase diubah ke sentence case, unit test `tests/test_zero_gradient_and_microlabel.py` passed, 0 FAIL gradient pada lint.mjs.
+- [x] **Task 10.3**: **Shadow & Blur** (F11): Shadow hanya pada overlay (menu, dialog, tooltip).
+  - *Kriteria selesai:* WARN `shadow` tersisa hanya pada overlay; 0 `backdrop-filter`.
+  - *Bukti (2026-10-28):* Seluruh kartu dibuat datar tanpa bayangan berat (heavy shadow), backdrop filter 0, unit test `tests/test_zero_heavy_shadow_and_blur.py` passed. Seksi 10A resmi **DONE 3/3**.
 
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 #### 9B. Angka Jujur di Beranda
