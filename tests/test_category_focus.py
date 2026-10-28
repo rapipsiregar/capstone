@@ -14,12 +14,20 @@ CATALOG_JS_PATH = os.path.join("frontend", "js", "catalog.js")
 
 
 def test_category_items_have_focus_visible_styling():
-    """catalog.css must define :focus-visible with clear outline for .category-circle-item."""
+    """catalog.css or its imported modules must define :focus-visible with clear outline."""
     with open(CATALOG_CSS_PATH, "r", encoding="utf-8") as f:
         content = f.read()
 
+    css_dir = os.path.dirname(CATALOG_CSS_PATH)
+    for imported in re.findall(r"@import\s+(?:url\(['\"]?([^'\")]+)['\"]?\)|['\"]([^'\"]+)['\"]);", content):
+        sub_file = imported[0] or imported[1]
+        sub_path = os.path.join(css_dir, sub_file)
+        if os.path.exists(sub_path):
+            with open(sub_path, "r", encoding="utf-8") as sf:
+                content += "\n" + sf.read()
+
     assert ".category-circle-item:focus-visible" in content, (
-        "catalog.css must define .category-circle-item:focus-visible"
+        "catalog stylesheets must define .category-circle-item:focus-visible"
     )
     assert "outline:" in content or "outline" in content
 

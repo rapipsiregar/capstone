@@ -1,0 +1,76 @@
+/* ==========================================================================
+   CHARM - Catalog Drill-Down Navigation & Container Stylesheet
+   Container layout, fade animations, breadcrumb bar, and pagination
+   ========================================================================== */
+
+.catalog-drilldown-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.catalog-level-view {
+  width: 100%;
+  animation: fadeInCatalog 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes fadeInCatalog {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Breadcrumb Navigation --- */
+.catalog-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex-wrap: wrap;
+  padding: 0.75rem 1.25rem;
+  background: #ffffff;
+  border: 1px solid var(--border-light, #E2E8F0);
+  border-radius: 12px;
+}
+
+.btn-breadcrumb {
+  background: #F1F5F9;
+  border: 1px solid #CBD5E1;
+  border-radius: 9999px;
+  padding: 0.35rem 0.85rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--halal-teal, #0F766E);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.btn-breadcrumb:hover {
+  background: var(--halal-teal, #0F766E);
+  color: #ffffff;
+  border-color: var(--halal-teal, #0F766E);
+  transform: translateY(-1px);
+}
+
+.breadcrumb-separator {
+  color: #475569;
+  font-size: 0.85rem;
+}
+
+.breadcrumb-current {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-dark, #1E293B);
+}
+
+/* --- Catalog Pagination --- */
+.catalog-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+

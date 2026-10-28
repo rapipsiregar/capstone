@@ -4,6 +4,7 @@ Verifies product card markup, thumbnail containers, fallback handling, and local
 """
 
 import os
+import re
 import unittest
 
 PRODUCTS_DIR = os.path.join("frontend", "images", "products")
@@ -39,6 +40,13 @@ class TestProductPhotos(unittest.TestCase):
     def test_catalog_css_has_thumbnail_rules(self):
         with open(CATALOG_CSS, "r", encoding="utf-8") as f:
             css = f.read()
+        css_dir = os.path.dirname(CATALOG_CSS)
+        for imported in re.findall(r"@import\s+(?:url\(['\"]?([^'\")]+)['\"]?\)|['\"]([^'\"]+)['\"]);", css):
+            sub_file = imported[0] or imported[1]
+            sub_path = os.path.join(css_dir, sub_file)
+            if os.path.exists(sub_path):
+                with open(sub_path, "r", encoding="utf-8") as sf:
+                    css += "\n" + sf.read()
         self.assertIn(".product-card-thumb-wrap", css)
         self.assertIn(".product-card-thumb-img", css)
         self.assertIn("object-fit: contain", css)

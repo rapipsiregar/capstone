@@ -1,0 +1,125 @@
+/* ==========================================================================
+   CHARM - Level 1: Female Daily Circular Category Grid Stylesheet
+   Category section headers, circular grid, avatar bubbles, and focus rings
+   ========================================================================== */
+
+.catalog-section-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.catalog-section-header h2 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--text-dark, #1E293B);
+  margin-bottom: 0.35rem;
+}
+
+.catalog-section-header p {
+  font-size: 0.92rem;
+  color: var(--text-muted, #64748B);
+}
+
+.category-grid-femaledaily {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(105px, 1fr));
+  gap: 1.25rem 0.85rem;
+  justify-items: center;
+  padding: 1.5rem 1rem;
+  background: #ffffff;
+  border: 1px solid var(--border-light, #E2E8F0);
+  border-radius: 16px;
+}
+
+.category-circle-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  outline: none;
+  transition: transform 0.2s ease, color 0.2s ease;
+  width: 100%;
+  max-width: 115px;
+  border-radius: 12px;
+}
+
+.category-circle-item:focus-visible {
+  outline: 2px solid var(--halal-teal, #0F766E);
+  outline-offset: 3px;
+}
+
+.category-circle-item:focus-visible .category-circle-avatar {
+  transform: translateY(-2px) scale(1.03);
+  border-color: #0F766E;
+}
+
+.category-circle-item:focus-visible .category-name-label {
+  color: var(--halal-teal, #0F766E);
+}
+
+.category-circle-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #E2E8F0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.85rem;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.25s ease;
+}
+
+.category-circle-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.category-circle-item:hover .category-circle-avatar {
+  transform: translateY(-4px) scale(1.04);
+  border-color: var(--halal-teal, #0F766E);
+}
+
+.category-circle-item:hover .category-circle-avatar img {
+  transform: scale(1.12);
+}
+
+.category-fallback-emoji {
+  font-size: 1.85rem;
+  line-height: 1;
+}
+
+.category-name-label {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-dark, #1E293B);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  min-height: 2rem;
+}
+
+.category-circle-item:hover .category-name-label {
+  color: var(--halal-teal, #0F766E);
+}
+
+.category-count-subtext {
+  font-size: 0.72rem;
+  color: var(--text-muted, #64748B);
+  margin-top: 0.15rem;
+}
+

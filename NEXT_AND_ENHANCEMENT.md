@@ -123,8 +123,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 #### 10C. State & Gerbang Akhir
 - [x] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.
   - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot. (Selesai 2026-10-28: Seluruh state katalog 3-level dan guidebook diperjelas penyebab dan tombol lanjut, 7 screenshot diverifikasi di artefak, test_complete_states passed).
-- [ ] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
-  - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC.
+- [x] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
+  - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC. (Selesai 2026-10-28: catalog.css 431 LOC dipecah menjadi catalog-nav.css 75 LOC, catalog-categories.css 124 LOC, catalog-products.css 151 LOC, catalog-reviews.css 91 LOC, catalog.css 9 LOC; seluruh berkas kode repo 100% <= 256 LOC; test_file_size_and_modular_css passed; gerbang lint dan inspect 0 FAIL/WARN pada kategori tugas).
 - [ ] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
   - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`.
 
