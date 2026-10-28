@@ -14547,16 +14547,5 @@
       "muka"
     ],
     "explanation_summary": "Kata pemicu isu 'panas, an, dan' memberikan atribusi penurun kepercayaan (Low Trust) terhadap ulasan."
-  },
-  "90efe79f21515d5ee0e136ab14d45b30": {
-    "text_hash": "90efe79f21515d5ee0e136ab14d45b30",
-    "raw_text": "Ulasan produk dengan atribusi SHAP tersimpan.",
-    "predicted_trust": "High_Trust",
-    "top_positive_words": [
-      "unggul",
-      "terbukti"
-    ],
-    "top_negative_words": [],
-    "explanation_summary": "Summary teruji"
   }
 }

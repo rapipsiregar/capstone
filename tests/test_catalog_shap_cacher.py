@@ -4,7 +4,9 @@ Verifies persistent cache lookup, zero coef_ usage in review_explainer,
 and seamless delivery of SHAP explanations to the catalog API.
 """
 
+import os
 import pytest
+import backend.services.catalog_shap_cacher as cacher_module
 from backend.services.catalog_shap_cacher import (
     hash_review_text,
     get_cached_review_shap,
@@ -13,6 +15,15 @@ from backend.services.catalog_shap_cacher import (
 )
 from backend.services.review_explainer import generate_review_xai_explanation
 import backend.services.review_explainer as re_module
+
+
+@pytest.fixture(autouse=True)
+def isolated_cache(tmp_path, monkeypatch):
+    """Redirects the SHAP cache to a temp file so tests never touch data/cache."""
+    monkeypatch.setattr(cacher_module, "CACHE_DIR", str(tmp_path))
+    monkeypatch.setattr(cacher_module, "CACHE_FILE", os.path.join(str(tmp_path), "cache.json"))
+    monkeypatch.setattr(cacher_module, "_SHAP_DISK_CACHE", None)
+    yield
 
 
 def test_hash_review_text_deterministic():
@@ -30,19 +41,19 @@ def test_review_explainer_does_not_use_coef():
 
 def test_cached_review_shap_lookup():
     cache = load_shap_cache()
-    if not cache:
-        # Put sample item
-        test_text = "Sample review halal test text"
-        key = hash_review_text(test_text)
-        cache[key] = {
-            "text_hash": key,
-            "raw_text": test_text,
-            "predicted_trust": "High_Trust",
-            "top_positive_words": ["halal", "test"],
-            "top_negative_words": [],
-            "explanation_summary": "Test summary"
-        }
-        save_shap_cache(cache)
+    assert cache == {}, "cache sementara harus kosong di awal"
+    test_text = "Sample review halal test text"
+    key = hash_review_text(test_text)
+    cache[key] = {
+        "text_hash": key,
+        "raw_text": test_text,
+        "predicted_trust": "High_Trust",
+        "top_positive_words": ["halal", "test"],
+        "top_negative_words": [],
+        "explanation_summary": "Test summary"
+    }
+    save_shap_cache(cache)
+    assert os.path.exists(cacher_module.CACHE_FILE)
 
     sample_key = next(iter(cache.keys()))
     sample_text = cache[sample_key]["raw_text"]
