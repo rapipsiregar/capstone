@@ -115,7 +115,8 @@ async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', produc
                 "Low_Trust": Math.round(apiData.total_reviews * 0.28),
                 "Neutral": Math.round(apiData.total_reviews * 0.24)
               },
-              trust_drivers: apiData.trust_drivers || null
+              trust_drivers: apiData.trust_drivers || null,
+              compliance: apiData.compliance || null
             };
           }
         } else if (apiData.brands_summary) {
@@ -138,7 +139,8 @@ async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', produc
                   "Low_Trust": Math.round(found.total_reviews * found.low_trust_ratio),
                   "Neutral": Math.round(found.total_reviews * found.neutral_ratio)
                 },
-                trust_drivers: apiData.trust_drivers || null
+                trust_drivers: apiData.trust_drivers || null,
+                compliance: apiData.compliance || null
               };
             }
           }
@@ -164,7 +166,7 @@ async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', produc
   renderTrustChart(stats.trustCounts);
 
   if (typeof renderRightSidebarAnalytics === 'function') {
-    renderRightSidebarAnalytics(brandName, stats.trust_drivers || null);
+    renderRightSidebarAnalytics(brandName, stats.trust_drivers || null, stats.compliance || null);
   }
 }
 
@@ -214,12 +216,17 @@ function bindFilterEvents() {
   productSelect?.addEventListener('change', handleFilterChange);
 }
 
-function renderRightSidebarAnalytics(brandName = 'ALL', dynamicDrivers = null) {
+function renderRightSidebarAnalytics(brandName = 'ALL', dynamicDrivers = null, dynamicCompliance = null) {
   renderBrandTrustInsightCard(brandName, dynamicDrivers);
   const progressBar = document.getElementById('halalComplianceProgressBar');
-  if (progressBar) {
-    const complianceRatios = { 'Wardah': '98.2%', 'Emina': '95.6%', 'Safi': '97.4%', 'ALL': '96.4%' };
-    progressBar.style.width = complianceRatios[brandName] || '96.4%';
+  const ratioText = document.getElementById('halalComplianceRatioText');
+  const infoCount = document.getElementById('complianceInfoReviewCount');
+
+  if (dynamicCompliance) {
+    const pct = dynamicCompliance.compliance_percentage || `${Math.round((dynamicCompliance.compliance_ratio || 0) * 100)}%`;
+    if (progressBar) progressBar.style.width = pct;
+    if (ratioText) ratioText.textContent = `${pct} (${dynamicCompliance.either_count} dari ${dynamicCompliance.total_reviews} ulasan)`;
+    if (infoCount) infoCount.textContent = Number(dynamicCompliance.total_reviews).toLocaleString();
   }
 }
 

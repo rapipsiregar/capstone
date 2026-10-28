@@ -181,6 +181,22 @@ async def get_brand_analytics(
     driver_cache_key = f"{brand or 'ALL'}_{category or 'ALL'}"
     empirical_drivers = compute_empirical_trust_drivers(driver_df, top_k=5, cache_key=driver_cache_key)
 
+    has_halal = "klaim_halal" in driver_df.columns
+    has_bpom = "klaim_bpom" in driver_df.columns
+    either_mask = (driver_df["klaim_halal"] == 1) | (driver_df["klaim_bpom"] == 1) if (has_halal and has_bpom) else pd.Series(False, index=driver_df.index)
+    comp_total = len(driver_df)
+    comp_count = int(either_mask.sum())
+    comp_ratio = round(float(comp_count / comp_total), 4) if comp_total > 0 else 0.0
+
+    compliance_data = {
+        "halal_count": int((driver_df["klaim_halal"] == 1).sum()) if has_halal else 0,
+        "bpom_count": int((driver_df["klaim_bpom"] == 1).sum()) if has_bpom else 0,
+        "either_count": comp_count,
+        "total_reviews": comp_total,
+        "compliance_ratio": comp_ratio,
+        "compliance_percentage": f"{round(comp_ratio * 100, 1)}%"
+    }
+
     return {
         "status": "success",
         "total_reviews": total_reviews,
@@ -195,6 +211,7 @@ async def get_brand_analytics(
             "Neutral": int(overall_trust.get("Neutral", 0))
         },
         "trust_drivers": empirical_drivers,
+        "compliance": compliance_data,
         "all_brands": all_dataset_brands,
         "all_products": all_filtered_products,
         "brands_summary": brands_summary,

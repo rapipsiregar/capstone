@@ -20,7 +20,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 5/12 (Seksi 9B DONE, 9.7-9.8 DONE) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 6/12 (Seksi 9B DONE, Seksi 9C DONE 3/3) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
@@ -102,16 +102,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [ ] **Task 9.3**: **Favicon Baru** (F13): Ajukan konsep, buat setelah disetujui.
   - *Kriteria selesai:* tanpa gradient/glow; disetujui user; tampil di tab browser (screenshot).
 
-#### 9C. Insight Reputasi Dinamis (ex Task 6.3)
-- [x] **Task 9.7**: **Dropdown dari API**: Brand (216) dan kategori (23).
-  - *Kriteria selesai:* test membuktikan jumlah opsi = jumlah di dataset.
-  - *Bukti (2026-10-28):* Seluruh opsi hardcoded di `frontend/index.html` dihapus; `frontend/js/app.js` (246 LOC <= 256 LOC) secara dinamis mem-fetch dan mengurutkan 216 brand dari `GET /api/v1/analytics/brands` dan 23 kategori dari `GET /api/v1/catalog/categories`; test `tests/test_dropdowns_dynamic.py` (3 passed) membuktikan jumlah opsi dan integritas API; verifikasi runtime CDP membuktikan 217 opsi brand (216 brand + ALL) dan 24 opsi kategori (23 kategori + ALL); seluruh 156 pytest passed (100% green).
-- [x] **Task 9.8**: **Kata Pendorong dari API**: Memakai hasil Task 8.11.
-  - *Kriteria selesai:* tidak ada array kata statis di `frontend/js/`.
-  - *Bukti (2026-10-28):* Antarmuka kata pendorong pada `frontend/js/app.js` (246 LOC <= 256 LOC) sepenuhnya memetakan hasil dinamis agregasi SHAP IndoBERT dari `GET /api/v1/analytics/brands`; seluruh array statis lama (`BRAND_DRIVERS`, `HIGH_TRUST_WORDS`, dll.) telah dihapus dari `frontend/js/` (0 temuan); brand tanpa kata menampilkan pesan jujur 'Data kata belum cukup'/'Tidak ada keluhan dominan'; test `tests/test_trust_drivers_no_static_words.py` (3 passed); 157 pytest passed (100% green).
-- [ ] **Task 9.9**: **Rasio Compliance dari Dataset**: Halal dan BPOM dihitung backend.
-  - *Kriteria selesai:* test membuktikan rasio = hitungan dataset.
-
 #### 9D. Aksesibilitas Dasar
 - [ ] **Task 9.10**: **Indikator Fokus** (F4).
   - *Kriteria selesai:* navigasi Tab menjangkau 23 kategori dengan fokus terlihat (screenshot).
@@ -179,7 +169,18 @@ Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang
 - [x] **Task 9.4**: **Statistik Hero dari API** (F2).
   - *Kriteria selesai:* test (TDD) membuktikan angka DOM = hasil hitung dataset; tidak ada angka statistik literal di `index.html`.
   - *Koreksi audit 2026-10-28:* hanya `#heroStatsRow` yang dibersihkan. `frontend/index.html` masih memuat literal: baris 259 (komentar 10,826), 265 (`8,365`), 359 ("Dari 8.365 ulasan"), 439 (default 8.365 / 216 / 801), 443–446 (pill Total/Train/Val/Test), 455 ("837 data uji"). `frontend/js/api.js` baris 29, 58, 59, 144 memakai angka asli sebagai fallback saat API gagal.
-  - *Bukti (2026-10-28, setelah koreksi audit):* Seluruh angka statistik literal dibersihkan dari `frontend/index.html` dan diganti placeholder `–` dengan ID dinamis (`#heroCountProducts`, `#heroCountBrands`, `#heroCountReviews`, `#heroCountCompliance`, `#metricsDatasetReviewCount`, `#metricsDatasetBrandCount`, `#metricsDatasetProductCount`, `#metricsSplitTotal`, `#metricsSplitTrain`, `#metricsSplitVal`, `#metricsSplitTest`, `#metricsTestSampleCount`, `#complianceInfoReviewCount`). Fallback hardcoded fiktif di `api.js` dan `charts.js` dihapus. Endpoint `GET /api/v1/catalog/stats` menyuplai counts dan `split_counts` (6.692/836/837). Test TDD `tests/test_hero_stats_dynamic.py` (4 tests) dan `tests/test_homepage_layout.py` passed. Screenshot 1440/768/390 (`task94_homepage_*.png` dan `task94_metrics_tab_*.png`) membuktikan nilai DOM terisi otentik dari API tanpa sisa `–`. Catatan: rasio compliance bar pada `app.js` baris ~264 masih menggunakan `complianceRatios` statis, akan diselesaikan pada Task 9.9. Seksi 9B resmi **DONE 3/3**.
+  - *Bukti (2026-10-28, setelah koreksi audit):* Seluruh angka statistik literal dibersihkan dari `frontend/index.html` dan diganti placeholder `–` dengan ID dinamis (`#heroCountProducts`, `#heroCountBrands`, `#heroCountReviews`, `#heroCountCompliance`, `#metricsDatasetReviewCount`, `#metricsDatasetBrandCount`, `#metricsDatasetProductCount`, `#metricsSplitTotal`, `#metricsSplitTrain`, `#metricsSplitVal`, `#metricsSplitTest`, `#metricsTestSampleCount`, `#complianceInfoReviewCount`). Fallback hardcoded fiktif di `api.js` dan `charts.js` dihapus. Endpoint `GET /api/v1/catalog/stats` menyuplai counts dan `split_counts` (6.692/836/837). Test TDD `tests/test_hero_stats_dynamic.py` (4 tests) dan `tests/test_homepage_layout.py` passed. Screenshot 1440/768/390 (`task94_homepage_*.png` dan `task94_metrics_tab_*.png`) membuktikan nilai DOM terisi otentik dari API tanpa sisa `–`. Seksi 9B resmi **DONE 3/3**.
+
+#### 9C. Insight Reputasi Dinamis (ex Task 6.3)
+- [x] **Task 9.9**: **Rasio Compliance dari Dataset**: Halal dan BPOM dihitung backend.
+  - *Kriteria selesai:* test membuktikan rasio = hitungan dataset.
+  - *Bukti (2026-10-28):* Objek statis rekaan `complianceRatios` dihapus dari `frontend/js/app.js` (253 LOC <= 256 LOC); `backend/api/v1/brand_analytics.py` (222 LOC <= 256 LOC) menyajikan objek `compliance` otentik dihitung langsung dari kolom `klaim_halal` dan `klaim_bpom` untuk lingkup global (519 ulasan / 6,2% dari 8.365) maupun spesifik brand (mis. Wardah 21 ulasan / 4,7% dari 447); test `tests/test_compliance_ratio_dynamic.py` (3 passed) memverifikasi nilai cocok 100% dengan dataset; runtime CDP membuktikan elemen DOM terisi dinamis (`6.2% (519 dari 8365 ulasan)`); Seksi 9C resmi **DONE 3/3**.
+- [x] **Task 9.8**: **Kata Pendorong dari API**: Memakai hasil Task 8.11.
+  - *Kriteria selesai:* tidak ada array kata statis di `frontend/js/`.
+  - *Bukti (2026-10-28):* Antarmuka kata pendorong pada `frontend/js/app.js` (246 LOC <= 256 LOC) sepenuhnya memetakan hasil dinamis agregasi SHAP IndoBERT dari `GET /api/v1/analytics/brands`; seluruh array statis lama (`BRAND_DRIVERS`, `HIGH_TRUST_WORDS`, dll.) telah dihapus dari `frontend/js/` (0 temuan); brand tanpa kata menampilkan pesan jujur 'Data kata belum cukup'/'Tidak ada keluhan dominan'; test `tests/test_trust_drivers_no_static_words.py` (3 passed); 157 pytest passed (100% green).
+- [x] **Task 9.7**: **Dropdown dari API**: Brand (216) dan kategori (23).
+  - *Kriteria selesai:* test membuktikan jumlah opsi = jumlah di dataset.
+  - *Bukti (2026-10-28):* Seluruh opsi hardcoded di `frontend/index.html` dihapus; `frontend/js/app.js` (246 LOC <= 256 LOC) secara dinamis mem-fetch dan mengurutkan 216 brand dari `GET /api/v1/analytics/brands` dan 23 kategori dari `GET /api/v1/catalog/categories`; test `tests/test_dropdowns_dynamic.py` (3 passed) membuktikan jumlah opsi dan integritas API; verifikasi runtime CDP membuktikan 217 opsi brand (216 brand + ALL) dan 24 opsi kategori (23 kategori + ALL); seluruh 156 pytest passed (100% green).
 
 ### Phase 11: Pembersihan File
 #### 11A. Duplikat & Yatim
