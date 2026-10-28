@@ -20,7 +20,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 6/12 (Seksi 9B DONE, Seksi 9C DONE 3/3) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 7/12 (9B & 9C DONE, 9.10 DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
@@ -103,8 +103,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
   - *Kriteria selesai:* tanpa gradient/glow; disetujui user; tampil di tab browser (screenshot).
 
 #### 9D. Aksesibilitas Dasar
-- [ ] **Task 9.10**: **Indikator Fokus** (F4).
+- [x] **Task 9.10**: **Indikator Fokus** (F4).
   - *Kriteria selesai:* navigasi Tab menjangkau 23 kategori dengan fokus terlihat (screenshot).
+  - *Bukti (2026-10-28):* Selector `.category-circle-item:focus-visible` ditambahkan pada `frontend/css/catalog.css` dengan cincin fokus teal tegas (2px outline, offset 3px, border-radius 12px); tombol kategori rendered memakai elemen semantik `<button type="button">`; verifikasi visual status fokus tersimpan di `task910_category_focus.png`; unit test `tests/test_category_focus.py` (2 passed); 159 pytest passed (100% green).
 - [ ] **Task 9.11**: **Kontras Teks** (F5).
   - *Kriteria selesai:* `contrast-check.py` PASS untuk semua pasangan warna teks.
 - [ ] **Task 9.12**: **Header Mobile** (F6).
