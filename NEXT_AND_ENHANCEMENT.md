@@ -117,8 +117,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
   - *Kriteria selesai:* lint 0 FAIL `purple`, 0 WARN `framework-colour`.
 - [ ] **Task 10.5**: **Tipografi** (F14, F15): Maks 2 typeface, ≤ 5 ukuran, headline ≤ 2 baris.
   - *Kriteria selesai:* inspector 0 WARN `font-count` dan `headline-lines`.
-- [ ] **Task 10.6**: **Angka & Transisi** (F16, F17): Angka rata kanan dengan tabular figures; `transition: all` diganti properti spesifik.
-  - *Kriteria selesai:* inspector 0 WARN `numeric-align`; lint 0 WARN `transition-all`.
+- [x] **Task 10.6**: **Angka & Transisi** (F16, F17): Angka rata kanan dengan tabular figures; `transition: all` diganti properti spesifik.
+  - *Kriteria selesai:* inspector 0 WARN `numeric-align`; lint 0 WARN `transition-all`. (Selesai 2026-10-28: 10 transition: all diganti spesifik, tabular-nums dan num-cell/col rata kanan diterapkan, test_zero_transition_all_and_tabular_nums passed).
 
 #### 10C. State & Gerbang Akhir
 - [ ] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.

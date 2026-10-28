@@ -182,7 +182,7 @@
   cursor: pointer;
   border-bottom-left-radius: 16px;
   border-bottom-right-radius: 16px;
-  transition: all 0.2s ease;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .hero-search-footer:hover {

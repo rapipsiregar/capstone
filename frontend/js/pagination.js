@@ -29,9 +29,9 @@ async function renderHistoryWithPagination(page = 1) {
         <td style="max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${log.raw_text}">${log.raw_text}</td>
         <td><span class="badge badge-blue">${(log.predicted_aspect || '').replace(/_/g, ' ')}</span></td>
         <td><span class="badge ${log.predicted_trust === 'High_Trust' ? 'badge-green' : log.predicted_trust === 'Low_Trust' ? 'badge-red' : 'badge-amber'}">${(log.predicted_trust || '').replace(/_/g, ' ')}</span></td>
-        <td>${((log.trust_confidence || 0.9) * 100).toFixed(1)}%</td>
+        <td class="num-cell">${((log.trust_confidence || 0.9) * 100).toFixed(1)}%</td>
         <td>${log.model_type}</td>
-        <td>${log.execution_time_ms} ms</td>
+        <td class="num-cell">${log.execution_time_ms} ms</td>
       </tr>
     `).join('');
 

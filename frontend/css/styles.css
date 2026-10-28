@@ -34,6 +34,7 @@ body {
   font-family: var(--font-family);
   min-height: 100vh;
   line-height: 1.6;
+  font-variant-numeric: tabular-nums;
 }
 
 .app-container { max-width: 1400px; margin: 0 auto; padding: 1.5rem; }
@@ -156,7 +157,7 @@ body {
 .sandbox-input-group textarea:focus, .select-input:focus { border-color: var(--halal-teal); }
 
 .sample-presets { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin: 0.75rem 0; font-size: 0.8rem; color: var(--text-muted); }
-.preset-btn { background: var(--bg-slate); border: 1px solid var(--border-light); color: var(--text-dark); padding: 0.3rem 0.7rem; border-radius: 9999px; font-size: 0.78rem; cursor: pointer; transition: all 0.2s ease; font-weight: 500; }
+.preset-btn { background: var(--bg-slate); border: 1px solid var(--border-light); color: var(--text-dark); padding: 0.3rem 0.7rem; border-radius: 9999px; font-size: 0.78rem; cursor: pointer; transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease; font-weight: 500; }
 .preset-btn:hover { background: var(--halal-mint-bg); border-color: var(--halal-teal); color: var(--halal-teal); }
 
 .form-controls { display: flex; justify-content: space-between; align-items: flex-end; gap: 1rem; flex-wrap: wrap; margin-top: 1rem; }
@@ -189,9 +190,10 @@ body {
 
 /* Table Styling */
 .table-wrapper { overflow-x: auto; }
-.data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; }
+.data-table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
 .data-table th { padding: 0.75rem 1rem; color: var(--text-muted); font-weight: 600; border-bottom: 1px solid var(--border-light); text-transform: uppercase; font-size: 0.75rem; background: var(--bg-slate); }
 .data-table td { padding: 0.875rem 1rem; border-bottom: 1px solid var(--border-light); }
+.data-table th.num-col, .data-table td.num-cell { text-align: right; font-variant-numeric: tabular-nums; }
 .badge { display: inline-block; padding: 0.25rem 0.6rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
 .badge-green { background: #dcfce7; color: #15803d; }
 .badge-red { background: #fee2e2; color: #b91c1c; }
