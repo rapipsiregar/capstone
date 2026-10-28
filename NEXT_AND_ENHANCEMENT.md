@@ -20,7 +20,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 4/12 (Seksi 9B DONE, 9.7 DONE) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 5/12 (Seksi 9B DONE, 9.7-9.8 DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
@@ -106,8 +106,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [x] **Task 9.7**: **Dropdown dari API**: Brand (216) dan kategori (23).
   - *Kriteria selesai:* test membuktikan jumlah opsi = jumlah di dataset.
   - *Bukti (2026-10-28):* Seluruh opsi hardcoded di `frontend/index.html` dihapus; `frontend/js/app.js` (246 LOC <= 256 LOC) secara dinamis mem-fetch dan mengurutkan 216 brand dari `GET /api/v1/analytics/brands` dan 23 kategori dari `GET /api/v1/catalog/categories`; test `tests/test_dropdowns_dynamic.py` (3 passed) membuktikan jumlah opsi dan integritas API; verifikasi runtime CDP membuktikan 217 opsi brand (216 brand + ALL) dan 24 opsi kategori (23 kategori + ALL); seluruh 156 pytest passed (100% green).
-- [ ] **Task 9.8**: **Kata Pendorong dari API**: Memakai hasil Task 8.11.
+- [x] **Task 9.8**: **Kata Pendorong dari API**: Memakai hasil Task 8.11.
   - *Kriteria selesai:* tidak ada array kata statis di `frontend/js/`.
+  - *Bukti (2026-10-28):* Antarmuka kata pendorong pada `frontend/js/app.js` (246 LOC <= 256 LOC) sepenuhnya memetakan hasil dinamis agregasi SHAP IndoBERT dari `GET /api/v1/analytics/brands`; seluruh array statis lama (`BRAND_DRIVERS`, `HIGH_TRUST_WORDS`, dll.) telah dihapus dari `frontend/js/` (0 temuan); brand tanpa kata menampilkan pesan jujur 'Data kata belum cukup'/'Tidak ada keluhan dominan'; test `tests/test_trust_drivers_no_static_words.py` (3 passed); 157 pytest passed (100% green).
 - [ ] **Task 9.9**: **Rasio Compliance dari Dataset**: Halal dan BPOM dihitung backend.
   - *Kriteria selesai:* test membuktikan rasio = hitungan dataset.
 

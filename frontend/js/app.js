@@ -234,13 +234,13 @@ function renderBrandTrustInsightCard(brandName = 'ALL', dynamicDrivers = null) {
     ? dynamicDrivers : { high: [], low: [] };
 
   if (highContainer) {
-    highContainer.innerHTML = (drivers.high || []).map(d => 
-      `<span class="badge badge-green" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
-    ).join(' ');
+    highContainer.innerHTML = (drivers.high?.length)
+      ? drivers.high.map(d => `<span class="badge badge-green" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`).join(' ')
+      : '<span class="text-muted" style="font-size:0.85rem;color:#64748B;">Data kata belum cukup</span>';
   }
   if (lowContainer) {
-    lowContainer.innerHTML = (drivers.low || []).map(d => 
-      `<span class="badge badge-red" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
-    ).join(' ');
+    lowContainer.innerHTML = (drivers.low?.length)
+      ? drivers.low.map(d => `<span class="badge badge-red" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`).join(' ')
+      : '<span class="text-muted" style="font-size:0.85rem;color:#64748B;">Tidak ada keluhan dominan</span>';
   }
 }
