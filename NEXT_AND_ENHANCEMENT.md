@@ -19,7 +19,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 12/15 (8.10, 8.11, 8.15 dibuka kembali) |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 13/15 (8.10, 8.11 dibuka kembali) |
 | 9 | Arah desain, angka jujur, aksesibilitas | 2/12 (9.4 dibuka kembali) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
@@ -101,17 +101,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [x] **Task 8.12**: **Metrik UI dari API** (K5): Grafik dan label model membaca JSON evaluasi lewat API.
   - *Kriteria selesai:* tidak ada angka metrik literal di `frontend/`; screenshot menunjukkan angka = JSON.
   - *Bukti (2026-10-28):* Endpoint `GET /api/v1/model/metrics` pada `backend/api/v1/model_metrics.py` (38 LOC) menyajikan hasil evaluasi otentik pada 837 sampel `test.csv`; `frontend/js/charts.js` (160 LOC) mem-fetch metrik dari API secara dinamis; seluruh angka metrik literal lama (0.9420, 0.9395, dll.) telah dihapus dari `frontend/` (0 temuan); verifikasi visual browser sukses tercatat di `thesis_metrics_indobert_1793129041219.png`; `tests/test_api_model_metrics.py` 1 passed, 147 pytest passed.
-
-#### 8E. Pembersihan Model Palsu
-- [x] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
-  - *Kriteria selesai:* persetujuan per file; pytest tetap hijau.
-  - *Bukti (2026-10-28):* Dihapus file trainer/evaluator palsu (`female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py`, `models/female_daily_evaluation_results.json`, `models/evaluation_results.json`, serta test-test terkait) dengan pre-approval user; seluruh evaluasi dialihkan ke `indobert_evaluator.py` otentik; seluruh 140 pytest passed (100% green).
-- [x] **Task 8.14**: **Hapus Artefak TF-IDF** (K4): `indobert_*.joblib`, jalur TF-IDF di `indobert_trainer.py`, `model_metadata.json` palsu.
-  - *Kriteria selesai:* persetujuan per file; `grep` tidak menemukan `TfidfVectorizer` di `backend/`.
-  - *Bukti (2026-10-28):* Dihapus seluruh artefak `.joblib` lama (`indobert_aspect.joblib`, `indobert_trust.joblib`, `indobert_vectorizer.joblib`) dan metadata palsu (`metrics.json`, `model_metadata.json`) dengan pre-approval user; dihapus seluruh jalur `TfidfVectorizer` dan `LinearSVC` dari `backend/services/indobert_trainer.py` (103 LOC) dan `backend/services/xai_explainer.py` (55 LOC); `grep -r "TfidfVectorizer" backend/` menghasilkan 0 temuan; seluruh 140 pytest passed (100% green).
-- [ ] **Task 8.15**: **Koreksi Dokumen** (K2, K5): `docs/feature-list.md` dan endpoint terkait disesuaikan dengan evaluasi IndoBERT otentik.
-  - *Kriteria selesai:* `grep` angka 0,942 / 94,20% tidak ditemukan di repo; seluruh metrik membaca hasil otentik; angka dataset di dokumen = hitungan berkas.
-  - *Koreksi audit 2026-10-28:* `docs/feature-list.md` baris 18 masih menulis "10.826 entri mentah ... 861 produk skincare, 22 kategori, dan 80+ brand". Hitungan berkas: `00. Review.csv` 8.646 baris; `00. InfoProduct.csv` 861 baris (797 produk unik, 22 kategori, 215 brand); dataset aktif 801 produk, 23 kategori, 216 brand. Angka 10.826 tidak ditemukan di berkas data mana pun; docstring `ingest_female_daily.py` baris 3 dan `reviews_feed.py` baris 25 juga masih memakainya.
 
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 
@@ -211,6 +200,18 @@ Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang
   - *Bukti (2026-10-28):* Modul duplikat `backend/services/splitter.py` dan `tests/test_splitter.py` dihapus dengan pre-approval user; modul resmi `backend/services/female_daily_splitter.py` tetap aktif digunakan oleh API; 142 pytest passed (100% green).
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
+#### 8E. Pembersihan Model Palsu
+- [x] **Task 8.15**: **Koreksi Dokumen** (K2, K5): `docs/feature-list.md` dan endpoint terkait disesuaikan dengan evaluasi IndoBERT otentik.
+  - *Kriteria selesai:* `grep` angka 0,942 / 94,20% tidak ditemukan di repo; seluruh metrik membaca hasil otentik; angka dataset di dokumen = hitungan berkas.
+  - *Koreksi audit 2026-10-28:* `docs/feature-list.md` baris 18 masih menulis "10.826 entri mentah ... 861 produk skincare, 22 kategori, dan 80+ brand". Hitungan berkas: `00. Review.csv` 8.646 baris; `00. InfoProduct.csv` 861 baris (797 produk unik, 22 kategori, 215 brand); dataset aktif 801 produk, 23 kategori, 216 brand. Angka 10.826 tidak ditemukan di berkas data mana pun; docstring `ingest_female_daily.py` baris 3 dan `reviews_feed.py` baris 25 juga masih memakainya.
+  - *Bukti (2026-10-28, setelah koreksi):* `docs/feature-list.md` baris 18 kini menulis hitungan berkas (8.646 / 861 baris mentah; 8.365 ulasan, 801 produk, 23 kategori, 216 brand aktif); docstring `ingest_female_daily.py` dan `reviews_feed.py` tidak lagi memakai 10.826. Test `tests/test_feature_list_numbers.py` (Red: 1 failed sebelum koreksi; Green: 2 passed) membandingkan angka dokumen dengan CSV. Metrik di `feature-list.md` (83,87% / 82,63% / 81,81% / 0,8218; 96,65% / 89,62% / 84,07% / 0,8625) cocok dengan `models/indobert_evaluation_results.json`. `git grep` 0,942 / 94,20 hanya tersisa di catatan riwayat audit (`NEXT_AND_ENHANCEMENT.md`, `docs/log/`), test negatif, dan kolom jumlah reviewer `942.0` di CSV mentah; tidak ada pemakaian sebagai metrik.
+- [x] **Task 8.14**: **Hapus Artefak TF-IDF** (K4): `indobert_*.joblib`, jalur TF-IDF di `indobert_trainer.py`, `model_metadata.json` palsu.
+  - *Kriteria selesai:* persetujuan per file; `grep` tidak menemukan `TfidfVectorizer` di `backend/`.
+  - *Bukti (2026-10-28):* Dihapus seluruh artefak `.joblib` lama (`indobert_aspect.joblib`, `indobert_trust.joblib`, `indobert_vectorizer.joblib`) dan metadata palsu (`metrics.json`, `model_metadata.json`) dengan pre-approval user; dihapus seluruh jalur `TfidfVectorizer` dan `LinearSVC` dari `backend/services/indobert_trainer.py` (103 LOC) dan `backend/services/xai_explainer.py` (55 LOC); `grep -r "TfidfVectorizer" backend/` menghasilkan 0 temuan; seluruh 140 pytest passed (100% green).
+- [x] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
+  - *Kriteria selesai:* persetujuan per file; pytest tetap hijau.
+  - *Bukti (2026-10-28):* Dihapus file trainer/evaluator palsu (`female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py`, `models/female_daily_evaluation_results.json`, `models/evaluation_results.json`, serta test-test terkait) dengan pre-approval user; seluruh evaluasi dialihkan ke `indobert_evaluator.py` otentik; seluruh 140 pytest passed (100% green).
+
 #### 8C. Integrasi Backend
 - [x] **Task 8.9**: **SHAP Sungguhan di `/explain`** (K6): Pakai pustaka `shap` pada model IndoBERT, dengan cache.
   - *Kriteria selesai:* test membuktikan atribusi berasal dari `shap`; waktu respons tercatat.

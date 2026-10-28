@@ -1,6 +1,6 @@
 """
 Female Daily Dataset Ingestion & Validation Pipeline Service.
-Cleans 10,826+ raw skincare ulasan, normalizes Indonesian slang/emojis,
+Cleans raw skincare ulasan (00. Review.csv, 8,646 rows), normalizes Indonesian slang/emojis,
 validates schema integrity, and maps ratings to sentiment & aspect categories.
 """
 

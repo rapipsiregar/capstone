@@ -22,7 +22,7 @@ LOW_TRUST_WORDS = ["breakout", "beruntusan", "bruntusan", "iritasi", "gatal", "p
 
 @lru_cache(maxsize=1)
 def load_cached_reviews_dataframe() -> pd.DataFrame:
-    """Loads and caches the 10,826 Female Daily skincare dataset."""
+    """Loads and caches the annotated Female Daily skincare dataset."""
     if os.path.exists(DATASET_CSV):
         df = pd.read_csv(DATASET_CSV)
     else:
