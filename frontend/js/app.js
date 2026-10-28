@@ -5,29 +5,27 @@
 
 document.addEventListener('DOMContentLoaded', async () => {
   await initDashboard();
-  bindSandboxEvents();
+  if (typeof bindSandboxEvents === 'function') bindSandboxEvents();
   if (typeof bindPaginationEvents === 'function') bindPaginationEvents();
-  document.getElementById('btn-refresh-history')?.addEventListener('click', async () => {
-    await loadHistoryTable(1);
+  document.getElementById('btn-refresh-history')?.addEventListener('click', () => {
+    if (typeof renderHistoryWithPagination === 'function') renderHistoryWithPagination(1);
   });
 });
 
 async function initDashboard() {
-  // 1. Immediately render initial benchmark charts and cards (0ms latency, instant paint)
   loadAnalyticsData('ALL', 'ALL', 'ALL', true);
   await renderComparisonChart();
   renderRightSidebarAnalytics('ALL');
 
-  // 2. Initialize tabs right away so active tab matches URL hash
-  if (window.tabNavigation && typeof window.tabNavigation.restoreTabFromHashOrStorage === 'function') {
+  if (window.tabNavigation?.restoreTabFromHashOrStorage) {
     window.tabNavigation.restoreTabFromHashOrStorage();
   }
 
-  // 3. Concurrently fetch dynamic data from API and sync filters in the background
   checkApiHealth();
   populateAllBrandsDropdown();
+  populateAllCategoriesDropdown();
   loadAnalyticsData('ALL');
-  loadHistoryTable(1);
+  if (typeof renderHistoryWithPagination === 'function') await renderHistoryWithPagination(1);
   bindFilterEvents();
 }
 
@@ -38,87 +36,74 @@ async function populateAllBrandsDropdown() {
     const res = await fetch(`${API_BASE_URL}/analytics/brands`);
     if (res.ok) {
       const data = await res.json();
-      if (data && (data.all_brands || data.brands_summary)) {
-        const brandNames = data.all_brands || data.brands_summary.map(b => b.brand_name);
-        brandSelect.innerHTML = '<option value="ALL">Semua Brand (All Brands)</option>';
-        brandNames.forEach(bName => {
-          const opt = document.createElement('option');
-          opt.value = bName;
-          opt.textContent = bName;
-          brandSelect.appendChild(opt);
-        });
-      }
-
+      const brands = (data.all_brands || data.brands_summary?.map(b => b.brand_name) || [])
+        .slice().sort((a, b) => a.localeCompare(b));
+      brandSelect.innerHTML = '<option value="ALL">Semua Brand (All Brands)</option>' +
+        brands.map(b => `<option value="${b}">${b}</option>`).join('');
     }
   } catch (e) {
     console.warn("Could not load dynamic brands list:", e);
   }
 }
 
+async function populateAllCategoriesDropdown() {
+  const catSelect = document.getElementById('categoryFilter');
+  if (!catSelect) return;
+  try {
+    const res = await fetch(`${API_BASE_URL}/catalog/categories`);
+    if (res.ok) {
+      const data = await res.json();
+      const cats = (data.categories || [])
+        .slice().sort((a, b) => (a.category_name || '').localeCompare(b.category_name || ''));
+      catSelect.innerHTML = '<option value="ALL">Semua Kategori (All Categories)</option>' +
+        cats.map(c => `<option value="${c.category_name}">${c.category_name}</option>`).join('');
+    }
+  } catch (e) {
+    console.warn("Could not load dynamic categories list:", e);
+  }
+}
 
 async function checkApiHealth() {
   const status = await fetchHealthStatus();
   const indicator = document.querySelector('.status-indicator');
   const textElem = document.getElementById('api-status-text');
   if (indicator && textElem) {
-    if (status.status === 'healthy') {
-      indicator.className = 'status-indicator online';
-      textElem.textContent = 'Backend API Connected (v1.0.0)';
-    } else {
-      indicator.className = 'status-indicator offline';
-      textElem.textContent = 'Demo Mode (Offline)';
-    }
+    const ok = status.status === 'healthy';
+    indicator.className = `status-indicator ${ok ? 'online' : 'offline'}`;
+    textElem.textContent = ok ? 'Backend API Connected (v1.0.0)' : 'Demo Mode (Offline)';
   }
 }
 
 let currentBrandProducts = [];
 
+function extractProductStats(p) {
+  const h = p.high_trust_ratio || 0;
+  return {
+    total: p.total_reviews, highTrustPct: Math.round(h * 100),
+    topAspect: p.top_aspect || 'Klaim Efikasi & Manfaat',
+    aspectCounts: { [p.top_aspect || "Klaim_Efikasi_Manfaat"]: p.total_reviews },
+    trustCounts: {
+      "High_Trust": Math.round(p.total_reviews * h),
+      "Low_Trust": Math.round(p.total_reviews * (1 - h) * 0.5),
+      "Neutral": Math.round(p.total_reviews * (1 - h) * 0.5)
+    }
+  };
+}
+
 async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', productName = 'ALL', syncOnly = false) {
-  let stats = (typeof DATASET_BENCHMARK !== 'undefined' && DATASET_BENCHMARK[brandName] && categoryName === 'ALL' && productName === 'ALL')
-    ? DATASET_BENCHMARK[brandName]
-    : (typeof DATASET_BENCHMARK !== 'undefined' && brandName === 'ALL' && categoryName === 'ALL' && productName === 'ALL' ? DATASET_BENCHMARK.ALL : null);
-
-  // Instant initial paint (0ms) so user never sees empty donut/pie charts
-  if (stats) {
-    window._currentStats = stats;
-    const totalReviewsElem = document.getElementById('stat-total-reviews');
-    const highTrustElem = document.getElementById('stat-high-trust');
-    const topAspectElem = document.getElementById('stat-top-aspect');
-
-    if (totalReviewsElem) totalReviewsElem.textContent = stats.total.toLocaleString();
-    if (highTrustElem) highTrustElem.textContent = `${stats.highTrustPct}%`;
-    if (topAspectElem) topAspectElem.textContent = stats.topAspect.replace(/_/g, ' ');
-
-    renderAspectChart(stats.aspectCounts);
-    renderTrustChart(stats.trustCounts);
-  }
-
   if (syncOnly) return;
+  let stats = null;
 
   try {
     if (typeof fetchBrandAnalytics === 'function') {
       const apiData = await fetchBrandAnalytics(brandName, categoryName);
       if (apiData) {
         if (brandName === 'ALL') {
-          // Scope: All Brands (either all categories or filtered by category)
           currentBrandProducts = apiData.all_products || [];
           updateProductDropdown(currentBrandProducts, productName, 'ALL');
-
           if (productName !== 'ALL') {
-            const matchedProd = currentBrandProducts.find(p => p.product_name === productName);
-            if (matchedProd) {
-              stats = {
-                total: matchedProd.total_reviews,
-                highTrustPct: Math.round(matchedProd.high_trust_ratio * 100),
-                topAspect: matchedProd.top_aspect || 'Klaim Efikasi & Manfaat',
-                aspectCounts: { [matchedProd.top_aspect || "Klaim_Efikasi_Manfaat"]: matchedProd.total_reviews },
-                trustCounts: {
-                  "High_Trust": Math.round(matchedProd.total_reviews * matchedProd.high_trust_ratio),
-                  "Low_Trust": Math.round(matchedProd.total_reviews * (1 - matchedProd.high_trust_ratio) * 0.5),
-                  "Neutral": Math.round(matchedProd.total_reviews * (1 - matchedProd.high_trust_ratio) * 0.5)
-                }
-              };
-            }
+            const matched = currentBrandProducts.find(p => p.product_name === productName);
+            if (matched) stats = extractProductStats(matched);
           } else {
             stats = {
               total: apiData.total_reviews,
@@ -133,36 +118,21 @@ async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', produc
               trust_drivers: apiData.trust_drivers || null
             };
           }
-        } else if (brandName !== 'ALL' && apiData.brands_summary) {
+        } else if (apiData.brands_summary) {
           const found = apiData.brands_summary.find(b => b.brand_name.toLowerCase() === brandName.toLowerCase());
           if (found) {
             currentBrandProducts = found.products || [];
             updateProductDropdown(currentBrandProducts, productName, brandName);
-
-
             if (productName !== 'ALL') {
-              const matchedProd = currentBrandProducts.find(p => p.product_name === productName);
-              if (matchedProd) {
-                stats = {
-                  total: matchedProd.total_reviews,
-                  highTrustPct: Math.round(matchedProd.high_trust_ratio * 100),
-                  topAspect: matchedProd.top_aspect || 'Klaim Efikasi & Manfaat',
-                  aspectCounts: { [matchedProd.top_aspect || "Klaim_Efikasi_Manfaat"]: matchedProd.total_reviews },
-                  trustCounts: {
-                    "High_Trust": Math.round(matchedProd.total_reviews * matchedProd.high_trust_ratio),
-                    "Low_Trust": Math.round(matchedProd.total_reviews * (1 - matchedProd.high_trust_ratio) * 0.5),
-                    "Neutral": Math.round(matchedProd.total_reviews * (1 - matchedProd.high_trust_ratio) * 0.5)
-                  }
-                };
-              }
+              const matched = currentBrandProducts.find(p => p.product_name === productName);
+              if (matched) stats = extractProductStats(matched);
             } else {
               stats = {
                 total: found.total_reviews,
                 highTrustPct: Math.round(found.high_trust_ratio * 100),
                 topAspect: found.top_aspect || 'Klaim Efikasi & Manfaat',
                 aspectCounts: (found.aspect_distribution && Object.keys(found.aspect_distribution).length > 0)
-                  ? found.aspect_distribution
-                  : { "Klaim_Efikasi_Manfaat": found.total_reviews },
+                  ? found.aspect_distribution : { "Klaim_Efikasi_Manfaat": found.total_reviews },
                 trustCounts: {
                   "High_Trust": Math.round(found.total_reviews * found.high_trust_ratio),
                   "Low_Trust": Math.round(found.total_reviews * found.low_trust_ratio),
@@ -176,9 +146,8 @@ async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', produc
       }
     }
   } catch (e) {
-    console.warn("Using real benchmark dataset stats:", e);
+    console.warn("Error fetching analytics data:", e);
   }
-
 
   if (!stats) return;
   window._currentStats = stats;
@@ -218,17 +187,10 @@ function updateProductDropdown(products, selectedProduct = 'ALL', brandName = 'A
   }
 
   if (prodGroup) prodGroup.style.display = 'flex';
-  const defaultLabel = brandName === 'ALL' ? 'Semua Produk' : `Semua Produk ${brandName}`;
-  prodSelect.innerHTML = `<option value="ALL">${defaultLabel}</option>`;
-  products.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p.product_name;
-    opt.textContent = `${p.product_name} (${p.total_reviews} ulasan)`;
-    if (p.product_name === selectedProduct) opt.selected = true;
-    prodSelect.appendChild(opt);
-  });
+  const label = brandName === 'ALL' ? 'Semua Produk' : `Semua Produk ${brandName}`;
+  prodSelect.innerHTML = `<option value="ALL">${label}</option>` +
+    products.map(p => `<option value="${p.product_name}" ${p.product_name === selectedProduct ? 'selected' : ''}>${p.product_name} (${p.total_reviews} ulasan)</option>`).join('');
 }
-
 
 function bindFilterEvents() {
   const brandSelect = document.getElementById('brandFilter');
@@ -236,11 +198,7 @@ function bindFilterEvents() {
   const productSelect = document.getElementById('productFilter');
 
   const handleFilterChange = async () => {
-    const selectedBrand = brandSelect?.value || 'ALL';
-    const selectedCategory = categorySelect?.value || 'ALL';
-    const selectedProduct = productSelect?.value || 'ALL';
-
-    await loadAnalyticsData(selectedBrand, selectedCategory, selectedProduct);
+    await loadAnalyticsData(brandSelect?.value || 'ALL', categorySelect?.value || 'ALL', productSelect?.value || 'ALL');
   };
 
   brandSelect?.addEventListener('change', async () => {
@@ -256,7 +214,6 @@ function bindFilterEvents() {
   productSelect?.addEventListener('change', handleFilterChange);
 }
 
-
 function renderRightSidebarAnalytics(brandName = 'ALL', dynamicDrivers = null) {
   renderBrandTrustInsightCard(brandName, dynamicDrivers);
   const progressBar = document.getElementById('halalComplianceProgressBar');
@@ -268,30 +225,22 @@ function renderRightSidebarAnalytics(brandName = 'ALL', dynamicDrivers = null) {
 
 function renderBrandTrustInsightCard(brandName = 'ALL', dynamicDrivers = null) {
   const titleElem = document.getElementById('insightCardBrandTitle');
-  const highTrustContainer = document.getElementById('highTrustDriversList');
-  const lowTrustContainer = document.getElementById('lowTrustDriversList');
+  const highContainer = document.getElementById('highTrustDriversList');
+  const lowContainer = document.getElementById('lowTrustDriversList');
 
   if (titleElem) titleElem.textContent = brandName === 'ALL' ? 'Semua Brand' : brandName;
 
   const drivers = (dynamicDrivers && (dynamicDrivers.high?.length || dynamicDrivers.low?.length))
-    ? dynamicDrivers
-    : { high: [], low: [] };
+    ? dynamicDrivers : { high: [], low: [] };
 
-  if (highTrustContainer) {
-    highTrustContainer.innerHTML = (drivers.high || []).map(d => 
+  if (highContainer) {
+    highContainer.innerHTML = (drivers.high || []).map(d => 
       `<span class="badge badge-green" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
     ).join(' ');
   }
-  if (lowTrustContainer) {
-    lowTrustContainer.innerHTML = (drivers.low || []).map(d => 
+  if (lowContainer) {
+    lowContainer.innerHTML = (drivers.low || []).map(d => 
       `<span class="badge badge-red" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`
     ).join(' ');
   }
 }
-
-async function loadHistoryTable(page = 1) {
-  if (typeof renderHistoryWithPagination === 'function') {
-    await renderHistoryWithPagination(page);
-  }
-}
-
