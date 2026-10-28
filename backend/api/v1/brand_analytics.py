@@ -174,8 +174,12 @@ async def get_brand_analytics(
             })
 
     # Dynamic Empirical Trust Drivers with caching (cache_key based on filter)
+    driver_df = df
+    if brand and brand.strip() and brand.strip().upper() != "ALL":
+        driver_df = df[df[brand_col].str.strip().str.lower() == brand.strip().lower()]
+
     driver_cache_key = f"{brand or 'ALL'}_{category or 'ALL'}"
-    empirical_drivers = compute_empirical_trust_drivers(df, top_k=5, cache_key=driver_cache_key)
+    empirical_drivers = compute_empirical_trust_drivers(driver_df, top_k=5, cache_key=driver_cache_key)
 
     return {
         "status": "success",

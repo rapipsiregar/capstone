@@ -19,7 +19,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 14/15 (8.11 dibuka kembali) |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
 | 9 | Arah desain, angka jujur, aksesibilitas | 3/12 (Seksi 9B DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
@@ -90,21 +90,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ## TODO
 
-> **Koreksi audit 2026-10-28** (keputusan user): Task 8.10, 8.11, 8.15, dan 9.4 dibuka kembali karena kriteria tertulisnya belum terbukti. Seksi 8D, 8E, dan 9B kembali ke TODO; task saudaranya tetap `[x]`.
-
-### Phase 8: Integritas Model IndoBERT (K1–K7)
-
-#### 8D. XAI Turunan & Tampilan Metrik
-- [x] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
-  - *Kriteria selesai:* `review_explainer.py` tidak memakai `coef_`; test membaca cache; test cakupan membuktikan cache berisi 8.365 / 8.365 ulasan.
-  - *Koreksi audit 2026-10-28:* `data/cache/review_shap_cache.json` hanya berisi 41 entri dari 8.365 ulasan (`precompute_sample_catalog_cache` default `max_count=50`), jadi "hitung SHAP untuk ulasan katalog" belum terpenuhi. `tests/test_catalog_shap_cacher.py` juga menulis ke berkas cache asli. Perbaikan (Opsi 1): hitung SHAP untuk seluruh 8.365 ulasan di GPU, test memakai berkas cache sementara.
-  - *Bukti (2026-10-28, setelah perbaikan):* Komputasi batch offline selesai 100% di GPU RTX 3050 (`scripts/precompute_shap_cache.py`, durasi 33,7 menit); berkas cache persisten `data/cache/review_shap_cache.json` berisi persis 8.365 / 8.365 ulasan aktif (ukuran 24,42 MB, aman di git); test `tests/test_shap_cache_integrity.py::test_cache_coverage_full_dataset` membuktikan 0 ulasan yang hilang dan semua memakai metode `word_shap_high_minus_low_v1`; `tests/test_catalog_shap_cacher.py` menggunakan cache dummy di `tmp_path` terisolasi; `backend/services/catalog_shap_cacher.py` dan `review_explainer.py` bebas linear `coef_`; seluruh 153 pytest passed.
-- [ ] **Task 8.11**: **Kata Pendorong dari SHAP** (K6): `empirical_drivers.py` mengagregasi cache SHAP.
-  - *Kriteria selesai:* test membuktikan kata pendorong = agregasi cache milik brand itu sendiri; brand tanpa data menampilkan state jujur.
-  - *Koreksi audit 2026-10-28:* fallback di `backend/services/empirical_drivers.py` baris 74–89 mengambil kata dari cache global lalu melabelinya sebagai driver brand yang tidak punya ulasan di cache (salah atribusi). Perbaikan: fallback dihapus; agregasi ulang setelah cache Task 8.10 lengkap.
-- [x] **Task 8.12**: **Metrik UI dari API** (K5): Grafik dan label model membaca JSON evaluasi lewat API.
-  - *Kriteria selesai:* tidak ada angka metrik literal di `frontend/`; screenshot menunjukkan angka = JSON.
-  - *Bukti (2026-10-28):* Endpoint `GET /api/v1/model/metrics` pada `backend/api/v1/model_metrics.py` (38 LOC) menyajikan hasil evaluasi otentik pada 837 sampel `test.csv`; `frontend/js/charts.js` (160 LOC) mem-fetch metrik dari API secara dinamis; seluruh angka metrik literal lama (0.9420, 0.9395, dll.) telah dihapus dari `frontend/` (0 temuan); verifikasi visual browser sukses tercatat di `thesis_metrics_indobert_1793129041219.png`; `tests/test_api_model_metrics.py` 1 passed, 147 pytest passed.
+> **Status Eksekusi 2026-10-28**: Phase 8 resmi selesai tuntas (15/15 DONE). Seksi 9B resmi selesai (3/3 DONE). Task 9.1, 9.2, 9.3, 10.4, 10.5 ditahan menunggu keputusan desain user.
 
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 
@@ -206,6 +192,19 @@ Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang
   - *Bukti (2026-10-28):* Modul duplikat `backend/services/splitter.py` dan `tests/test_splitter.py` dihapus dengan pre-approval user; modul resmi `backend/services/female_daily_splitter.py` tetap aktif digunakan oleh API; 142 pytest passed (100% green).
 
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
+#### 8D. XAI Turunan & Tampilan Metrik
+- [x] **Task 8.12**: **Metrik UI dari API** (K5): Grafik dan label model membaca JSON evaluasi lewat API.
+  - *Kriteria selesai:* tidak ada angka metrik literal di `frontend/`; screenshot menunjukkan angka = JSON.
+  - *Bukti (2026-10-28):* Endpoint `GET /api/v1/model/metrics` pada `backend/api/v1/model_metrics.py` (38 LOC) menyajikan hasil evaluasi otentik pada 837 sampel `test.csv`; `frontend/js/charts.js` (160 LOC) mem-fetch metrik dari API secara dinamis; seluruh angka metrik literal lama (0.9420, 0.9395, dll.) telah dihapus dari `frontend/` (0 temuan); verifikasi visual browser sukses tercatat di `thesis_metrics_indobert_1793129041219.png`; `tests/test_api_model_metrics.py` 1 passed, 147 pytest passed.
+- [x] **Task 8.11**: **Kata Pendorong dari SHAP** (K6): `empirical_drivers.py` mengagregasi cache SHAP.
+  - *Kriteria selesai:* test membuktikan kata pendorong = agregasi cache milik brand itu sendiri; brand tanpa data menampilkan state jujur.
+  - *Koreksi audit 2026-10-28:* fallback di `backend/services/empirical_drivers.py` baris 74–89 mengambil kata dari cache global lalu melabelinya sebagai driver brand yang tidak punya ulasan di cache (salah atribusi). Perbaikan: fallback dihapus; agregasi ulang setelah cache Task 8.10 lengkap.
+  - *Bukti (2026-10-28, setelah perbaikan):* Fallback salah atribusi di `backend/services/empirical_drivers.py` dihapus total; filter `driver_df` spesifik brand ditambahkan pada `backend/api/v1/brand_analytics.py`; brand fiktif/tanpa ulasan menghasilkan array kosong `{"high": [], "low": []}`; test `tests/test_empirical_drivers.py` membuktikan driver Wardah dihitung dari ulasan Wardah sendiri dan brand fiktif menghasilkan list kosong; verifikasi visual panel Insight Reputasi tercatat di `task811_insight_panel.png`; 153 pytest passed; Seksi 8D & Phase 8 resmi **DONE 15/15**.
+- [x] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
+  - *Kriteria selesai:* `review_explainer.py` tidak memakai `coef_`; test membaca cache; test cakupan membuktikan cache berisi 8.365 / 8.365 ulasan.
+  - *Koreksi audit 2026-10-28:* `data/cache/review_shap_cache.json` hanya berisi 41 entri dari 8.365 ulasan (`precompute_sample_catalog_cache` default `max_count=50`), jadi "hitung SHAP untuk ulasan katalog" belum terpenuhi. `tests/test_catalog_shap_cacher.py` juga menulis ke berkas cache asli. Perbaikan (Opsi 1): hitung SHAP untuk seluruh 8.365 ulasan di GPU, test memakai berkas cache sementara.
+  - *Bukti (2026-10-28, setelah perbaikan):* Komputasi batch offline selesai 100% di GPU RTX 3050 (`scripts/precompute_shap_cache.py`, durasi 33,7 menit); berkas cache persisten `data/cache/review_shap_cache.json` berisi persis 8.365 / 8.365 ulasan aktif (ukuran 24,42 MB, aman di git); test `tests/test_shap_cache_integrity.py::test_cache_coverage_full_dataset` membuktikan 0 ulasan yang hilang dan semua memakai metode `word_shap_high_minus_low_v1`; `tests/test_catalog_shap_cacher.py` menggunakan cache dummy di `tmp_path` terisolasi; `backend/services/catalog_shap_cacher.py` dan `review_explainer.py` bebas linear `coef_`; seluruh 153 pytest passed.
+
 #### 8E. Pembersihan Model Palsu
 - [x] **Task 8.15**: **Koreksi Dokumen** (K2, K5): `docs/feature-list.md` dan endpoint terkait disesuaikan dengan evaluasi IndoBERT otentik.
   - *Kriteria selesai:* `grep` angka 0,942 / 94,20% tidak ditemukan di repo; seluruh metrik membaca hasil otentik; angka dataset di dokumen = hitungan berkas.

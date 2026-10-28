@@ -9,26 +9,10 @@ import os
 import re
 from typing import Dict, Any, List, Optional
 import pandas as pd
-from backend.services.catalog_shap_cacher import get_cached_review_shap, load_shap_cache
-
-# Filter stopwords and generic conversational fillers to preserve meaningful semantic attributes
-SEMANTIC_STOPWORDS = {
-    "dan", "di", "ke", "dari", "ini", "itu", "buat", "yang", "untuk", "ada",
-    "aku", "saya", "kamu", "dia", "mereka", "kita", "nya", "banget", "juga",
-    "bisa", "karena", "kalau", "kalo", "udah", "sudah", "tapi", "lagi", "jadi",
-    "sama", "agak", "terus", "sih", "dong", "kok", "ya", "kan", "deh", "aja", "saja",
-    "pada", "dengan", "atau", "lebih", "paling", "kurang", "selalu", "pernah",
-    "haha", "hahaha", "bgttt", "bangettt", "lumayan", "tidak", "cuma", "masih",
-    "bgt", "tp", "gitu", "gak", "ngga", "ga", "kali", "baru", "pas"
-}
+from backend.services.catalog_shap_cacher import get_cached_review_shap
+from backend.services.shap_word_attribution import SEMANTIC_STOPWORDS, clean_feature_token
 
 _EMPIRICAL_DRIVERS_CACHE: Dict[str, Dict[str, List[Dict[str, Any]]]] = {}
-
-
-def clean_feature_token(token: str) -> str:
-    """Normalizes token string for aggregation, stripping punctuation and casing."""
-    t = re.sub(r"[^a-zA-Z]", "", token.lower().strip())
-    return t
 
 
 def aggregate_shap_drivers_from_cache(
@@ -44,8 +28,6 @@ def aggregate_shap_drivers_from_cache(
     pos_counts: Dict[str, int] = {}
     neg_scores: Dict[str, float] = {}
     neg_counts: Dict[str, int] = {}
-
-    all_cache = load_shap_cache()
 
     for text in texts:
         if not text or not isinstance(text, str):
@@ -64,29 +46,16 @@ def aggregate_shap_drivers_from_cache(
             score = float(item.get("score", 0.0))
             impact = item.get("impact", "")
 
-            if impact == "High_Trust" or score > 0.02:
+            # The cached impact label is the single source of truth for direction.
+            if impact == "High_Trust":
                 pos_scores[tok] = pos_scores.get(tok, 0.0) + abs(score)
                 pos_counts[tok] = pos_counts.get(tok, 0) + 1
-            elif impact == "Low_Trust" or score < -0.02:
+            elif impact == "Low_Trust":
                 neg_scores[tok] = neg_scores.get(tok, 0.0) + abs(score)
                 neg_counts[tok] = neg_counts.get(tok, 0) + 1
 
-    # Fallback if specific brand/filter reviews have no cached entries yet:
-    # Use global cache aggregated patterns rather than empty or fake data
-    if not pos_scores and all_cache:
-        for record in all_cache.values():
-            for item in record.get("attributions", []):
-                tok = clean_feature_token(item.get("token", ""))
-                if len(tok) < 3 or tok in SEMANTIC_STOPWORDS:
-                    continue
-                score = float(item.get("score", 0.0))
-                impact = item.get("impact", "")
-                if impact == "High_Trust":
-                    pos_scores[tok] = pos_scores.get(tok, 0.0) + abs(score)
-                    pos_counts[tok] = pos_counts.get(tok, 0) + 1
-                elif impact == "Low_Trust":
-                    neg_scores[tok] = neg_scores.get(tok, 0.0) + abs(score)
-                    neg_counts[tok] = neg_counts.get(tok, 0) + 1
+    # No fallback: reviews without cached SHAP contribute nothing, so a brand
+    # without cached reviews gets empty lists (honest "data belum cukup" state).
 
     # Sort descending by cumulative attribution score
     sorted_pos = sorted(pos_scores.items(), key=lambda x: x[1], reverse=True)[:top_k]
