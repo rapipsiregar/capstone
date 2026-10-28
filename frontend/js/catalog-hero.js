@@ -63,7 +63,7 @@ function initHomepageQuickSearch() {
         const cats = data.matched_categories || [];
 
         if (!prods.length && !brands.length && !cats.length) {
-          dropdown.innerHTML = `<div style="padding: 1rem; color: #94A3B8; text-align: center;">Tidak ada produk cocok dengan "<strong>${val}</strong>"</div>`;
+          dropdown.innerHTML = `<div style="padding: 1rem; color: #475569; text-align: center;">Tidak ada produk cocok dengan "<strong>${val}</strong>"</div>`;
           return;
         }
 
@@ -194,7 +194,7 @@ async function openSearchResults(query, page = 1) {
     if (subtitle) subtitle.textContent = `Ditemukan ${data.total_products} produk yang cocok di seluruh kategori`;
 
     if (!prods.length) {
-      grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2.5rem; color: #94A3B8;">Tidak ada produk yang cocok dengan "<strong>${query}</strong>".</div>`;
+      grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; padding: 2.5rem; color: #475569;">Tidak ada produk yang cocok dengan "<strong>${query}</strong>".</div>`;
       return;
     }
 

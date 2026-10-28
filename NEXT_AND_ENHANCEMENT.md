@@ -20,7 +20,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 7/12 (9B & 9C DONE, 9.10 DONE) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 8/12 (9B & 9C DONE, 9.10-9.11 DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
@@ -106,8 +106,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [x] **Task 9.10**: **Indikator Fokus** (F4).
   - *Kriteria selesai:* navigasi Tab menjangkau 23 kategori dengan fokus terlihat (screenshot).
   - *Bukti (2026-10-28):* Selector `.category-circle-item:focus-visible` ditambahkan pada `frontend/css/catalog.css` dengan cincin fokus teal tegas (2px outline, offset 3px, border-radius 12px); tombol kategori rendered memakai elemen semantik `<button type="button">`; verifikasi visual status fokus tersimpan di `task910_category_focus.png`; unit test `tests/test_category_focus.py` (2 passed); 159 pytest passed (100% green).
-- [ ] **Task 9.11**: **Kontras Teks** (F5).
+- [x] **Task 9.11**: **Kontras Teks** (F5).
   - *Kriteria selesai:* `contrast-check.py` PASS untuk semua pasangan warna teks.
+  - *Bukti (2026-10-28):* Seluruh 9 pemakaian `#94A3B8` (kontras 2,56:1) pada `catalog-hero.css`, `catalog.css`, `catalog-hero.js`, `catalog-summary.js`, dan `charts.js` diganti ke `#475569` (Slate 600, kontras 7,58:1); test `tests/test_text_contrast.py` (2 passed) memverifikasi 0 kemunculan `#94A3B8` dan hasil `contrast-check.py` PASS pada `#FFFFFF` dan `#F8FAFC`; 161 pytest passed (100% green).
 - [ ] **Task 9.12**: **Header Mobile** (F6).
   - *Kriteria selesai:* screenshot 390px tanpa teks terpotong.
 

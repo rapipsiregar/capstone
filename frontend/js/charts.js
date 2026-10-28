@@ -36,7 +36,7 @@ function renderAspectChart(aspectData) {
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { color: '#94a3b8', font: { family: 'Inter' } }
+          labels: { color: '#475569', font: { family: 'Inter' } }
         }
       }
     }
@@ -77,7 +77,7 @@ function renderTrustChart(trustData) {
       plugins: {
         legend: {
           position: 'bottom',
-          labels: { color: '#94a3b8', font: { family: 'Inter' } }
+          labels: { color: '#475569', font: { family: 'Inter' } }
         }
       }
     }

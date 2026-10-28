@@ -111,7 +111,7 @@ function renderProductSummary(info, totalReviews) {
 
   destroyProductSummaryCharts();
   const aspectColors = aspectEntries.map((_, i) => ASPECT_COLOR_PALETTE[i % ASPECT_COLOR_PALETTE.length]);
-  const trustColors = trustEntries.map(([k]) => TRUST_LABEL_COLORS[k] || '#94A3B8');
+  const trustColors = trustEntries.map(([k]) => TRUST_LABEL_COLORS[k] || '#475569');
   productSummaryState.aspectChart = buildDoughnut('productAspectChart', aspectEntries, aspectColors, total);
   productSummaryState.trustChart = buildDoughnut('productTrustChart', trustEntries, trustColors, total);
   productSummaryState.lastProduct = info.product_name;
