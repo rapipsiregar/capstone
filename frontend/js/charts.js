@@ -99,7 +99,9 @@ async function renderComparisonChart(preloadedMetrics = null) {
   const trustF1 = metrics?.trust_classifier?.f1_macro ?? 0.0;
   const aspectAcc = metrics?.aspect_classifier?.accuracy ?? 0.0;
   const aspectF1 = metrics?.aspect_classifier?.f1_macro ?? 0.0;
-  const numSamples = metrics?.total_test_samples ?? 837;
+  const numSamples = metrics?.total_test_samples ?? null;
+  const sampleEl = document.getElementById('metricsTestSampleCount');
+  if (sampleEl && numSamples !== null) sampleEl.textContent = Number(numSamples).toLocaleString('id-ID');
 
   if (comparisonChartInstance) comparisonChartInstance.destroy();
 
@@ -109,7 +111,9 @@ async function renderComparisonChart(preloadedMetrics = null) {
       labels: ['Akurasi Kepercayaan (Trust)', 'Macro F1 Kepercayaan', 'Akurasi Aspek Komunikasi', 'Macro F1 Aspek'],
       datasets: [
         {
-          label: `IndoBERT Transformer (Fine-Tuned) - ${numSamples} Data Uji (test.csv)`,
+          label: numSamples !== null
+            ? `IndoBERT Transformer (Fine-Tuned) - ${numSamples} Data Uji (test.csv)`
+            : 'IndoBERT Transformer (Fine-Tuned) - metrik belum termuat dari API',
           data: [trustAcc, trustF1, aspectAcc, aspectF1],
           backgroundColor: [
             'rgba(15, 118, 110, 0.85)',

@@ -20,7 +20,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 13/15 (8.10, 8.11 dibuka kembali) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 2/12 (9.4 dibuka kembali) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 3/12 (Seksi 9B DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
@@ -80,8 +80,11 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | F23 | LOW | Area kosong 40% (hero-void) pada Sandbox sebelum simulasi | `inspect.mjs` Guidebook 2 | taste layout |
 | F24 | LOW | Angka pada tabel metrik belum memakai `font-variant-numeric: tabular-nums` | `inspect.mjs` Guidebook 3 (`tabular` 0%) | taste app §7.4 |
 | F25 | LOW | Teks tepi (<16px dari margin kiri) di breakpoint 768px dan 390px | `inspect.mjs` Level 2, 3, Guidebooks | antislop-layoutmobile |
+| F26 | HIGH | Angka grafik level produk dikarang di `frontend/js/app.js` baris ~110–131, 146–156 (Low/Neutral 50/50, fallback rasio 0.48/0.28/0.24) | `frontend/js/app.js` | AGENTS §12, §13 |
+| F27 | MEDIUM | `fetchReviewHistory` di `frontend/js/api.js` saat offline menampilkan 3 ulasan dan prediksi IndoBERT palsu | `frontend/js/api.js` | AGENTS §12 |
+| F28 | LOW | `highlight_keywords` di `backend/api/v1/catalog.py` fallback ke array statis `HIGH_TRUST_WORDS`/`LOW_TRUST_WORDS` jika cache miss | `backend/api/v1/catalog.py` | Task 8.10 |
 
-> Baseline seluruh 6 layar lengkap diukur pada Task 7.5 (Level 1: 4F/4W, Level 2: 3F/3W, Level 3: 3F/4W, GB1: 3F/4W, GB2: 2F/4W, GB3: 3F/4W). Temuan baru tercatat pada F19–F25.
+> Baseline seluruh 6 layar lengkap diukur pada Task 7.5 (Level 1: 4F/4W, Level 2: 3F/3W, Level 3: 3F/4W, GB1: 3F/4W, GB2: 2F/4W, GB3: 3F/4W). Temuan baru tercatat pada F19–F28 (Mode AFTER: dicatat, tidak langsung diperbaiki sebelum task relevan).
 
 ---
 
@@ -111,17 +114,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
   - *Kriteria selesai:* setiap keputusan punya alasan tertulis (R-31); user menyetujui.
 - [ ] **Task 9.3**: **Favicon Baru** (F13): Ajukan konsep, buat setelah disetujui.
   - *Kriteria selesai:* tanpa gradient/glow; disetujui user; tampil di tab browser (screenshot).
-
-#### 9B. Angka Jujur di Beranda
-- [ ] **Task 9.4**: **Statistik Hero dari API** (F2).
-  - *Kriteria selesai:* test (TDD) membuktikan angka DOM = hasil hitung dataset; tidak ada angka statistik literal di `index.html`.
-  - *Koreksi audit 2026-10-28:* hanya `#heroStatsRow` yang dibersihkan. `frontend/index.html` masih memuat literal: baris 259 (komentar 10,826), 265 (`8,365`), 359 ("Dari 8.365 ulasan"), 439 (default 8.365 / 216 / 801), 443–446 (pill Total/Train/Val/Test), 455 ("837 data uji"). `frontend/js/api.js` baris 29, 58, 59, 144 memakai angka asli sebagai fallback saat API gagal.
-- [x] **Task 9.5**: **Ganti Pill 100%** (F1): Tampilkan jumlah ulasan yang menyebut klaim halal dan BPOM.
-  - *Kriteria selesai:* angka pill = hitungan dataset (test).
-  - *Bukti (2026-10-28):* Pill "100% Teranotasi Halal & BPOM" dihapus dari HTML; digantikan elemen dinamis `#heroCountCompliance` yang menyajikan rasio klaim terukur dari dataset (55 Halal & 468 BPOM); unit test `test_compliance_pill_not_100_percent` passed.
-- [x] **Task 9.6**: **Satu Fakta Satu Nilai** (F3): Tab Metrik memakai sumber yang sama dengan beranda.
-  - *Kriteria selesai:* tidak ada dua nilai berbeda untuk fakta yang sama (dicek berdasarkan peta Task 7.6).
-  - *Bukti (2026-10-28):* Teks banner riset pada Tab Metrik `index.html` dan fallback `api.js` diselaraskan dari 215 brand / 797 produk menjadi 216 brand dan 801 produk, terhubung dengan elemen DOM dinamis `metricsDatasetBrandCount` dan `metricsDatasetProductCount`; unit test `test_one_fact_one_value_metrics_and_catalog` passed.
 
 #### 9C. Insight Reputasi Dinamis (ex Task 6.3)
 - [ ] **Task 9.7**: **Dropdown dari API**: Brand (216) dan kategori (23).
@@ -186,6 +178,19 @@ Dipecah ulang menjadi task kecil saat diaktifkan.
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
+#### 9B. Angka Jujur di Beranda
+- [x] **Task 9.6**: **Satu Fakta Satu Nilai** (F3): Tab Metrik memakai sumber yang sama dengan beranda.
+  - *Kriteria selesai:* tidak ada dua nilai berbeda untuk fakta yang sama (dicek berdasarkan peta Task 7.6).
+  - *Bukti (2026-10-28):* Teks banner riset pada Tab Metrik `index.html` dan fallback `api.js` diselaraskan dari 215 brand / 797 produk menjadi 216 brand dan 801 produk, terhubung dengan elemen DOM dinamis `metricsDatasetBrandCount` dan `metricsDatasetProductCount`; unit test `test_one_fact_one_value_metrics_and_catalog` passed.
+- [x] **Task 9.5**: **Ganti Pill 100%** (F1): Tampilkan jumlah ulasan yang menyebut klaim halal dan BPOM.
+  - *Kriteria selesai:* angka pill = hitungan dataset (test).
+  - *Bukti (2026-10-28):* Pill "100% Teranotasi Halal & BPOM" dihapus dari HTML; digantikan elemen dinamis `#heroCountCompliance` yang menyajikan rasio klaim terukur dari dataset (55 Halal & 468 BPOM); unit test `test_compliance_pill_not_100_percent` passed.
+- [x] **Task 9.4**: **Statistik Hero dari API** (F2).
+  - *Kriteria selesai:* test (TDD) membuktikan angka DOM = hasil hitung dataset; tidak ada angka statistik literal di `index.html`.
+  - *Koreksi audit 2026-10-28:* hanya `#heroStatsRow` yang dibersihkan. `frontend/index.html` masih memuat literal: baris 259 (komentar 10,826), 265 (`8,365`), 359 ("Dari 8.365 ulasan"), 439 (default 8.365 / 216 / 801), 443–446 (pill Total/Train/Val/Test), 455 ("837 data uji"). `frontend/js/api.js` baris 29, 58, 59, 144 memakai angka asli sebagai fallback saat API gagal.
+  - *Bukti (2026-10-28, setelah koreksi audit):* Seluruh angka statistik literal dibersihkan dari `frontend/index.html` dan diganti placeholder `–` dengan ID dinamis (`#heroCountProducts`, `#heroCountBrands`, `#heroCountReviews`, `#heroCountCompliance`, `#metricsDatasetReviewCount`, `#metricsDatasetBrandCount`, `#metricsDatasetProductCount`, `#metricsSplitTotal`, `#metricsSplitTrain`, `#metricsSplitVal`, `#metricsSplitTest`, `#metricsTestSampleCount`, `#complianceInfoReviewCount`). Fallback hardcoded fiktif di `api.js` dan `charts.js` dihapus. Endpoint `GET /api/v1/catalog/stats` menyuplai counts dan `split_counts` (6.692/836/837). Test TDD `tests/test_hero_stats_dynamic.py` (4 tests) dan `tests/test_homepage_layout.py` passed. Screenshot 1440/768/390 (`task94_homepage_*.png` dan `task94_metrics_tab_*.png`) membuktikan nilai DOM terisi otentik dari API tanpa sisa `–`. Catatan: rasio compliance bar pada `app.js` baris ~264 masih menggunakan `complianceRatios` statis, akan diselesaikan pada Task 9.9. Seksi 9B resmi **DONE 3/3**.
 
 ### Phase 11: Pembersihan File
 #### 11A. Duplikat & Yatim

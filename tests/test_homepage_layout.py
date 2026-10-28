@@ -84,13 +84,12 @@ class TestHomepageLayout(unittest.TestCase):
         self.assertIn("Klaim Halal & BPOM", home)
 
     def test_one_fact_one_value_metrics_and_catalog(self):
-        """Task 9.6 (F3): Verify single source of truth (216 brands & 801 products)."""
+        """Task 9.6 (F3): Verify single source of truth (no hardcoded mismatch 215/797, uses dynamic DOM hooks)."""
         self.assertNotIn("215 brand dan 797 produk", self.html)
         metrics_panel = self._panel("tab-content-metrics")
-        self.assertIn("216", metrics_panel)
-        self.assertIn("801", metrics_panel)
         self.assertIn("metricsDatasetBrandCount", metrics_panel)
         self.assertIn("metricsDatasetProductCount", metrics_panel)
+        self.assertIn("metricsDatasetReviewCount", metrics_panel)
 
 
 if __name__ == "__main__":

@@ -19,30 +19,6 @@ async function fetchHealthStatus() {
   }
 }
 
-async function fetchAnalyticsSummary() {
-  try {
-    const res = await fetch(`${API_BASE_URL}/analytics`);
-    if (!res.ok) throw new Error('Failed to fetch analytics');
-    return await res.json();
-  } catch (err) {
-    return {
-      total_reviews: 8365,
-      aspect_counts: {
-        "Klaim_Efikasi_Manfaat": 4870,
-        "Kandungan_Bahan_Sensitivitas": 1686,
-        "Transparansi_Layanan_Harga": 1543,
-        "Sertifikasi_Halal_BPOM": 266
-      },
-      trust_counts: {
-        "High_Trust": 4026,
-        "Neutral": 2029,
-        "Low_Trust": 2310
-      },
-      avg_execution_time_ms: 12.4
-    };
-  }
-}
-
 async function fetchBrandAnalytics(brand = null, category = null) {
   try {
     const params = new URLSearchParams();
@@ -53,16 +29,9 @@ async function fetchBrandAnalytics(brand = null, category = null) {
     if (!res.ok) throw new Error('Failed to fetch brand analytics');
     return await res.json();
   } catch (err) {
-    return {
-      status: "success",
-      total_reviews: 8365,
-      total_brands: 216,
-      brands_summary: [
-        { brand_name: "Wardah", total_reviews: 447, high_trust_ratio: 0.40, low_trust_ratio: 0.32, neutral_ratio: 0.28, top_aspect: "Klaim_Efikasi_Manfaat", aspect_distribution: { "Klaim_Efikasi_Manfaat": 274, "Kandungan_Bahan_Sensitivitas": 91, "Transparansi_Layanan_Harga": 75, "Sertifikasi_Halal_BPOM": 7 }, products: [] },
-        { brand_name: "Emina", total_reviews: 213, high_trust_ratio: 0.46, low_trust_ratio: 0.31, neutral_ratio: 0.23, top_aspect: "Klaim_Efikasi_Manfaat", aspect_distribution: { "Klaim_Efikasi_Manfaat": 102, "Kandungan_Bahan_Sensitivitas": 55, "Transparansi_Layanan_Harga": 52, "Sertifikasi_Halal_BPOM": 4 }, products: [] },
-        { brand_name: "Safi", total_reviews: 109, high_trust_ratio: 0.45, low_trust_ratio: 0.29, neutral_ratio: 0.26, top_aspect: "Klaim_Efikasi_Manfaat", aspect_distribution: { "Klaim_Efikasi_Manfaat": 73, "Kandungan_Bahan_Sensitivitas": 23, "Transparansi_Layanan_Harga": 11, "Sertifikasi_Halal_BPOM": 2 }, products: [] }
-      ]
-    };
+    // No stand-in numbers: the UI keeps its "–" placeholders when the API is unreachable.
+    console.error('Error fetching brand analytics:', err);
+    return null;
   }
 }
 
@@ -133,17 +102,6 @@ async function requestExplanation(text, modelChoice = 'indobert') {
   return await res.json();
 }
 
-async function fetchReviewFeed(params = {}) {
-  const query = new URLSearchParams(params).toString();
-  try {
-    const res = await fetch(`${API_BASE_URL}/reviews/feed?${query}`);
-    if (!res.ok) throw new Error('Failed to fetch reviews feed');
-    return await res.json();
-  } catch (err) {
-    console.error('Error fetching review feed:', err);
-    return { total_dataset: 8365, filtered_count: 0, reviews: [] };
-  }
-}
 
 async function fetchModelEvaluationMetrics() {
   try {
@@ -189,12 +147,25 @@ async function loadHomepageHeroStats() {
     elCompliance.textContent = `${stats.halal_claimed_reviews} Halal & ${stats.bpom_claimed_reviews} BPOM`;
   }
 
-  const mRev = document.getElementById('metricsDatasetReviewCount');
-  const mBrand = document.getElementById('metricsDatasetBrandCount');
-  const mProd = document.getElementById('metricsDatasetProductCount');
-  if (mRev && stats.total_reviews) mRev.textContent = Number(stats.total_reviews).toLocaleString('id-ID');
-  if (mBrand && stats.total_brands) mBrand.textContent = Number(stats.total_brands).toLocaleString('id-ID');
-  if (mProd && stats.total_products) mProd.textContent = Number(stats.total_products).toLocaleString('id-ID');
+  const fmt = (n) => Number(n).toLocaleString('id-ID');
+  const setText = (id, value) => {
+    const el = document.getElementById(id);
+    if (el && value !== undefined && value !== null) el.textContent = value;
+  };
+  setText('metricsDatasetReviewCount', stats.total_reviews && fmt(stats.total_reviews));
+  setText('metricsDatasetBrandCount', stats.total_brands && fmt(stats.total_brands));
+  setText('metricsDatasetProductCount', stats.total_products && fmt(stats.total_products));
+  setText('complianceInfoReviewCount', stats.total_reviews && fmt(stats.total_reviews));
+
+  const split = stats.split_counts;
+  if (split) {
+    const total = split.train + split.val + split.test;
+    const pct = (n) => (total ? ` (${Math.round((n / total) * 100)}%)` : '');
+    setText('metricsSplitTotal', fmt(total));
+    setText('metricsSplitTrain', fmt(split.train) + pct(split.train));
+    setText('metricsSplitVal', fmt(split.val) + pct(split.val));
+    setText('metricsSplitTest', fmt(split.test) + pct(split.test));
+  }
 }
 
 if (typeof document !== 'undefined') {

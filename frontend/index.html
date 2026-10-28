@@ -256,13 +256,13 @@
               </div>
             </section>
 
-            <!-- Summary KPI Cards (Dynamic 10,826 Dataset Benchmark) -->
+            <!-- Summary KPI Cards (diisi dari API; "–" sampai data tiba) -->
             <section class="kpi-grid" aria-label="Ringkasan Statistik KPI">
               <div class="kpi-card glass-card">
                 <div class="kpi-icon icon-reviews" aria-hidden="true">📊</div>
                 <div class="kpi-data">
                   <span class="kpi-title">Total Ulasan Teranalisis</span>
-                  <h2 id="stat-total-reviews" class="kpi-value">8,365</h2>
+                  <h2 id="stat-total-reviews" class="kpi-value">–</h2>
                 </div>
               </div>
 
@@ -270,7 +270,7 @@
                 <div class="kpi-icon icon-trust" aria-hidden="true">⭐</div>
                 <div class="kpi-data">
                   <span class="kpi-title">Tingkat Kepercayaan Konsumen</span>
-                  <h2 id="stat-high-trust" class="kpi-value">48%</h2>
+                  <h2 id="stat-high-trust" class="kpi-value">–</h2>
                 </div>
               </div>
 
@@ -348,15 +348,15 @@
                 <div>
                   <div class="compliance-metric-row">
                     <span>Rasio Terdaftar BPOM / Halal MUI</span>
-                    <span style="color: var(--halal-teal, #0F766E);">96.4%</span>
+                    <span id="halalComplianceRatioText" style="color: var(--halal-teal, #0F766E);">–</span>
                   </div>
                   <div class="compliance-progress-bar-bg">
-                    <div id="halalComplianceProgressBar" class="compliance-progress-bar-fill" style="width: 96.4%;"></div>
+                    <div id="halalComplianceProgressBar" class="compliance-progress-bar-fill"></div>
                   </div>
                 </div>
 
                 <div class="compliance-info-box">
-                  ℹ️ <strong>Informasi Kepatuhan:</strong> Dari 8.365 ulasan Female Daily, ulasan konsumen mengonfirmasi pentingnya klaim kehalalan sah dan izin BPOM resmi untuk memicu kepercayaan.
+                  ℹ️ <strong>Informasi Kepatuhan:</strong> Dari <span id="complianceInfoReviewCount">–</span> ulasan Female Daily, ulasan konsumen mengonfirmasi pentingnya klaim kehalalan sah dan izin BPOM resmi untuk memicu kepercayaan.
                 </div>
               </div>
             </div>
@@ -404,7 +404,7 @@
                   <span id="xai-trust-badge" class="badge badge-green">-</span>
                 </div>
                 <div class="result-metrics">
-                  <span>Confidence: <strong id="xai-confidence-val">0%</strong></span>
+                  <span>Confidence: <strong id="xai-confidence-val">–</strong></span>
                   <span>Latency: <strong id="xai-latency-val">0 ms</strong></span>
                 </div>
               </div>
@@ -436,14 +436,14 @@
             📚 Ringkasan Partisi Dataset Riset (Female Daily Skincare)
           </h3>
           <p style="font-size: 0.85rem; color: var(--text-muted);">
-            Dataset <span id="metricsDatasetReviewCount">8.365</span> ulasan asli tanpa duplikasi dari <span id="metricsDatasetBrandCount">216</span> brand dan <span id="metricsDatasetProductCount">801</span> produk skincare yang dibagi secara terstratifikasi (stratified split).
+            Dataset <span id="metricsDatasetReviewCount">–</span> ulasan asli tanpa duplikasi dari <span id="metricsDatasetBrandCount">–</span> brand dan <span id="metricsDatasetProductCount">–</span> produk skincare yang dibagi secara terstratifikasi (stratified split).
           </p>
         </div>
         <div style="display: flex; gap: 0.6rem; flex-wrap: wrap;">
-          <span class="research-stat-pill">Total: 8.365</span>
-          <span class="research-stat-pill">Train: 6.692 (80%)</span>
-          <span class="research-stat-pill">Val: 836 (10%)</span>
-          <span class="research-stat-pill">Test: 837 (10%)</span>
+          <span class="research-stat-pill">Total: <span id="metricsSplitTotal">–</span></span>
+          <span class="research-stat-pill">Train: <span id="metricsSplitTrain">–</span></span>
+          <span class="research-stat-pill">Val: <span id="metricsSplitVal">–</span></span>
+          <span class="research-stat-pill">Test: <span id="metricsSplitTest">–</span></span>
         </div>
       </div>
 
@@ -452,7 +452,7 @@
         <div class="chart-card glass-card full-width">
           <div class="card-header">
             <h3>Evaluasi Metrik Performa Model: IndoBERT Transformer (Fine-Tuned)</h3>
-            <p class="subtitle">Pengujian komprehensif pada 837 data uji (test.csv) menunjukkan performa tinggi IndoBERT dalam mendeteksi sentimen kepercayaan publik dan aspek komunikasi.</p>
+            <p class="subtitle">Pengujian pada <span id="metricsTestSampleCount">–</span> data uji (test.csv) mengukur kemampuan IndoBERT dalam mendeteksi sentimen kepercayaan publik dan aspek komunikasi.</p>
           </div>
           <div class="chart-container tall">
             <canvas id="comparisonChart" aria-label="Grafik Perbandingan Performa Model"></canvas>
@@ -512,16 +512,16 @@
     </footer>
   </div>
 
-  <!-- JavaScript Modules (Cache-busted v=5.5) -->
-  <script src="./js/api.js?v=5.5"></script>
-  <script src="./js/data.js?v=5.5"></script>
-  <script src="./js/charts.js?v=5.5"></script>
-  <script src="./js/tabs.js?v=5.5"></script>
-  <script src="./js/pagination.js?v=5.5"></script>
-  <script src="./js/sandbox.js?v=5.5"></script>
-  <script src="./js/catalog-summary.js?v=5.5"></script>
-  <script src="./js/catalog-hero.js?v=5.5"></script>
-  <script src="./js/catalog.js?v=5.5"></script>
-  <script src="./js/app.js?v=5.5"></script>
+  <!-- JavaScript Modules (Cache-busted v=5.6) -->
+  <script src="./js/api.js?v=5.6"></script>
+  <script src="./js/data.js?v=5.6"></script>
+  <script src="./js/charts.js?v=5.6"></script>
+  <script src="./js/tabs.js?v=5.6"></script>
+  <script src="./js/pagination.js?v=5.6"></script>
+  <script src="./js/sandbox.js?v=5.6"></script>
+  <script src="./js/catalog-summary.js?v=5.6"></script>
+  <script src="./js/catalog-hero.js?v=5.6"></script>
+  <script src="./js/catalog.js?v=5.6"></script>
+  <script src="./js/app.js?v=5.6"></script>
 </body>
 </html>
