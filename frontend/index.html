@@ -66,7 +66,7 @@
 
       <!-- Center: Clean Brand Logo, Name, & Tagline -->
       <div class="brand brand-center" onclick="tabNavigation.switchToTab('tab-content-reputation')" style="cursor: pointer;" title="Beranda CHARM">
-        <div class="brand-logo" aria-hidden="true">✨</div>
+        <div class="brand-logo" aria-hidden="true"><span class="brand-mark">C</span></div>
         <div class="brand-text">
           <h1>CHARM</h1>
           <p>Consumer Halal Awareness & Reputation Monitor</p>
@@ -76,15 +76,12 @@
       <!-- Right: Discrete Guidebook & Research Modul Buttons -->
       <div class="header-guidebook-actions" role="navigation" aria-label="Alat Riset & Panduan Skripsi">
         <button type="button" class="btn-guidebook" id="btn-guidebook-insight" data-tab-target="tab-content-insight" onclick="tabNavigation.switchToTab('tab-content-insight')" title="Insight Reputasi Brand untuk Produsen UMKM">
-          <span class="guidebook-icon">📊</span>
           <span class="guidebook-label">Insight Reputasi</span>
         </button>
         <button type="button" class="btn-guidebook" id="btn-guidebook-sandbox" data-tab-target="tab-content-sandbox" onclick="tabNavigation.switchToTab('tab-content-sandbox')" title="Panduan & Simulator Ulasan Baru (XAI)">
-          <span class="guidebook-icon">💡</span>
           <span class="guidebook-label">Simulasi XAI</span>
         </button>
         <button type="button" class="btn-guidebook" id="btn-guidebook-metrics" data-tab-target="tab-content-metrics" onclick="tabNavigation.switchToTab('tab-content-metrics')" title="Metrik & Evaluasi Model AI (Skripsi)">
-          <span class="guidebook-icon">🔬</span>
           <span class="guidebook-label">Metrik Skripsi</span>
         </button>
       </div>
@@ -102,7 +99,7 @@
         <div id="catalog-level-categories" class="catalog-level-view">
           <!-- Editorial Hero Banner -->
           <div class="editorial-hero-banner">
-            <span class="hero-editorial-badge">✨ Monitor Reputasi & Sentimen Kosmetik Halal</span>
+            <span class="hero-editorial-badge">Monitor Reputasi & Sentimen Kosmetik Halal</span>
             <h2 class="hero-editorial-headline">Eksplorasi Skincare & Suara Konsumen</h2>
             <p class="hero-editorial-desc">
               Pantau persepsi kepercayaan konsumen dari ribuan ulasan Female Daily dengan kecerdasan buatan Explainable AI.
@@ -110,18 +107,18 @@
             
             <div class="hero-search-wrapper">
               <div class="hero-search-input-box">
-                <span class="hero-search-icon" aria-hidden="true">🔍</span>
+                <span class="hero-search-icon" aria-hidden="true" style="font-size: 0.8rem; font-weight: 600; color: #475569;">Cari</span>
                 <input type="text" id="homepageQuickSearch" placeholder="Cari nama produk atau brand (misal: Wardah, DHC, Night Cream...)" autocomplete="off" />
-                <button type="button" id="btnHeroSearchClear" class="btn-hero-search-clear" title="Bersihkan pencarian">✕</button>
+                <button type="button" id="btnHeroSearchClear" class="btn-hero-search-clear" title="Bersihkan pencarian">&times;</button>
               </div>
               <div id="heroSearchResultsDropdown" class="hero-search-results-dropdown"></div>
             </div>
 
             <div class="hero-stats-row" id="heroStatsRow">
-              <span class="hero-stat-pill" id="heroStatProducts">📦 <strong id="heroCountProducts">-</strong> Produk Skincare</span>
-              <span class="hero-stat-pill" id="heroStatBrands">🏷️ <strong id="heroCountBrands">-</strong> Brand Terdaftar</span>
-              <span class="hero-stat-pill" id="heroStatReviews">💬 <strong id="heroCountReviews">-</strong> Ulasan Konsumen</span>
-              <span class="hero-stat-pill" id="heroStatCompliance">🛡️ <strong id="heroCountCompliance">-</strong> Klaim Halal & BPOM</span>
+              <span class="hero-stat-pill" id="heroStatProducts"><strong id="heroCountProducts">-</strong> Produk Skincare</span>
+              <span class="hero-stat-pill" id="heroStatBrands"><strong id="heroCountBrands">-</strong> Brand Terdaftar</span>
+              <span class="hero-stat-pill" id="heroStatReviews"><strong id="heroCountReviews">-</strong> Ulasan Konsumen</span>
+              <span class="hero-stat-pill" id="heroStatCompliance"><strong id="heroCountCompliance">-</strong> Klaim Halal & BPOM</span>
             </div>
           </div>
 
@@ -173,7 +170,7 @@
           <div id="productSummaryContainer" aria-label="Parameter Kepercayaan Produk"></div>
 
           <div style="margin-bottom: 1rem;">
-            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text-dark, #1E293B);">💬 Feed Ulasan Konsumen & Visualisasi Explainable AI</h3>
+            <h3 style="font-family: 'Outfit', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--text-dark, #1E293B);">Feed Ulasan Konsumen & Visualisasi Explainable AI</h3>
             <p style="font-size: 0.85rem; color: var(--text-muted, #64748B);">Analisis sentimen ulasan asli konsumen Female Daily dengan sorotan kata Explainable AI dan kotak rekomendasi UMKM.</p>
           </div>
 
@@ -186,7 +183,7 @@
     </div>
 
     <!-- =========================================================================
-         GUIDEBOOK: 📊 Insight Reputasi (Analitik Brand untuk Produsen UMKM)
+         GUIDEBOOK: Insight Reputasi (Analitik Brand untuk Produsen UMKM)
          ========================================================================= -->
     <div id="tab-content-insight" class="tab-content-panel" role="tabpanel" aria-labelledby="btn-guidebook-insight" hidden>
       <!-- Main Content Grid with 2-Column Dashboard Layout -->
@@ -221,7 +218,7 @@
 
               <div class="export-controls">
                 <a id="btnExportSummary" href="/api/v1/export/summary?format=csv" target="_blank" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 0.5rem; text-decoration: none; padding: 0.5rem 1rem; border-radius: 8px; background: #ffffff; border: 1px solid var(--border-light, #E2E8F0); color: var(--halal-teal, #0F766E); font-size: 0.88rem; font-weight: 600;">
-                  📥 Unduh Laporan Eksekutif CSV
+                  Unduh Laporan Eksekutif CSV
                 </a>
               </div>
             </section>
@@ -229,7 +226,7 @@
             <!-- Summary KPI Cards (diisi dari API; "–" sampai data tiba) -->
             <section class="kpi-grid" aria-label="Ringkasan Statistik KPI">
               <div class="kpi-card glass-card">
-                <div class="kpi-icon icon-reviews" aria-hidden="true">📊</div>
+                <div class="kpi-icon icon-reviews" aria-hidden="true" style="font-size:0.75rem;font-weight:700;color:var(--halal-teal,#0F766E);">DATA</div>
                 <div class="kpi-data">
                   <span class="kpi-title">Total Ulasan Teranalisis</span>
                   <h2 id="stat-total-reviews" class="kpi-value">–</h2>
@@ -237,7 +234,7 @@
               </div>
 
               <div class="kpi-card glass-card">
-                <div class="kpi-icon icon-trust" aria-hidden="true">⭐</div>
+                <div class="kpi-icon icon-trust" aria-hidden="true" style="font-size:0.75rem;font-weight:700;color:var(--halal-teal,#0F766E);">TRUST</div>
                 <div class="kpi-data">
                   <span class="kpi-title">Tingkat Kepercayaan Konsumen</span>
                   <h2 id="stat-high-trust" class="kpi-value">–</h2>
@@ -245,7 +242,7 @@
               </div>
 
               <div class="kpi-card glass-card">
-                <div class="kpi-icon icon-aspect" aria-hidden="true">🏷️</div>
+                <div class="kpi-icon icon-aspect" aria-hidden="true" style="font-size:0.75rem;font-weight:700;color:var(--halal-teal,#0F766E);">TOPIK</div>
                 <div class="kpi-data">
                   <span class="kpi-title">Aspek Paling Dominan</span>
                   <h2 id="stat-top-aspect" class="kpi-value">Klaim Efikasi & Manfaat</h2>
@@ -280,7 +277,7 @@
             <!-- Brand Trust SHAP Insight Card -->
             <div class="chart-card glass-card">
               <div class="card-header">
-                <h3>💡 XAI Brand Trust Insight (<span id="insightCardBrandTitle">Semua Brand</span>)</h3>
+                <h3>XAI Brand Trust Insight (<span id="insightCardBrandTitle">Semua Brand</span>)</h3>
                 <p>Kata pendorong utama kepercayaan (*High Trust*) vs pemicu keluhan (*Low Trust*).</p>
               </div>
 
@@ -288,7 +285,7 @@
                 <!-- High Trust Box -->
                 <div class="sidebar-driver-box high-trust">
                   <h4 class="sidebar-driver-title text-teal">
-                    🟢 Pendorong Kepercayaan (High Trust)
+                    Pendorong Kepercayaan (High Trust)
                   </h4>
                   <div id="highTrustDriversList" class="sidebar-badge-list">
                     <!-- Populated dynamically from empirical model weights and dataset -->
@@ -298,7 +295,7 @@
                 <!-- Low Trust Box -->
                 <div class="sidebar-driver-box low-trust">
                   <h4 class="sidebar-driver-title text-rose">
-                    🔴 Pemicu Keluhan (Low Trust)
+                    Pemicu Keluhan (Low Trust)
                   </h4>
                   <div id="lowTrustDriversList" class="sidebar-badge-list">
                     <!-- Populated dynamically from empirical model weights and dataset -->
@@ -310,7 +307,7 @@
             <!-- Halal & BPOM Compliance Summary Card -->
             <div class="chart-card glass-card">
               <div class="card-header">
-                <h3>🛡️ Compliance Halal & BPOM</h3>
+                <h3>Kepatuhan Sertifikasi Halal & BPOM</h3>
                 <p>Tingkat kepatuhan sertifikasi resmi & keaslian produk kosmetik.</p>
               </div>
 
@@ -326,7 +323,7 @@
                 </div>
 
                 <div class="compliance-info-box">
-                  ℹ️ <strong>Informasi Kepatuhan:</strong> Dari <span id="complianceInfoReviewCount">–</span> ulasan Female Daily, ulasan konsumen mengonfirmasi pentingnya klaim kehalalan sah dan izin BPOM resmi untuk memicu kepercayaan.
+                  <strong>Informasi Kepatuhan:</strong> Dari <span id="complianceInfoReviewCount">–</span> ulasan Female Daily, ulasan konsumen mengonfirmasi pentingnya klaim kehalalan sah dan izin BPOM resmi untuk memicu kepercayaan.
                 </div>
               </div>
             </div>
@@ -342,7 +339,7 @@
       <section id="xai-sandbox-section" class="sandbox-section" aria-label="Interactive XAI Sandbox">
         <div class="sandbox-card glass-card full-width">
           <div class="card-header">
-            <h3>💡 Interactive XAI Sandbox (Uji Kalimat Ulasan & Highlight SHAP)</h3>
+            <h3>Interactive XAI Sandbox (Uji Kalimat Ulasan & Highlight SHAP)</h3>
             <p class="subtitle">Ketik ulasan kosmetik halal untuk melihat prediksi aspek, kepercayaan publik, dan sorotan kontribusi bobot kata SHAP.</p>
           </div>
 
@@ -360,9 +357,9 @@
 
               <div class="form-controls" style="align-items: center;">
                 <div class="model-badge-info" style="display: flex; align-items: center; gap: 0.5rem;">
-                  <span class="badge badge-green" style="font-size: 0.85rem; padding: 0.45rem 0.9rem; font-weight: 600;">🤖 Model: IndoBERT Transformer (Fine-Tuned)</span>
+                  <span class="badge badge-green" style="font-size: 0.85rem; padding: 0.45rem 0.9rem; font-weight: 600;">Model: IndoBERT Transformer (Fine-Tuned)</span>
                 </div>
-                <button id="btn-analyze-review" class="btn btn-primary" aria-label="Analisis Teks dan Sorot Kata SHAP">🔍 Analisis & Sorot Kata SHAP</button>
+                <button id="btn-analyze-review" class="btn btn-primary" aria-label="Analisis Teks dan Sorot Kata SHAP">Analisis & Sorot Kata SHAP</button>
               </div>
             </div>
 
@@ -403,7 +400,7 @@
       <div class="research-dataset-banner">
         <div>
           <h3 style="font-family: var(--font-heading); color: var(--halal-teal); font-size: 1.15rem; margin-bottom: 0.25rem;">
-            📚 Ringkasan Partisi Dataset Riset (Female Daily Skincare)
+            Ringkasan Partisi Dataset Riset (Female Daily Skincare)
           </h3>
           <p style="font-size: 0.85rem; color: var(--text-muted);">
             Dataset <span id="metricsDatasetReviewCount">–</span> ulasan asli tanpa duplikasi dari <span id="metricsDatasetBrandCount">–</span> brand dan <span id="metricsDatasetProductCount">–</span> produk skincare yang dibagi secara terstratifikasi (stratified split).
@@ -438,7 +435,7 @@
               <h3>Riwayat Inferensi Interaktif & Predictions Log</h3>
               <p class="subtitle">Log ulasan yang pernah diproses secara langsung via API atau Sandbox.</p>
             </div>
-            <button id="btn-refresh-history" class="btn btn-secondary" aria-label="Refresh Riwayat Ulasan">🔄 Refresh Logs</button>
+            <button id="btn-refresh-history" class="btn btn-secondary" aria-label="Refresh Riwayat Ulasan">Refresh Logs</button>
           </div>
           <div class="table-wrapper">
             <table class="data-table" role="table" aria-label="Tabel Predictions Log">

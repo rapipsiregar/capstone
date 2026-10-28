@@ -4,29 +4,11 @@
  */
 
 window.CATEGORY_ICONS = {
-  "Acne Treatment": "🎯",
-  "Brow & Lash Treatment": "👁️‍🗨️",
-  "Cream & Lotion": "🧴",
-  "Day Cream": "☀️",
-  "Eye Treatment": "👁️",
-  "Face Mist": "💦",
-  "Face Oil": "🌿",
-  "Facial Wash": "🫧",
-  "Lotion & Emulsion": "🥛",
-  "Makeup Remover": "🧻",
-  "Mask Sheet": "🧖‍♀️",
-  "Night Cream": "🌙",
-  "Nose Pack": "👃",
-  "Oil": "🫒",
-  "Peeling": "🧪",
-  "Scrub & Exfoliator": "✨",
-  "Serum & Essence": "💧",
-  "Skin Soothing Treatment": "🍃",
-  "Skincare General": "🌸",
-  "Sleeping Mask": "🛌",
-  "Sun Protection": "🛡️",
-  "Toner": "🍶",
-  "Wash-Off": "🧼"
+  "Acne Treatment": "AT", "Brow & Lash Treatment": "BL", "Cream & Lotion": "CL", "Day Cream": "DC",
+  "Eye Treatment": "ET", "Face Mist": "FM", "Face Oil": "FO", "Facial Wash": "FW", "Lotion & Emulsion": "LE",
+  "Makeup Remover": "MR", "Mask Sheet": "MS", "Night Cream": "NC", "Nose Pack": "NP", "Oil": "OL",
+  "Peeling": "PL", "Scrub & Exfoliator": "SE", "Serum & Essence": "SR", "Skin Soothing Treatment": "SS",
+  "Skincare General": "SG", "Sleeping Mask": "SM", "Sun Protection": "SP", "Toner": "TN", "Wash-Off": "WO"
 };
 
 let searchDebounceTimer = null;
@@ -69,7 +51,7 @@ function initHomepageQuickSearch() {
 
         let html = "";
         if (brands.length) {
-          html += '<div class="hero-search-section-title">🏷️ Brand Ditemukan</div>';
+          html += '<div class="hero-search-section-title">Brand Ditemukan</div>';
           html += brands.map(b => `
             <div class="hero-search-chip-item" onclick="catalogHeroApp.openSearchResults('${b.brand_name.replace(/'/g, "\\'")}')">
               <div><span class="product-brand-tag">${b.brand_name}</span> <span style="font-size: 0.78rem; color: #64748B;">${b.product_count} Produk (${b.review_count} Ulasan)</span></div>
@@ -77,7 +59,7 @@ function initHomepageQuickSearch() {
             </div>`).join("");
         }
         if (cats.length) {
-          html += '<div class="hero-search-section-title">🧖‍♀️ Kategori Terkait</div>';
+          html += '<div class="hero-search-section-title">Kategori Terkait</div>';
           html += cats.map(c => {
             const slug = (c.category_name || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
             return `
@@ -91,18 +73,18 @@ function initHomepageQuickSearch() {
           }).join("");
         }
         if (prods.length) {
-          html += '<div class="hero-search-section-title">✨ Produk Terpopuler</div>';
+          html += '<div class="hero-search-section-title">Produk Terpopuler</div>';
           html += prods.map(p => `
             <div class="hero-search-item" onclick="catalogHeroApp.selectSearchProduct('${p.product_name.replace(/'/g, "\\'")}')">
               <div>
                 <div style="font-weight: 700; color: #0F172A; font-size: 0.88rem;">${p.product_name}</div>
                 <div style="font-size: 0.76rem; color: #64748B;">${p.brand_name} • ${p.category_name}</div>
               </div>
-              <div style="font-weight: 700; color: #E11D48; font-size: 0.85rem;">⭐ ${p.avg_rating.toFixed(1)}</div>
+              <div style="font-weight: 700; color: #0F766E; font-size: 0.85rem;">Rating ${p.avg_rating.toFixed(1)}</div>
             </div>`).join("");
         }
         if (data.total_products > 0) {
-          html += `<div class="hero-search-footer" onclick="catalogHeroApp.openSearchResults('${val.replace(/'/g, "\\'")}')">🔍 Lihat seluruh <strong>${data.total_products}</strong> produk untuk "${val}" &rarr;</div>`;
+          html += `<div class="hero-search-footer" onclick="catalogHeroApp.openSearchResults('${val.replace(/'/g, "\\'")}')">Lihat seluruh <strong>${data.total_products}</strong> produk untuk "${val}" &rarr;</div>`;
         }
         dropdown.innerHTML = html;
       } catch (err) {
@@ -176,7 +158,7 @@ async function openSearchResults(query, page = 1) {
   const title = document.getElementById("catalogCategoryTitle");
   const subtitle = document.getElementById("catalogCategorySubtitle");
   if (breadcrumb) breadcrumb.textContent = `Pencarian: "${query}"`;
-  if (title) title.textContent = `🔍 Hasil Pencarian: "${query}"`;
+  if (title) title.textContent = `Hasil Pencarian: "${query}"`;
   if (subtitle) subtitle.textContent = "Mencari produk kosmetik...";
 
   const grid = document.getElementById("catalogProductsGrid");
@@ -204,7 +186,7 @@ async function openSearchResults(query, page = 1) {
       return `
       <div class="catalog-product-card" onclick="catalogApp.openProductReviews('${p.product_name.replace(/'/g, "\\'")}', 1)">
         <div class="product-card-thumb-wrap">
-          <img src="./images/products/${pSlug}.jpg?v=2" class="product-card-thumb-img" alt="${p.product_name}" loading="lazy" onerror="this.onerror=null;this.parentElement.classList.add('no-photo');this.parentElement.innerHTML='<div class=\\'no-photo-badge\\'><span class=\\'no-photo-icon\\'>🧴</span><span class=\\'no-photo-text\\'>Foto belum tersedia</span></div>';" />
+          <img src="./images/products/${pSlug}.jpg?v=2" class="product-card-thumb-img" alt="${p.product_name}" loading="lazy" onerror="this.onerror=null;this.parentElement.classList.add('no-photo');this.parentElement.innerHTML='<div class=\\'no-photo-badge\\'><span class=\\'no-photo-icon\\'>PROD</span><span class=\\'no-photo-text\\'>Foto belum tersedia</span></div>';" />
         </div>
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
           <span class="product-brand-tag">${p.brand_name}</span>
@@ -212,10 +194,10 @@ async function openSearchResults(query, page = 1) {
         </div>
         <h3 class="catalog-product-title">${p.product_name}</h3>
         <div class="product-metrics-row">
-          <span class="product-rating-stars">⭐ ${p.avg_rating.toFixed(1)}</span>
+          <span class="product-rating-stars">Rating ${p.avg_rating.toFixed(1)}</span>
           <span class="product-review-badge">(${p.review_count} ulasan)</span>
         </div>
-        <button type="button" class="btn-view-reviews">Lihat Ulasan & Analisis XAI ➔</button>
+        <button type="button" class="btn-view-reviews">Lihat Ulasan & Analisis XAI &rarr;</button>
       </div>`;
     }).join("");
 
@@ -232,11 +214,11 @@ function renderSearchPagination(container, currentPage, totalPages, query) {
   if (!totalPages || totalPages <= 1) { container.innerHTML = ""; return; }
   let html = "";
   if (currentPage > 1) {
-    html += `<button type="button" class="btn-breadcrumb" onclick="catalogHeroApp.openSearchResults('${query.replace(/'/g, "\\'")}', ${currentPage - 1})">◀ Hal Sebelumnya</button>`;
+    html += `<button type="button" class="btn-breadcrumb" onclick="catalogHeroApp.openSearchResults('${query.replace(/'/g, "\\'")}', ${currentPage - 1})">&larr; Hal Sebelumnya</button>`;
   }
   html += `<span style="font-size: 0.85rem; color: #64748B; font-weight: 500;">Halaman ${currentPage} dari ${totalPages}</span>`;
   if (currentPage < totalPages) {
-    html += `<button type="button" class="btn-breadcrumb" onclick="catalogHeroApp.openSearchResults('${query.replace(/'/g, "\\'")}', ${currentPage + 1})">Hal Berikutnya ▶</button>`;
+    html += `<button type="button" class="btn-breadcrumb" onclick="catalogHeroApp.openSearchResults('${query.replace(/'/g, "\\'")}', ${currentPage + 1})">Hal Berikutnya &rarr;</button>`;
   }
   container.innerHTML = html;
 }

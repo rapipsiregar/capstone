@@ -105,8 +105,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
 
 #### 10A. Emoji & Hero
-- [ ] **Task 10.1**: **Emoji Keluar dari UI** (F8): Diganti kata, atau ikon dengan alasan tertulis di `DESIGN.md`.
-  - *Kriteria selesai:* `lint.mjs --app` 0 FAIL `emoji`.
+- [x] **Task 10.1**: **Emoji Keluar dari UI** (F8): Diganti kata, atau ikon dengan alasan tertulis di `DESIGN.md`.
+  - *Kriteria selesai:* `lint.mjs --app` 0 FAIL `emoji`. (Selesai 2026-10-28: 62 emoji diganti teks semantik, test_zero_emoji_ui passed, lint.mjs 0 FAIL emoji).
 - [ ] **Task 10.2**: **Eyebrow & Gradient** (F9, F10).
   - *Kriteria selesai:* lint 0 FAIL `gradient`; inspector 0 `micro-label`.
 - [ ] **Task 10.3**: **Shadow & Blur** (F11): Shadow hanya pada overlay (menu, dialog, tooltip).

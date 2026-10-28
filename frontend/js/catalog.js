@@ -3,13 +3,7 @@
  * Level 1: Categories -> Level 2: Products -> Level 3: Reviews & XAI
  */
 
-const CATEGORY_ICONS = (typeof window !== 'undefined' && window.CATEGORY_ICONS) ? window.CATEGORY_ICONS : {
-  "Acne Treatment": "🎯", "Brow & Lash Treatment": "👁️‍🗨️", "Cream & Lotion": "🧴", "Day Cream": "☀️",
-  "Eye Treatment": "👁️", "Face Mist": "💦", "Face Oil": "🌿", "Facial Wash": "🫧", "Lotion & Emulsion": "🥛",
-  "Makeup Remover": "🧻", "Mask Sheet": "🧖‍♀️", "Night Cream": "🌙", "Nose Pack": "👃", "Oil": "🫒",
-  "Peeling": "🧪", "Scrub & Exfoliator": "✨", "Serum & Essence": "💧", "Skin Soothing Treatment": "🍃",
-  "Skincare General": "🌸", "Sleeping Mask": "🛌", "Sun Protection": "🛡️", "Toner": "🍶", "Wash-Off": "🧼"
-};
+const CATEGORY_ICONS = (typeof window !== 'undefined' && window.CATEGORY_ICONS) ? window.CATEGORY_ICONS : {};
 
 const catalogState = {
   currentCategory: null,
@@ -25,17 +19,17 @@ function getCatalogApiBase() {
 
 /** Badge only when the dataset flags halal_claim / bpom_claim for the product. */
 function complianceLabel(halal_claim, bpom_claim) {
-  if (halal_claim && bpom_claim) return '🛡️ Klaim Halal & BPOM';
-  if (halal_claim) return '🛡️ Klaim Halal';
-  if (bpom_claim) return '🛡️ Klaim BPOM';
+  if (halal_claim && bpom_claim) return 'Klaim Halal & BPOM';
+  if (halal_claim) return 'Klaim Halal';
+  if (bpom_claim) return 'Klaim BPOM';
   return '';
 }
 
 function trustBadgeHtml(trust) {
   const map = {
-    High_Trust: ['#DCFCE7', '#166534', '🟢 High Trust'],
-    Low_Trust: ['#FEE2E2', '#991B1B', '🔴 Low Trust'],
-    Neutral: ['#FEF3C7', '#92400E', '🟡 Neutral']
+    High_Trust: ['#DCFCE7', '#166534', 'High Trust'],
+    Low_Trust: ['#FEE2E2', '#991B1B', 'Low Trust'],
+    Neutral: ['#FEF3C7', '#92400E', 'Neutral']
   };
   const [bg, fg, label] = map[trust] || map.Neutral;
   return `<span class="badge" style="background:${bg}; color:${fg}; font-weight:600; padding:0.2rem 0.5rem; border-radius:6px;">${label}</span>`;
@@ -52,7 +46,7 @@ async function loadCatalogCategories() {
     if (data.status !== "success" || !data.categories) throw new Error("Gagal mengambil kategori");
 
     container.innerHTML = data.categories.map(cat => {
-      const icon = CATEGORY_ICONS[cat.category_name] || "✨";
+      const icon = (CATEGORY_ICONS[cat.category_name] || (cat.category_name || '').slice(0, 2)).toUpperCase();
       const img = `./images/categories/${cat.slug || 'skincare-general'}.jpg`;
       return `
         <button type="button" class="category-circle-item" onclick="catalogApp.openCategoryProducts('${cat.category_name.replace(/'/g, "\\'")}', 1)" title="${cat.category_name} (${cat.product_count} Produk)">
@@ -107,16 +101,16 @@ async function openCategoryProducts(categoryName, page = 1) {
       return `
       <div class="catalog-product-card" onclick="catalogApp.openProductReviews('${p.product_name.replace(/'/g, "\\'")}', 1)">
         <div class="product-card-thumb-wrap">
-          <img src="./images/products/${pSlug}.jpg?v=2" class="product-card-thumb-img" alt="${p.product_name}" loading="lazy" onerror="this.onerror=null;this.parentElement.classList.add('no-photo');this.parentElement.innerHTML='<div class=\\'no-photo-badge\\'><span class=\\'no-photo-icon\\'>🧴</span><span class=\\'no-photo-text\\'>Foto belum tersedia</span></div>';" />
+          <img src="./images/products/${pSlug}.jpg?v=2" class="product-card-thumb-img" alt="${p.product_name}" loading="lazy" onerror="this.onerror=null;this.parentElement.classList.add('no-photo');this.parentElement.innerHTML='<div class=\\'no-photo-badge\\'><span class=\\'no-photo-icon\\'>PROD</span><span class=\\'no-photo-text\\'>Foto belum tersedia</span></div>';" />
         </div>
         <span class="product-brand-tag">${p.brand_name}</span>
         <h3 class="catalog-product-title">${p.product_name}</h3>
         <div class="product-metrics-row">
-          <span class="product-rating-stars">⭐ ${p.avg_rating.toFixed(1)}</span>
+          <span class="product-rating-stars">Rating ${p.avg_rating.toFixed(1)}</span>
           <span class="product-review-badge">(${p.review_count} ulasan)</span>
           <span style="font-size: 0.75rem; color: #0F766E; margin-left: auto;" title="Disebut dalam ulasan konsumen">${complianceLabel(p.halal_claim, p.bpom_claim)}</span>
         </div>
-        <button type="button" class="btn-view-reviews">Lihat Ulasan & Analisis XAI ➔</button>
+        <button type="button" class="btn-view-reviews">Lihat Ulasan & Analisis XAI &rarr;</button>
       </div>`;
     }).join("");
 
@@ -154,7 +148,7 @@ async function openProductReviews(productName, page = 1) {
           <p style="font-size: 0.88rem; color: #64748B; margin-top: 0.25rem;">Kategori: <strong>${info.category_name || '-'}</strong>${complianceLabel(info.halal_claim, info.bpom_claim) ? ` • <strong>${complianceLabel(info.halal_claim, info.bpom_claim)}</strong>` : ''}</p>
         </div>
         <div style="text-align: right;">
-          <div style="font-size: 1.5rem; font-weight: 700; color: #E11D48;">⭐ ${(info.avg_rating || 5.0).toFixed(1)}</div>
+          <div style="font-size: 1.5rem; font-weight: 700; color: #0F766E;">Rating ${(info.avg_rating || 5.0).toFixed(1)}</div>
           <div style="font-size: 0.85rem; color: #64748B;">Dari ${data.total_reviews} Ulasan Konsumen</div>
         </div>
       `;
@@ -175,22 +169,22 @@ async function openProductReviews(productName, page = 1) {
           <div class="catalog-review-card">
             <div class="catalog-review-header">
               <div style="display: flex; align-items: center; gap: 0.6rem;">
-                <span class="catalog-user-badge">👤 ${r.user}</span>
-                <span class="catalog-skin-tag">🏷️ ${r.age_skin}</span>
+                <span class="catalog-user-badge">${r.user}</span>
+                <span class="catalog-skin-tag">${r.age_skin}</span>
               </div>
               <div style="display: flex; align-items: center; gap: 0.6rem;">
-                <span style="color: #E11D48; font-weight: 700;">⭐ ${r.rating}</span>
+                <span style="color: #0F766E; font-weight: 700;">Rating ${r.rating}</span>
                 ${trustBadgeHtml(r.trust)}
               </div>
             </div>
             <div class="catalog-review-body">${(r.highlighted_text || r.text || '').replace(/\s*\.\.\.\s*Read more/gi, '...')}</div>
             <div class="catalog-xai-box">
               <div class="catalog-xai-row">
-                <span class="catalog-xai-label" style="color: #0F766E;">💡 Alasan AI:</span>
+                <span class="catalog-xai-label" style="color: #0F766E;">Alasan AI:</span>
                 <span>${xai.trust_reason || '-'}${xai.suitable_skin_types ? ` (${xai.suitable_skin_types})` : ''}</span>
               </div>
               <div class="catalog-xai-row">
-                <span class="catalog-xai-label" style="color: #B45309;">🎯 Saran UMKM:</span>
+                <span class="catalog-xai-label" style="color: #B45309;">Saran UMKM:</span>
                 <span>${umkmRec || '-'}</span>
               </div>
             </div>
@@ -212,11 +206,11 @@ function renderPagination(elementId, currentPage, totalPages, onPageClick) {
 
   let html = "";
   if (currentPage > 1) {
-    html += `<button type="button" class="btn-breadcrumb" onclick="window._pageCallback(${currentPage - 1})">◀ Hal Sebelumnya</button>`;
+    html += `<button type="button" class="btn-breadcrumb" onclick="window._pageCallback(${currentPage - 1})">&larr; Hal Sebelumnya</button>`;
   }
   html += `<span style="font-size: 0.85rem; color: #64748B; font-weight: 500;">Halaman ${currentPage} dari ${totalPages}</span>`;
   if (currentPage < totalPages) {
-    html += `<button type="button" class="btn-breadcrumb" onclick="window._pageCallback(${currentPage + 1})">Hal Berikutnya ▶</button>`;
+    html += `<button type="button" class="btn-breadcrumb" onclick="window._pageCallback(${currentPage + 1})">Hal Berikutnya &rarr;</button>`;
   }
   window._pageCallback = onPageClick;
   container.innerHTML = html;
