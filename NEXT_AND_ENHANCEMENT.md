@@ -109,8 +109,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
   - *Kriteria selesai:* `lint.mjs --app` 0 FAIL `emoji`. (Selesai 2026-10-28: 62 emoji diganti teks semantik, test_zero_emoji_ui passed, lint.mjs 0 FAIL emoji).
 - [x] **Task 10.2**: **Eyebrow & Gradient** (F9, F10).
   - *Kriteria selesai:* lint 0 FAIL `gradient`; inspector 0 `micro-label`. (Selesai 2026-10-28: 5 gradient dibersihkan, micro-label uppercase diubah ke sentence case, test_zero_gradient_and_microlabel passed).
-- [ ] **Task 10.3**: **Shadow & Blur** (F11): Shadow hanya pada overlay (menu, dialog, tooltip).
-  - *Kriteria selesai:* WARN `shadow` tersisa hanya pada overlay; 0 `backdrop-filter`.
+- [x] **Task 10.3**: **Shadow & Blur** (F11): Shadow hanya pada overlay (menu, dialog, tooltip).
+  - *Kriteria selesai:* WARN `shadow` tersisa hanya pada overlay; 0 `backdrop-filter`. (Selesai 2026-10-28: Seluruh card diam tanpa shadow, backdrop blur 0, test_zero_heavy_shadow_and_blur passed).
 
 #### 10B. Chart, Tipografi & Gerak
 - [ ] **Task 10.4**: **Warna Chart** (F12): Satu hue data per chart dari `DESIGN.md`.

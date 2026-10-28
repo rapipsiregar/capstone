@@ -41,7 +41,6 @@
   border-radius: 12px;
   background: var(--card-bg, #FFFFFF);
   border: 1px solid var(--border-light, #E2E8F0);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .sidebar-analytics .card-header {
@@ -109,7 +108,6 @@
   padding: 0.22rem 0.55rem;
   font-weight: 500;
   border-radius: 6px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   line-height: 1.25;
 }
 

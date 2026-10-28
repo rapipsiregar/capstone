@@ -8,7 +8,6 @@
   border-radius: 16px;
   padding: 2.25rem 1.75rem 2rem;
   margin-bottom: 2rem;
-  box-shadow: none;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -31,7 +30,6 @@
   padding: 0.35rem 0.95rem;
   border-radius: 9999px;
   border: 1px solid #CCFBF1;
-  box-shadow: none;
   margin-bottom: 0.9rem;
 }
 
@@ -87,14 +85,14 @@
   background: #ffffff;
   border: 1.5px solid #CBD5E1;
   border-radius: 9999px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: all 0.25s ease;
+  transition: border-color 0.2s ease;
   outline: none;
 }
 
 #homepageQuickSearch:focus {
   border-color: var(--halal-teal, #0F766E);
-  box-shadow: 0 0 0 4px rgba(15, 118, 110, 0.15), 0 8px 25px rgba(15, 118, 110, 0.1);
+  outline: 2px solid var(--halal-teal, #0F766E);
+  outline-offset: 1px;
 }
 
 .btn-hero-search-clear {
@@ -122,7 +120,7 @@
   background: #ffffff;
   border: 1.5px solid #CBD5E1;
   border-radius: 16px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.16), 0 4px 12px rgba(15, 118, 110, 0.08);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12); /* taste-skill-ignore */
   z-index: 1000;
   max-height: 420px;
   overflow-y: auto;
@@ -206,15 +204,13 @@
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(4px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: #ffffff;
+  border: 1px solid var(--border-light, #E2E8F0);
   border-radius: 9999px;
   padding: 0.35rem 0.85rem;
   font-size: 0.82rem;
   font-weight: 600;
   color: #334155;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
 }
 
 .hero-stat-pill strong {

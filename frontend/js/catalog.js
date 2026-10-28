@@ -76,7 +76,7 @@ async function openCategoryProducts(categoryName, page = 1) {
   const slug = (categoryName || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
   if (breadcrumb) breadcrumb.textContent = categoryName;
   if (title) {
-    title.innerHTML = `<span style="display:inline-flex;align-items:center;gap:0.75rem;"><img src="./images/categories/${slug}.jpg" alt="${categoryName}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #0F766E;box-shadow:0 2px 8px rgba(15,118,110,0.2);" onerror="this.style.display='none';"/>${categoryName}</span>`;
+    title.innerHTML = `<span style="display:inline-flex;align-items:center;gap:0.75rem;"><img src="./images/categories/${slug}.jpg" alt="${categoryName}" style="width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid #0F766E;" onerror="this.style.display='none';"/>${categoryName}</span>`;
   }
 
   const grid = document.getElementById("catalogProductsGrid");
