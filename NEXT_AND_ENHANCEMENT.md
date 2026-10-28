@@ -20,7 +20,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 8/12 (9B & 9C DONE, 9.10-9.11 DONE) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 9/12 (Seksi 9B, 9C, 9D DONE 9/9 aktif; 9A ditahan) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
@@ -102,16 +102,6 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [ ] **Task 9.3**: **Favicon Baru** (F13): Ajukan konsep, buat setelah disetujui.
   - *Kriteria selesai:* tanpa gradient/glow; disetujui user; tampil di tab browser (screenshot).
 
-#### 9D. Aksesibilitas Dasar
-- [x] **Task 9.10**: **Indikator Fokus** (F4).
-  - *Kriteria selesai:* navigasi Tab menjangkau 23 kategori dengan fokus terlihat (screenshot).
-  - *Bukti (2026-10-28):* Selector `.category-circle-item:focus-visible` ditambahkan pada `frontend/css/catalog.css` dengan cincin fokus teal tegas (2px outline, offset 3px, border-radius 12px); tombol kategori rendered memakai elemen semantik `<button type="button">`; verifikasi visual status fokus tersimpan di `task910_category_focus.png`; unit test `tests/test_category_focus.py` (2 passed); 159 pytest passed (100% green).
-- [x] **Task 9.11**: **Kontras Teks** (F5).
-  - *Kriteria selesai:* `contrast-check.py` PASS untuk semua pasangan warna teks.
-  - *Bukti (2026-10-28):* Seluruh 9 pemakaian `#94A3B8` (kontras 2,56:1) pada `catalog-hero.css`, `catalog.css`, `catalog-hero.js`, `catalog-summary.js`, dan `charts.js` diganti ke `#475569` (Slate 600, kontras 7,58:1); test `tests/test_text_contrast.py` (2 passed) memverifikasi 0 kemunculan `#94A3B8` dan hasil `contrast-check.py` PASS pada `#FFFFFF` dan `#F8FAFC`; 161 pytest passed (100% green).
-- [ ] **Task 9.12**: **Header Mobile** (F6).
-  - *Kriteria selesai:* screenshot 390px tanpa teks terpotong.
-
 ### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
 
 #### 10A. Emoji & Hero
@@ -183,6 +173,17 @@ Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang
 - [x] **Task 9.7**: **Dropdown dari API**: Brand (216) dan kategori (23).
   - *Kriteria selesai:* test membuktikan jumlah opsi = jumlah di dataset.
   - *Bukti (2026-10-28):* Seluruh opsi hardcoded di `frontend/index.html` dihapus; `frontend/js/app.js` (246 LOC <= 256 LOC) secara dinamis mem-fetch dan mengurutkan 216 brand dari `GET /api/v1/analytics/brands` dan 23 kategori dari `GET /api/v1/catalog/categories`; test `tests/test_dropdowns_dynamic.py` (3 passed) membuktikan jumlah opsi dan integritas API; verifikasi runtime CDP membuktikan 217 opsi brand (216 brand + ALL) dan 24 opsi kategori (23 kategori + ALL); seluruh 156 pytest passed (100% green).
+
+#### 9D. Aksesibilitas Dasar
+- [x] **Task 9.12**: **Header Mobile** (F6).
+  - *Kriteria selesai:* screenshot 390px tanpa teks terpotong.
+  - *Bukti (2026-10-28):* Media query mobile pada `styles.css` (241 LOC <= 256 LOC) dan `tabs.css` (205 LOC <= 256 LOC) diperbaiki: padding minimum `.app-container` 1rem (16px), judul hero dirampingkan menjadi 2 baris, tagline brand CHARM membungkus rapi tanpa `white-space: nowrap`, tombol modul guidebook membungkus proporsional; verifikasi `inspect.mjs` membuktikan 0 FAIL `[edge-text]` dan 0 FAIL `[headline-lines]`; tangkapan layar 390px tersimpan di `task912_mobile_header_390.jpg`; test `tests/test_mobile_header_layout.py` (2 passed); Seksi 9D resmi **DONE 3/3**.
+- [x] **Task 9.11**: **Kontras Teks** (F5).
+  - *Kriteria selesai:* `contrast-check.py` PASS untuk semua pasangan warna teks.
+  - *Bukti (2026-10-28):* Seluruh 9 pemakaian `#94A3B8` (kontras 2,56:1) pada `catalog-hero.css`, `catalog.css`, `catalog-hero.js`, `catalog-summary.js`, dan `charts.js` diganti ke `#475569` (Slate 600, kontras 7,58:1); test `tests/test_text_contrast.py` (2 passed) memverifikasi 0 kemunculan `#94A3B8` dan hasil `contrast-check.py` PASS pada `#FFFFFF` dan `#F8FAFC`; 161 pytest passed (100% green).
+- [x] **Task 9.10**: **Indikator Fokus** (F4).
+  - *Kriteria selesai:* navigasi Tab menjangkau 23 kategori dengan fokus terlihat (screenshot).
+  - *Bukti (2026-10-28):* Selector `.category-circle-item:focus-visible` ditambahkan pada `frontend/css/catalog.css` dengan cincin fokus teal tegas (2px outline, offset 3px, border-radius 12px); tombol kategori rendered memakai elemen semantik `<button type="button">`; verifikasi visual status fokus tersimpan di `task910_category_focus.png`; unit test `tests/test_category_focus.py` (2 passed); 159 pytest passed (100% green).
 
 ### Phase 11: Pembersihan File
 #### 11A. Duplikat & Yatim
