@@ -14,13 +14,13 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - **Perpindahan ke DONE:** task selesai dicentang di tempat; seksi dipindah ke area DONE setelah ketiga task-nya selesai.
 - **Git:** setiap task selesai di-commit dan di-push ke `origin/master`.
 
-## Ringkasan Status (2026-10-27)
+## Ringkasan Status (2026-10-28, setelah koreksi audit)
 
 | Phase | Isi | Status |
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
-| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 3/12 (Seksi 9B DONE) |
+| 8 | Integritas model IndoBERT (fine-tuning sungguhan) | 12/15 (8.10, 8.11, 8.15 dibuka kembali) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 2/12 (9.4 dibuka kembali) |
 | 10 | Pembersihan slop visual & gerbang akhir | TODO 0/9 |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | Ditunda | Sisa Phase 4 (fitur lanjutan) | 10 task, 1 dibatalkan |
@@ -87,6 +87,32 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ## TODO
 
+> **Koreksi audit 2026-10-28** (keputusan user): Task 8.10, 8.11, 8.15, dan 9.4 dibuka kembali karena kriteria tertulisnya belum terbukti. Seksi 8D, 8E, dan 9B kembali ke TODO; task saudaranya tetap `[x]`.
+
+### Phase 8: Integritas Model IndoBERT (K1–K7)
+
+#### 8D. XAI Turunan & Tampilan Metrik
+- [ ] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
+  - *Kriteria selesai:* `review_explainer.py` tidak memakai `coef_`; test membaca cache; test cakupan membuktikan cache berisi 8.365 / 8.365 ulasan.
+  - *Koreksi audit 2026-10-28:* `data/cache/review_shap_cache.json` hanya berisi 41 entri dari 8.365 ulasan (`precompute_sample_catalog_cache` default `max_count=50`), jadi "hitung SHAP untuk ulasan katalog" belum terpenuhi. `tests/test_catalog_shap_cacher.py` juga menulis ke berkas cache asli. Perbaikan (Opsi 1): hitung SHAP untuk seluruh 8.365 ulasan di GPU, test memakai berkas cache sementara.
+- [ ] **Task 8.11**: **Kata Pendorong dari SHAP** (K6): `empirical_drivers.py` mengagregasi cache SHAP.
+  - *Kriteria selesai:* test membuktikan kata pendorong = agregasi cache milik brand itu sendiri; brand tanpa data menampilkan state jujur.
+  - *Koreksi audit 2026-10-28:* fallback di `backend/services/empirical_drivers.py` baris 74–89 mengambil kata dari cache global lalu melabelinya sebagai driver brand yang tidak punya ulasan di cache (salah atribusi). Perbaikan: fallback dihapus; agregasi ulang setelah cache Task 8.10 lengkap.
+- [x] **Task 8.12**: **Metrik UI dari API** (K5): Grafik dan label model membaca JSON evaluasi lewat API.
+  - *Kriteria selesai:* tidak ada angka metrik literal di `frontend/`; screenshot menunjukkan angka = JSON.
+  - *Bukti (2026-10-28):* Endpoint `GET /api/v1/model/metrics` pada `backend/api/v1/model_metrics.py` (38 LOC) menyajikan hasil evaluasi otentik pada 837 sampel `test.csv`; `frontend/js/charts.js` (160 LOC) mem-fetch metrik dari API secara dinamis; seluruh angka metrik literal lama (0.9420, 0.9395, dll.) telah dihapus dari `frontend/` (0 temuan); verifikasi visual browser sukses tercatat di `thesis_metrics_indobert_1793129041219.png`; `tests/test_api_model_metrics.py` 1 passed, 147 pytest passed.
+
+#### 8E. Pembersihan Model Palsu
+- [x] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
+  - *Kriteria selesai:* persetujuan per file; pytest tetap hijau.
+  - *Bukti (2026-10-28):* Dihapus file trainer/evaluator palsu (`female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py`, `models/female_daily_evaluation_results.json`, `models/evaluation_results.json`, serta test-test terkait) dengan pre-approval user; seluruh evaluasi dialihkan ke `indobert_evaluator.py` otentik; seluruh 140 pytest passed (100% green).
+- [x] **Task 8.14**: **Hapus Artefak TF-IDF** (K4): `indobert_*.joblib`, jalur TF-IDF di `indobert_trainer.py`, `model_metadata.json` palsu.
+  - *Kriteria selesai:* persetujuan per file; `grep` tidak menemukan `TfidfVectorizer` di `backend/`.
+  - *Bukti (2026-10-28):* Dihapus seluruh artefak `.joblib` lama (`indobert_aspect.joblib`, `indobert_trust.joblib`, `indobert_vectorizer.joblib`) dan metadata palsu (`metrics.json`, `model_metadata.json`) dengan pre-approval user; dihapus seluruh jalur `TfidfVectorizer` dan `LinearSVC` dari `backend/services/indobert_trainer.py` (103 LOC) dan `backend/services/xai_explainer.py` (55 LOC); `grep -r "TfidfVectorizer" backend/` menghasilkan 0 temuan; seluruh 140 pytest passed (100% green).
+- [ ] **Task 8.15**: **Koreksi Dokumen** (K2, K5): `docs/feature-list.md` dan endpoint terkait disesuaikan dengan evaluasi IndoBERT otentik.
+  - *Kriteria selesai:* `grep` angka 0,942 / 94,20% tidak ditemukan di repo; seluruh metrik membaca hasil otentik; angka dataset di dokumen = hitungan berkas.
+  - *Koreksi audit 2026-10-28:* `docs/feature-list.md` baris 18 masih menulis "10.826 entri mentah ... 861 produk skincare, 22 kategori, dan 80+ brand". Hitungan berkas: `00. Review.csv` 8.646 baris; `00. InfoProduct.csv` 861 baris (797 produk unik, 22 kategori, 215 brand); dataset aktif 801 produk, 23 kategori, 216 brand. Angka 10.826 tidak ditemukan di berkas data mana pun; docstring `ingest_female_daily.py` baris 3 dan `reviews_feed.py` baris 25 juga masih memakainya.
+
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 
 #### 9A. Arah Desain (ex Task 6.4)
@@ -96,6 +122,17 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
   - *Kriteria selesai:* setiap keputusan punya alasan tertulis (R-31); user menyetujui.
 - [ ] **Task 9.3**: **Favicon Baru** (F13): Ajukan konsep, buat setelah disetujui.
   - *Kriteria selesai:* tanpa gradient/glow; disetujui user; tampil di tab browser (screenshot).
+
+#### 9B. Angka Jujur di Beranda
+- [ ] **Task 9.4**: **Statistik Hero dari API** (F2).
+  - *Kriteria selesai:* test (TDD) membuktikan angka DOM = hasil hitung dataset; tidak ada angka statistik literal di `index.html`.
+  - *Koreksi audit 2026-10-28:* hanya `#heroStatsRow` yang dibersihkan. `frontend/index.html` masih memuat literal: baris 259 (komentar 10,826), 265 (`8,365`), 359 ("Dari 8.365 ulasan"), 439 (default 8.365 / 216 / 801), 443–446 (pill Total/Train/Val/Test), 455 ("837 data uji"). `frontend/js/api.js` baris 29, 58, 59, 144 memakai angka asli sebagai fallback saat API gagal.
+- [x] **Task 9.5**: **Ganti Pill 100%** (F1): Tampilkan jumlah ulasan yang menyebut klaim halal dan BPOM.
+  - *Kriteria selesai:* angka pill = hitungan dataset (test).
+  - *Bukti (2026-10-28):* Pill "100% Teranotasi Halal & BPOM" dihapus dari HTML; digantikan elemen dinamis `#heroCountCompliance` yang menyajikan rasio klaim terukur dari dataset (55 Halal & 468 BPOM); unit test `test_compliance_pill_not_100_percent` passed.
+- [x] **Task 9.6**: **Satu Fakta Satu Nilai** (F3): Tab Metrik memakai sumber yang sama dengan beranda.
+  - *Kriteria selesai:* tidak ada dua nilai berbeda untuk fakta yang sama (dicek berdasarkan peta Task 7.6).
+  - *Bukti (2026-10-28):* Teks banner riset pada Tab Metrik `index.html` dan fallback `api.js` diselaraskan dari 215 brand / 797 produk menjadi 216 brand dan 801 produk, terhubung dengan elemen DOM dinamis `metricsDatasetBrandCount` dan `metricsDatasetProductCount`; unit test `test_one_fact_one_value_metrics_and_catalog` passed.
 
 #### 9C. Insight Reputasi Dinamis (ex Task 6.3)
 - [ ] **Task 9.7**: **Dropdown dari API**: Brand (216) dan kategori (23).
@@ -134,8 +171,8 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 #### 10C. State & Gerbang Akhir
 - [ ] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.
   - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot.
-- [ ] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar.
-  - *Kriteria selesai:* 0 FAIL di semua layar.
+- [ ] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
+  - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC.
 - [ ] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
   - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`.
 
@@ -173,41 +210,7 @@ Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang
   - *Kriteria selesai:* satu splitter tersisa; pytest hijau.
   - *Bukti (2026-10-28):* Modul duplikat `backend/services/splitter.py` dan `tests/test_splitter.py` dihapus dengan pre-approval user; modul resmi `backend/services/female_daily_splitter.py` tetap aktif digunakan oleh API; 142 pytest passed (100% green).
 
-### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
-#### 9B. Angka Jujur di Beranda
-- [x] **Task 9.6**: **Satu Fakta Satu Nilai** (F3): Tab Metrik memakai sumber yang sama dengan beranda.
-  - *Kriteria selesai:* tidak ada dua nilai berbeda untuk fakta yang sama (dicek berdasarkan peta Task 7.6).
-  - *Bukti (2026-10-28):* Teks banner riset pada Tab Metrik `index.html` dan fallback `api.js` diselaraskan dari 215 brand / 797 produk menjadi 216 brand dan 801 produk, terhubung dengan elemen DOM dinamis `metricsDatasetBrandCount` dan `metricsDatasetProductCount`; unit test `test_one_fact_one_value_metrics_and_catalog` passed.
-- [x] **Task 9.5**: **Ganti Pill 100%** (F1): Tampilkan jumlah ulasan yang menyebut klaim halal dan BPOM.
-  - *Kriteria selesai:* angka pill = hitungan dataset (test).
-  - *Bukti (2026-10-28):* Pill "100% Teranotasi Halal & BPOM" dihapus dari HTML; digantikan elemen dinamis `#heroCountCompliance` yang menyajikan rasio klaim terukur dari dataset (55 Halal & 468 BPOM); unit test `test_compliance_pill_not_100_percent` passed.
-- [x] **Task 9.4**: **Statistik Hero dari API** (F2).
-  - *Kriteria selesai:* test (TDD) membuktikan angka DOM = hasil hitung dataset; tidak ada angka statistik literal di `index.html`.
-  - *Bukti (2026-10-28):* Endpoint REST API `GET /api/v1/catalog/stats` pada `backend/api/v1/catalog_stats.py` (47 LOC) menyuplai statistik otentik ulasan (8.365), produk (801), dan brand (216); `frontend/index.html` bersih dari angka literal di `#heroStatsRow`; `frontend/js/api.js` memuat data via `fetchCatalogStats()` dan `loadHomepageHeroStats()`; TDD unit tests di `tests/test_catalog_stats.py` dan `tests/test_homepage_layout.py` passed (100% green); Seksi 9B resmi **DONE 3/3**.
-
 ### Phase 8: Integritas Model IndoBERT (K1–K7)
-#### 8E. Pembersihan Model Palsu
-- [x] **Task 8.15**: **Koreksi Dokumen** (K2, K5): `docs/feature-list.md` dan endpoint terkait disesuaikan dengan evaluasi IndoBERT otentik.
-  - *Kriteria selesai:* `grep` angka 0,942 / 94,20% tidak ditemukan di repo; seluruh metrik membaca hasil otentik.
-  - *Bukti (2026-10-28):* `backend/api/v1/export_summary.py` (136 LOC) membaca langsung dari `models/indobert_evaluation_results.json` tanpa konstanta statis; `tests/test_export_summary.py` memvalidasi asersi metrik otentik (83,87% & 82,18%); `docs/feature-list.md` diselaraskan dengan korpus 8.365 ulasan, partisi 6.692/836/837, dan XAI GPU Transformer; grep bebas angka fiktif 0,942 / 94,20%; seluruh 140 pytest passed (100% green); Phase 8 resmi **DONE 15/15**.
-- [x] **Task 8.14**: **Hapus Artefak TF-IDF** (K4): `indobert_*.joblib`, jalur TF-IDF di `indobert_trainer.py`, `model_metadata.json` palsu.
-  - *Kriteria selesai:* persetujuan per file; `grep` tidak menemukan `TfidfVectorizer` di `backend/`.
-  - *Bukti (2026-10-28):* Dihapus seluruh artefak `.joblib` lama (`indobert_aspect.joblib`, `indobert_trust.joblib`, `indobert_vectorizer.joblib`) dan metadata palsu (`metrics.json`, `model_metadata.json`) dengan pre-approval user; dihapus seluruh jalur `TfidfVectorizer` dan `LinearSVC` dari `backend/services/indobert_trainer.py` (103 LOC) dan `backend/services/xai_explainer.py` (55 LOC); `grep -r "TfidfVectorizer" backend/` menghasilkan 0 temuan; seluruh 140 pytest passed (100% green).
-- [x] **Task 8.13**: **Hapus Trainer & Evaluator Palsu** (K1, K2): `female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py` beserta test-nya.
-  - *Kriteria selesai:* persetujuan per file; pytest tetap hijau.
-  - *Bukti (2026-10-28):* Dihapus file trainer/evaluator palsu (`female_daily_indobert_trainer.py`, `female_daily_evaluator.py`, `model_evaluator.py`, `models/female_daily_evaluation_results.json`, `models/evaluation_results.json`, serta test-test terkait) dengan pre-approval user; seluruh evaluasi dialihkan ke `indobert_evaluator.py` otentik; seluruh 140 pytest passed (100% green).
-
-#### 8D. XAI Turunan & Tampilan Metrik
-- [x] **Task 8.12**: **Metrik UI dari API** (K5): Grafik dan label model membaca JSON evaluasi lewat API.
-  - *Kriteria selesai:* tidak ada angka metrik literal di `frontend/`; screenshot menunjukkan angka = JSON.
-  - *Bukti (2026-10-28):* Endpoint `GET /api/v1/model/metrics` pada `backend/api/v1/model_metrics.py` (38 LOC) menyajikan hasil evaluasi otentik pada 837 sampel `test.csv`; `frontend/js/charts.js` (160 LOC) mem-fetch metrik dari API secara dinamis; seluruh angka metrik literal lama (0.9420, 0.9395, dll.) telah dihapus dari `frontend/` (0 temuan); verifikasi visual browser sukses tercatat di `thesis_metrics_indobert_1793129041219.png`; `tests/test_api_model_metrics.py` 1 passed, 147 pytest passed.
-- [x] **Task 8.11**: **Kata Pendorong dari SHAP** (K6): `empirical_drivers.py` mengagregasi cache SHAP.
-  - *Kriteria selesai:* test membuktikan kata pendorong = agregasi cache.
-  - *Bukti (2026-10-28):* Modul `backend/services/empirical_drivers.py` (146 LOC) mengagregasi token-level attribution dari cache persistent SHAP IndoBERT; nol dependensi `joblib` dan `coef_` (teruji via `test_no_coef_or_joblib_in_empirical_drivers`); ranking kata pendorong High Trust & pemicu Low Trust terintegrasi ke REST API `GET /api/v1/analytics/brands`; seluruh 146 pytest passed.
-- [x] **Task 8.10**: **Cache SHAP per Ulasan** (K6): Hitung SHAP offline untuk ulasan katalog, API katalog membaca cache.
-  - *Kriteria selesai:* `review_explainer.py` tidak memakai `coef_`; test membaca cache.
-  - *Bukti (2026-10-28):* Modul `backend/services/catalog_shap_cacher.py` (112 LOC) mengelola cache persistent `data/cache/review_shap_cache.json` dengan hash MD5 deterministik; `backend/services/review_explainer.py` (124 LOC) membaca cache SHAP tanpa `coef_` (teruji via test inspeksi AST/source code `test_review_explainer_does_not_use_coef`); endpoint katalog `backend/api/v1/catalog.py` (251 LOC) mengintegrasikan sorotan kata berbasis SHAP otentik; seluruh 142 pytest passed.
-
 #### 8C. Integrasi Backend
 - [x] **Task 8.9**: **SHAP Sungguhan di `/explain`** (K6): Pakai pustaka `shap` pada model IndoBERT, dengan cache.
   - *Kriteria selesai:* test membuktikan atribusi berasal dari `shap`; waktu respons tercatat.

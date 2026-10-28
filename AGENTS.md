@@ -198,3 +198,13 @@ Every run of "e"/"enhance" or "n"/"next"/"n{x}" must produce its own log file in
   3. Delivery Gate anti-slop: PASS/FAIL per butir dengan bukti.
   4. Screenshot `browser_subagent` di ketiga lebar (§8).
 
+## 16. Verifikasi Kriteria Selesai (Pelajaran Audit 2026-10-28)
+Aturan ini lahir dari audit lintas model: beberapa task ditandai `[x]` padahal kriteria tertulisnya belum terbukti.
+- **Kriteria tertulis = definisi selesai**: task baru boleh `[x]` jika *setiap* kalimat di "Kriteria selesai" terbukti. Test hijau saja tidak cukup bila kriteria menyebut hal lain.
+- **Cek seluruh cakupan**: jika kriteria menyebut "seluruh `index.html`" atau "semua kategori", periksa semuanya (grep seluruh file), bukan satu bagian saja.
+- **Cakupan data wajib disebut**: klaim berbasis cache/sampel harus menulis angka cakupan, mis. `41 / 8.365 ulasan`. Dilarang membuat fallback yang menempelkan data milik entitas lain (mis. kata global dilabeli sebagai driver brand tertentu).
+- **Klaim visual = screenshot semua layar terdampak**: jika perubahan menyentuh beberapa panel, setiap panel wajib di-screenshot, bukan hanya hero.
+- **Dilarang klaim tanpa bukti**: tidak boleh menulis "100%", durasi riset, atau "sudah diuji" tanpa output terminal/screenshot yang menyertainya.
+- **Hormati batas instruksi**: jika user bilang "jangan ubah project", jangan menulis file apa pun ke dalam repo; simpan di folder artifact.
+- **Hormati urutan dependensi task**: task bertanda "setelah X" tidak boleh dikerjakan sebelum X selesai.
+
