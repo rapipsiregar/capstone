@@ -38,7 +38,7 @@ async function renderHistoryWithPagination(page = 1) {
     return;
   }
   if (!logs.length) {
-    tbody.innerHTML = '<tr><td colspan="7" class="text-center"><div class="state-box" role="status"><strong>Belum ada log inferensi tersimpan</strong><p>Uji kalimat ulasan di Simulasi XAI; hasilnya akan tercatat di sini.</p><a class="btn btn-secondary" href="#/sandbox">Buka Simulasi XAI</a></div></td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="text-center"><div class="state-box" role="status"><strong>Belum ada log inferensi tersimpan</strong><p>Ulasan yang diproses lewat endpoint API akan tercatat di sini.</p><a class="btn btn-secondary" href="#/">Buka direktori brand</a></div></td></tr>';
     updatePaginationControls(0, 0, 1, 1);
     return;
   }

@@ -93,7 +93,7 @@
       const info = data.product_info || {};
       if (!data.total_reviews) {
         dossier.innerHTML = '';
-        feed.innerHTML = stateBox('empty', `Belum ada ulasan untuk "${product}"`, 'Produk ini tidak ditemukan di dataset ulasan. Uji kalimat ulasan sendiri di Simulasi XAI.', 'Buka Simulasi XAI', '#/sandbox');
+        feed.innerHTML = stateBox('empty', `Belum ada ulasan untuk "${product}"`, 'Produk ini tidak ditemukan di dataset ulasan. Pilih produk lain dari direktori brand.', 'Buka direktori brand', '#/');
         return;
       }
       if (!brand) window.charmRouter.setCrumbs([{ label: 'Katalog', href: '#/' }, { label: info.brand_name, href: brandHref(info.brand_name) }, { label: info.product_name }]);

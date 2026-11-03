@@ -25,21 +25,24 @@ def test_symmetric_header_breadcrumb_brand_search():
 
 
 def test_guide_nav_links_to_hash_routes():
-    for route in ['href="#/"', 'href="#/insight"', 'href="#/sandbox"', 'href="#/metrics"']:
+    for route in ['href="#/"', 'href="#/insight"', 'href="#/metrics"']:
         assert route in HTML
+    assert 'href="#/sandbox"' not in HTML
 
 
 def test_unified_l_frame_with_facets_and_sheet():
     assert 'class="frame"' in HTML and 'id="frameBody"' in HTML
     assert 'id="facetPanel"' in HTML and 'class="sheet"' in HTML
-    for view in ["directory", "brand", "detail", "insight", "sandbox", "metrics"]:
+    for view in ["directory", "brand", "detail", "insight", "metrics"]:
         assert f'data-view="{view}"' in HTML
+    assert 'data-view="sandbox"' not in HTML
 
 
 def test_router_declares_v4_routes():
     router = _js("router.js")
-    for path in ["'/'", "'/brand/products'", "'/product/detail'", "'/insight'", "'/sandbox'", "'/metrics'"]:
+    for path in ["'/'", "'/brand/products'", "'/product/detail'", "'/insight'", "'/metrics'"]:
         assert path in router
+    assert "'/sandbox'" not in router
     assert "hashchange" in router
 
 
@@ -96,7 +99,6 @@ def test_states_name_cause_and_next_step():
 def test_no_invented_fallback_numbers_in_guidebook_scripts():
     app = _js("app.js")
     assert "0.48" not in app and "0.28" not in app and "* 0.5" not in app
-    assert "0.95" not in _js("sandbox.js")
     assert "raw_text: \"" not in _js("api.js")
     assert "|| 0.9" not in _js("pagination.js")
 

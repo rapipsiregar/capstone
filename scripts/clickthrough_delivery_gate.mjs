@@ -99,32 +99,7 @@ async function runClickthrough() {
       detail: `Brand options: ${gb1Res.brandOptionsCount}, Driver pills: ${gb1Res.driverPillsCount}, Compliance: ${gb1Res.ratioText}`
     });
 
-    console.log('[6/7] Testing Guidebook 2: Simulasi XAI (#/sandbox)...');
-    await page.eval(async () => { window.location.hash = '#/sandbox'; await new Promise(r => setTimeout(r, 800)); });
-    const gb2Res = await page.eval(async () => {
-      const textarea = document.getElementById('input-review-text');
-      const btn = document.getElementById('btn-analyze-review');
-      if (!textarea || !btn) return { found: false };
-      textarea.value = 'Tekstur krim ini sangat halus dan cepat meresap di kulit wajah, bersertifikat halal dan BPOM.';
-      btn.click();
-      const resultCard = document.getElementById('xai-result-card');
-      for (let i = 0; i < 24; i++) {
-        await new Promise(r => setTimeout(r, 500));
-        if (resultCard && !resultCard.classList.contains('hidden')) break;
-      }
-      const isVisible = resultCard && !resultCard.classList.contains('hidden');
-      const label = document.getElementById('xai-trust-badge')?.textContent?.trim() || '';
-      const aspect = document.getElementById('xai-aspect-badge')?.textContent?.trim() || '';
-      const conf = document.getElementById('xai-confidence-val')?.textContent?.trim() || '';
-      return { found: true, resultVisible: isVisible, label, aspect, confidence: conf };
-    });
-    results.steps.push({
-      step: 'Guidebook 2 (Simulasi XAI IndoBERT + SHAP)',
-      status: (gb2Res.resultVisible && gb2Res.label && gb2Res.label !== '–') ? 'PASS' : 'FAIL',
-      detail: `Prediction trust: ${gb2Res.label}, Aspect: ${gb2Res.aspect}, Confidence: ${gb2Res.confidence}`
-    });
-
-    console.log('[7/7] Testing Guidebook 3: Metrik Skripsi (#/metrics)...');
+    console.log('[6/6] Testing Guidebook 2: Metrik Skripsi (#/metrics)...');
     await page.eval(async () => { window.location.hash = '#/metrics'; await new Promise(r => setTimeout(r, 1200)); });
     const gb3Res = await page.eval(() => ({
       numCols: document.querySelectorAll('.data-table th.num-col').length,
@@ -133,7 +108,7 @@ async function runClickthrough() {
       totalSplit: document.getElementById('metricsSplitTotal')?.textContent?.trim() || ''
     }));
     results.steps.push({
-      step: 'Guidebook 3 (Metrik Skripsi & Tabel Riwayat)',
+      step: 'Guidebook 2 (Metrik Skripsi & Tabel Riwayat)',
       status: (gb3Res.numCols >= 2 && gb3Res.totalSplit !== '–') ? 'PASS' : 'FAIL',
       detail: `Split total: ${gb3Res.totalSplit}, Right-aligned headers: ${gb3Res.numCols}, History rows: ${gb3Res.historyRows}`
     });

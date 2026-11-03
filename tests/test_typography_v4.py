@@ -35,3 +35,4 @@ def test_all_css_modules_use_only_defined_font_tokens():
             assert fam.strip() in ("var(--font-sans)", "var(--font-display)", "inherit"), (
                 f"Unexpected font-family '{fam}' in {css_file.name}"
             )
+

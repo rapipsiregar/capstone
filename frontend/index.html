@@ -43,7 +43,6 @@
     <nav class="guide-nav" aria-label="Navigasi utama">
       <a href="#/" data-nav="catalog">Katalog Brand</a>
       <a href="#/insight" data-nav="insight">Insight Reputasi</a>
-      <a href="#/sandbox" data-nav="sandbox">Simulasi XAI</a>
       <a href="#/metrics" data-nav="metrics">Metrik Skripsi</a>
     </nav>
 
@@ -127,35 +126,6 @@
           </div>
         </section>
 
-        <!-- Simulasi XAI (#/sandbox) -->
-        <section class="view" data-view="sandbox" aria-labelledby="sandboxTitle" hidden>
-          <div class="page-head"><div>
-            <h1 id="sandboxTitle">Simulasi XAI</h1>
-            <p>Ketik ulasan kosmetik untuk melihat prediksi aspek, kepercayaan, dan bobot kata SHAP dari IndoBERT.</p>
-          </div></div>
-          <div class="panel" id="xai-sandbox-section">
-            <div class="field"><label for="input-review-text">Teks ulasan produk kosmetik</label>
-              <textarea id="input-review-text" rows="4" placeholder="Tulis ulasan di sini, misalnya pengalaman memakai produk dan klaim halal/BPOM yang Anda lihat"></textarea></div>
-            <div class="preset-row"><span>Contoh:</span>
-              <button type="button" class="preset-btn" data-sample="Sertifikat halal jelas dari BPOM resmi dan produk asli.">Sertifikasi halal</button>
-              <button type="button" class="preset-btn" data-sample="Kandungan alami tanpa alkohol aman untuk kulit sensitif.">Kandungan bahan</button>
-              <button type="button" class="preset-btn" data-sample="Barang datang tanpa dus segel dan tidak ada logo BPOM palsu.">Layanan meragukan</button>
-            </div>
-            <div class="form-actions">
-              <div class="model-badge-info"><span class="pill">Model: IndoBERT fine-tuned</span></div>
-              <button type="button" id="btn-analyze-review" class="btn btn-primary">Analisis dan sorot kata SHAP</button>
-            </div>
-            <div id="xai-result-card" class="xai-result hidden" aria-live="polite">
-              <div class="result-head">
-                <div class="result-badges"><span id="xai-aspect-badge" class="pill">–</span><span id="xai-trust-badge" class="pill">–</span></div>
-                <div class="result-metrics"><span>Keyakinan <strong id="xai-confidence-val">–</strong></span><span>Latensi <strong id="xai-latency-val">–</strong></span></div>
-              </div>
-              <div id="xai-highlighted-text" class="token-box" role="region" aria-label="Sorotan kata SHAP"></div>
-              <p id="xai-summary-text" class="summary-text">–</p>
-            </div>
-          </div>
-        </section>
-
         <!-- Metrik Skripsi (#/metrics) -->
         <section class="view" data-view="metrics" aria-labelledby="metricsTitle" hidden>
           <div class="panel panel-soft dataset-banner">
@@ -177,7 +147,7 @@
           </div>
           <div class="panel">
             <div class="panel-head">
-              <div><h2>Riwayat inferensi</h2><p class="panel-sub">Ulasan yang pernah diproses lewat API atau Simulasi XAI.</p></div>
+              <div><h2>Riwayat inferensi</h2><p class="panel-sub">Ulasan yang pernah diproses lewat endpoint inferensi API.</p></div>
               <button type="button" id="btn-refresh-history" class="btn btn-secondary">Muat ulang riwayat</button>
             </div>
             <div class="table-wrapper">
@@ -210,7 +180,6 @@
   <script src="./js/brand-products.js?v=4"></script>
   <script src="./js/product-detail.js?v=4"></script>
   <script src="./js/charts.js?v=4"></script>
-  <script src="./js/sandbox.js?v=4"></script>
   <script src="./js/pagination.js?v=4"></script>
   <script src="./js/app.js?v=4"></script>
 </body>

@@ -6,7 +6,6 @@ authentic semantic text or SVG icons, not emojis.
 
 from pathlib import Path
 import re
-import pytest
 
 EMOJI_PATTERN = re.compile(r"[\U0001F300-\U0001FAFF\u2700-\u27BF\u2600-\u26FF]")
 
@@ -39,5 +38,5 @@ def test_index_html_headings_clean_from_emojis():
     assert "Unduh laporan CSV" in html
     assert "Pendorong High Trust" in html
     assert "Pemicu Low Trust" in html
-    assert "Simulasi XAI" in html
-    assert "Model: IndoBERT fine-tuned" in html
+    assert "Metrik Skripsi" in html
+    assert "Simulasi XAI" not in html

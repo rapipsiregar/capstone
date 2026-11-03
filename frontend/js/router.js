@@ -3,7 +3,7 @@
  *   #/                                  -> Direktori Brand (facets in query: category, halal, bpom, rating, page)
  *   #/brand/products?brand={name}       -> Produk Brand
  *   #/product/detail?id={product name}  -> Detail Produk, Ulasan & XAI
- *   #/insight  #/sandbox  #/metrics     -> Guidebook
+ *   #/insight  #/metrics                -> Guidebook
  * Hash routing is used because the static frontend server has no SPA rewrite for real paths.
  */
 
@@ -12,10 +12,9 @@ const ROUTES = {
   '/brand/products': { view: 'brand', nav: 'catalog', wide: false },
   '/product/detail': { view: 'detail', nav: 'catalog', wide: true },
   '/insight': { view: 'insight', nav: 'insight', wide: true, title: 'Insight Reputasi' },
-  '/sandbox': { view: 'sandbox', nav: 'sandbox', wide: true, title: 'Simulasi XAI' },
   '/metrics': { view: 'metrics', nav: 'metrics', wide: true, title: 'Metrik Skripsi' }
 };
-const LEGACY_HASH = { katalog: '/', reputation: '/', insight: '/insight', sandbox: '/sandbox', metrics: '/metrics' };
+const LEGACY_HASH = { katalog: '/', reputation: '/', insight: '/insight', metrics: '/metrics' };
 
 window.charmViews = window.charmViews || {};
 let lastRouteKey = null;

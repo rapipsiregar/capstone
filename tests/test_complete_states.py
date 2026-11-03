@@ -26,19 +26,16 @@ def test_catalog_levels_have_cause_and_action_states():
     assert "Tidak ada produk yang cocok" in brand
     assert "Tampilkan semua produk" in brand
 
-    # Detail Produk empty state points to the XAI simulator
+    # Detail Produk empty state points back to the brand directory
     assert "Belum ada ulasan untuk" in detail
-    assert "'#/sandbox'" in detail
+    assert "'#/'" in detail
 
 
-def test_pagination_and_sandbox_states():
-    """pagination.js and sandbox.js must display helpful empty/error states."""
+def test_pagination_states():
+    """pagination.js must display helpful empty/error states."""
     pagination_js = (FRONTEND_JS / "pagination.js").read_text(encoding="utf-8")
-    sandbox_js = (FRONTEND_JS / "sandbox.js").read_text(encoding="utf-8")
-
     assert "Belum ada log inferensi tersimpan" in pagination_js
-    assert "Teks ulasan masih kosong" in sandbox_js
-    assert "alert(" not in sandbox_js
+    assert "'#/sandbox'" not in pagination_js
 
 
 def test_state_screenshots_captured_in_artifacts():

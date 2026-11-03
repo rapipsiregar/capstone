@@ -7,7 +7,6 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const exportLink = document.getElementById('btnExportSummary');
   if (exportLink) exportLink.href = `${API_BASE_URL}/export/summary?format=csv`;
-  if (typeof bindSandboxEvents === 'function') bindSandboxEvents();
   if (typeof bindPaginationEvents === 'function') bindPaginationEvents();
   document.getElementById('btn-refresh-history')?.addEventListener('click', () => renderHistoryWithPagination(1));
   bindFilterEvents();
@@ -19,7 +18,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 window.charmViews = window.charmViews || {};
 window.charmViews.insight = { render: () => setTimeout(() => window.refreshCurrentAnalyticsCharts(), 40) };
-window.charmViews.sandbox = { render: () => {} };
 window.charmViews.metrics = { render: () => setTimeout(() => renderComparisonChart(), 40) };
 
 async function populateAllBrandsDropdown() {

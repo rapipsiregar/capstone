@@ -44,7 +44,7 @@ Skala (5 ukuran): `--fs-1` 12px (meta), `--fs-2` 14px (UI, label), `--fs-3` 16px
 
 ## 4. Layout
 
-- **Header simetris:** breadcrumb kiri, logo + "CHARM" tengah, pill pencarian kanan; latar `#F5AFAF`. Di bawahnya baris navigasi tenang: Katalog Brand · Insight Reputasi · Simulasi XAI · Metrik Skripsi.
+- **Header simetris:** breadcrumb kiri, logo + "CHARM" tengah, pill pencarian kanan; latar `#F5AFAF`. Di bawahnya baris navigasi tenang: Katalog Brand · Insight Reputasi · Metrik Skripsi.
   *Alasan:* mockup V4 menempatkan merek di tengah; navigasi guidebook harus tetap terjangkau tanpa menu admin.
 - **Unified L-Frame:** header + sidebar duduk di kanvas `#FBEFEF` yang sama, membungkus floating sheet `#FCF8F8`.
 - **Faceted Skincare Filter (sidebar):** Pilih Brand, Kategori Skincare, Klaim di Ulasan (Halal / BPOM), Rating Konsumen. Halaman Detail dan Guidebook memakai sheet lebar penuh tanpa sidebar.
