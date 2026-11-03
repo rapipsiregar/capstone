@@ -81,10 +81,11 @@
     pager.innerHTML = '';
 
     if (!product) {
-      dossier.innerHTML = '';
+      dossier.innerHTML = '<div><h1>Produk belum dipilih</h1></div>';
       feed.innerHTML = stateBox('empty', 'Produk belum dipilih', 'Buka sebuah brand lalu pilih produk untuk membaca ulasannya.', 'Buka direktori brand', '#/');
       return;
     }
+    dossier.innerHTML = `<div><h1>${window.charmUI.esc(product)}</h1></div>`;
     feed.innerHTML = stateBox('loading', 'Memuat ulasan dan bobot SHAP...', `Mengambil ulasan asli untuk "${product}".`);
 
     try {

@@ -93,10 +93,11 @@
     pager.innerHTML = '';
 
     if (!f.brand) {
-      banner.innerHTML = '';
+      banner.innerHTML = '<div><h1>Brand belum dipilih</h1></div>';
       grid.innerHTML = stateBox('empty', 'Brand belum dipilih', 'Pilih brand dari direktori untuk melihat produknya.', 'Buka direktori brand', '#/');
       return;
     }
+    banner.innerHTML = `<div><h1>${window.charmUI.esc(f.brand)}</h1></div>`;
     grid.innerHTML = stateBox('loading', `Memuat produk ${f.brand}...`, 'Mengambil daftar produk dan jumlah ulasan.');
 
     try {

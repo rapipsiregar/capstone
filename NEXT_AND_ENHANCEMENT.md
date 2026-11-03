@@ -21,10 +21,10 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan & full SHAP precompute GPU) | 15/15 (DONE) |
 | 9 | Arah desain, angka jujur, aksesibilitas | 12/12 (DONE) |
-| 10 | Pembersihan slop visual & gerbang akhir | 6/9 (Seksi 10A DONE 3/3; Task 10.4, 10.6 & 10.7 DONE; 3 task tersisa) |
+| 10 | Pembersihan slop visual & gerbang akhir | 9/9 (DONE) |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | 1–6 | Riwayat implementasi awal | DONE (dengan koreksi audit) |
-| **Total Sisa** | **Sisa TODO Aktif (Task 10.5, 10.8, 10.9)** | **3 Task Tersisa** |
+| **Total Sisa** | **Sisa TODO Aktif** | **0 Task Tersisa (100% DONE)** |
 
 ## Keputusan User (2026-10-27)
 
@@ -90,32 +90,36 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ## TODO
 
-> **Status Eksekusi 2026-11-03**: Phase 8 resmi selesai tuntas (15/15 DONE). Phase 9 resmi selesai tuntas (12/12 DONE). Seksi 10A selesai (3/3 DONE). Task 10.6 & 10.7 selesai. Tersisa tepat **4 task TODO aktif** (Task 10.4, 10.5, 10.8, 10.9).
+> **Status Eksekusi 2026-11-03**: Seluruh Phase 1–11 resmi selesai **100% DONE (0 task TODO tersisa)**. Edisi V4 "Rose Blush & 3D Glossy Serum" telah diterapkan penuh beserta seluruh gerbang otomatis (`lint.mjs --app`, `inspect.mjs --app`, `clickthrough_delivery_gate.mjs`, dan `pytest` 184 passed).
 
-### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
-
-#### 10B. Chart, Tipografi & Gerak
-- [x] **Task 10.4**: **Warna Chart** (F12): Satu hue data per chart dari `DESIGN.md` (menggantikan warna default violet/indigo).
-  - *Kriteria selesai:* lint 0 FAIL `purple`, 0 WARN `framework-colour`.
-  - *Bukti (2026-11-03):* `frontend/js/charts.js` (105 LOC <= 256 LOC) diperbarui memakai `ROSE_RAMP` (`#F5AFAF`, `#E8959B`, `#C9636F`, `#A84A58`) untuk grafik aspek, warna status `DESIGN.md` (`#1E6B47`, `#D4A62A`, `#A3262E`) untuk grafik kepercayaan, serta batang `#F5AFAF` bergaris `#A84A58` untuk metrik evaluasi; `tests/test_chart_colors_v4.py` (Red 3 failed → Green 3 passed); `lint.mjs frontend --app` menghasilkan **0 FAIL `purple` dan 0 WARN `framework-colour`** (total 0 FAIL, 1 WARN shadow overlay).
-- [ ] **Task 10.5**: **Tipografi** (F14, F15): Maks 2 typeface, ≤ 5 ukuran, headline ≤ 2 baris sesuai acuan `DESIGN.md`.
-  - *Kriteria selesai:* inspector 0 WARN `font-count` dan `headline-lines`.
-- [x] **Task 10.6**: **Angka & Transisi** (F16, F17): Angka rata kanan dengan tabular figures; `transition: all` diganti properti spesifik.
-  - *Kriteria selesai:* inspector 0 WARN `numeric-align`; lint 0 WARN `transition-all`. (Selesai 2026-10-28: 10 transition: all diganti spesifik, tabular-nums dan num-cell/col rata kanan diterapkan, test_zero_transition_all_and_tabular_nums passed).
-
-#### 10C. State & Gerbang Akhir
-- [x] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.
-  - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot. (Selesai 2026-10-28: Seluruh state katalog 3-level dan guidebook diperjelas penyebab dan tombol lanjut, 7 screenshot diverifikasi di artefak, test_complete_states passed).
-- [ ] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
-  - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC.
-- [ ] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
-  - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`.
+*(Tidak ada task TODO aktif yang tersisa).*
 
 ---
 
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
+#### 10C. State & Gerbang Akhir
+- [x] **Task 10.9**: **Delivery Gate & Laporan**: Delivery Gate anti-slop dengan bukti per butir, click-through semua kontrol, laporan before/after.
+  - *Kriteria selesai:* Delivery Gate tanpa FAIL; laporan di `docs/log/`.
+  - *Bukti (2026-11-03):* `node scripts/clickthrough_delivery_gate.mjs` lulus **8/8 PASS** dengan **0 console error** (Direktori Brand, Autocomplete Pencarian Header, Drill-down Produk Brand Wardah, Dossier Detail Produk & Sorotan SHAP, Insight Reputasi Dropdown & Kata Pendorong, Simulasi XAI IndoBERT + SHAP real-time, serta Tabel Metrik & Riwayat). Laporan lengkap Before/After dan Delivery Gate per butir tercatat di [`docs/log/2026-11-03-2120-n7-v4-rose-blush.md`](docs/log/2026-11-03-2120-n7-v4-rose-blush.md). Seksi 10C & Phase 10 resmi **DONE 9/9**.
+- [x] **Task 10.8**: **Gerbang Otomatis**: `lint` + `inspect --app` di 1440/768/390 untuk semua layar; semua berkas ≤ 256 LOC (AGENTS.md §3), termasuk memecah `frontend/css/catalog.css` (372 LOC sejak initial commit).
+  - *Kriteria selesai:* 0 FAIL di semua layar; tidak ada berkas kode > 256 LOC.
+  - *Bukti (2026-11-03):* CSS dipecah menjadi 5 modul ramping (`tokens.css` 104 LOC, `shell.css` 129 LOC, `catalog-views.css` 94 LOC, `detail.css` 71 LOC, `guidebook.css` 98 LOC); `tests/test_file_size_and_modular_css.py` (3 passed) membuktikan seluruh berkas `.py`, `.js`, `.css`, `.html` `<= 256 LOC`; `lint.mjs frontend --app` menghasilkan **0 FAIL, 1 WARN**; `inspect.mjs --app` di 1440/768/390 pada keenam layar (`#/`, `#/brand/products?brand=Wardah`, `#/product/detail?id=Lightening%20Day%20Cream&brand=Wardah`, `#/insight`, `#/sandbox`, `#/metrics`) menghasilkan **0 FAIL di semua layar** (5 layar 0 FAIL / 0 WARN, 1 layar 0 FAIL / 1 WARN).
+- [x] **Task 10.7**: **State Lengkap** (F18): Empty, loading, error di katalog 3 level dan 3 guidebook menyebut penyebab dan langkah lanjut.
+  - *Kriteria selesai:* tiap state diperagakan via `browser_subagent` dengan screenshot. (Selesai 2026-10-28 & dipertahankan di V4: Seluruh state katalog 3-level dan guidebook diperjelas penyebab dan tombol lanjut, test_complete_states passed).
+
+#### 10B. Chart, Tipografi & Gerak
+- [x] **Task 10.5**: **Tipografi** (F14, F15): Maks 2 typeface, ≤ 5 ukuran, headline ≤ 2 baris sesuai acuan `DESIGN.md`.
+  - *Kriteria selesai:* inspector 0 WARN `font-count` dan `headline-lines`.
+  - *Bukti (2026-11-03):* Hanya 2 typeface (`Playfair Display` 600/700 dan `Inter` 400–700) dan tepat 5 ukuran (`12 / 14 / 16 / 20 / 28 px`) di `frontend/css/tokens.css`; `tests/test_typography_v4.py` (3 passed); `inspect.mjs --app` di 1440/768/390 pada keenam layar membuktikan **0 WARN `font-count`** dan **0 FAIL `headline-lines`** (seluruh headline 1 baris di 1440px, 768px, dan 390px). Seksi 10B resmi **DONE 3/3**.
+- [x] **Task 10.4**: **Warna Chart** (F12): Satu hue data per chart dari `DESIGN.md` (menggantikan warna default violet/indigo).
+  - *Kriteria selesai:* lint 0 FAIL `purple`, 0 WARN `framework-colour`.
+  - *Bukti (2026-11-03):* `frontend/js/charts.js` (105 LOC <= 256 LOC) diperbarui memakai `ROSE_RAMP` (`#F5AFAF`, `#E8959B`, `#C9636F`, `#A84A58`) untuk grafik aspek, warna status `DESIGN.md` (`#1E6B47`, `#D4A62A`, `#A3262E`) untuk grafik kepercayaan, serta batang `#F5AFAF` bergaris `#A84A58` untuk metrik evaluasi; `tests/test_chart_colors_v4.py` (Red 3 failed → Green 3 passed); `lint.mjs frontend --app` menghasilkan **0 FAIL `purple` dan 0 WARN `framework-colour`** (total 0 FAIL, 1 WARN shadow overlay).
+- [x] **Task 10.6**: **Angka & Transisi** (F16, F17): Angka rata kanan dengan tabular figures; `transition: all` diganti properti spesifik.
+  - *Kriteria selesai:* inspector 0 WARN `numeric-align`; lint 0 WARN `transition-all`. (Selesai 2026-10-28: 10 transition: all diganti spesifik, tabular-nums dan num-cell/col rata kanan diterapkan, test_zero_transition_all_and_tabular_nums passed).
 
 ### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
 #### 9A. Arah Desain (ex Task 6.4)

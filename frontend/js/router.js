@@ -50,7 +50,9 @@ function showRoute() {
   lastRouteKey = key;
 
   document.querySelectorAll('.view').forEach(section => {
-    section.hidden = section.dataset.view !== route.view;
+    const active = section.dataset.view === route.view;
+    section.hidden = !active;
+    if (active && section.parentElement) section.parentElement.prepend(section);
   });
   document.getElementById('frameBody')?.classList.toggle('is-wide', route.wide);
   document.querySelectorAll('.guide-nav a').forEach(a => {
