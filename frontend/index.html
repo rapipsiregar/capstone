@@ -109,18 +109,17 @@
               <div class="panel"><h2>Aspek apa yang paling sering dibahas?</h2><div class="chart-box"><canvas id="aspectChart" aria-label="Grafik distribusi aspek komunikasi"></canvas></div></div>
               <div class="panel"><h2>Berapa porsi ulasan High, Neutral, dan Low Trust?</h2><div class="chart-box"><canvas id="trustChart" aria-label="Grafik distribusi kepercayaan"></canvas></div></div>
             </div>
-            <aside class="insight-side" id="rightSidebarAnalytics" aria-label="Kata pendorong dan klaim">
+            <aside class="insight-side" id="rightSidebarAnalytics" aria-label="Kata pendorong dan faktor kepercayaan">
               <div class="panel driver-group">
                 <h2>Kata pendorong SHAP (<span id="insightCardBrandTitle">Semua brand</span>)</h2>
                 <p class="panel-sub">Kata dengan bobot SHAP terbesar dari model IndoBERT.</p>
                 <h3 class="is-high">Pendorong High Trust</h3><div id="highTrustDriversList" class="driver-list"></div>
                 <h3 class="is-low">Pemicu Low Trust</h3><div id="lowTrustDriversList" class="driver-list"></div>
               </div>
-              <div class="panel">
-                <h2>Klaim halal dan BPOM di ulasan</h2>
-                <div class="meter-row"><span>Ulasan yang menyebut klaim</span><b id="halalComplianceRatioText">–</b></div>
-                <div class="meter"><div id="halalComplianceProgressBar" class="meter-fill"></div></div>
-                <p class="note">Dari <span id="complianceInfoReviewCount">–</span> ulasan Female Daily. Angka ini menghitung penyebutan klaim di teks ulasan, bukan sertifikat resmi.</p>
+              <div class="panel" id="trustFactorMapPanel">
+                <h2>Peta faktor pembentuk kepercayaan</h2>
+                <p class="panel-sub">Proporsi 4 aspek komunikasi dari <span id="factorMapReviewCount">–</span> ulasan teranalisis.</p>
+                <div id="trustFactorMapList" class="factor-map-list">Memuat peta faktor...</div>
               </div>
             </aside>
           </div>

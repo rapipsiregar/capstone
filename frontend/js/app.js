@@ -104,10 +104,10 @@ async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', produc
   const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
   set('stat-total-reviews', Number(stats.total).toLocaleString('id-ID'));
   set('stat-high-trust', `${stats.highTrustPct}%`);
-  set('stat-top-aspect', String(stats.topAspect).replace(/_/g, ' '));
+  set('stat-top-aspect', window.charmUI.aspectLabel(stats.topAspect));
   renderAspectChart(stats.aspectCounts);
   if (stats.trustCounts) renderTrustChart(stats.trustCounts);
-  renderRightSidebarAnalytics(brandName, stats.trust_drivers, stats.compliance);
+  renderRightSidebarAnalytics(brandName, stats.trust_drivers, stats.aspectCounts, stats.total);
 }
 
 window.refreshCurrentAnalyticsCharts = function () {
@@ -143,17 +143,30 @@ function bindFilterEvents() {
   product?.addEventListener('change', reload);
 }
 
-function renderRightSidebarAnalytics(brandName = 'ALL', drivers = null, compliance = null) {
+function renderRightSidebarAnalytics(brandName = 'ALL', drivers = null, aspectCounts = null, totalReviews = 0) {
   renderBrandTrustInsightCard(brandName, drivers);
-  if (compliance) {
-    const pct = compliance.compliance_percentage || `${Math.round((compliance.compliance_ratio || 0) * 100)}%`;
-    const bar = document.getElementById('halalComplianceProgressBar');
-    const text = document.getElementById('halalComplianceRatioText');
-    const count = document.getElementById('complianceInfoReviewCount');
-    if (bar) bar.style.width = pct;
-    if (text) text.textContent = `${pct} (${compliance.either_count} dari ${compliance.total_reviews})`;
-    if (count) count.textContent = Number(compliance.total_reviews).toLocaleString('id-ID');
+  renderTrustFactorMap(aspectCounts, totalReviews);
+}
+
+/** Proportional breakdown of the 4 communication aspects driving consumer trust (Solusi 4). */
+function renderTrustFactorMap(aspectCounts = null, totalReviews = 0) {
+  const listEl = document.getElementById('trustFactorMapList');
+  const countEl = document.getElementById('factorMapReviewCount');
+  const { esc, fmtNum, aspectLabel } = window.charmUI;
+  const entries = Object.entries(aspectCounts || {}).sort((a, b) => b[1] - a[1]);
+  const total = totalReviews || entries.reduce((sum, [, v]) => sum + Number(v || 0), 0);
+  if (countEl) countEl.textContent = fmtNum(total);
+  if (!listEl) return;
+  if (!entries.length || !total) {
+    listEl.innerHTML = '<span class="muted">Belum ada data aspek untuk filter ini.</span>';
+    return;
   }
+  listEl.innerHTML = entries.map(([key, count]) => {
+    const pct = ((Number(count) / total) * 100).toFixed(1);
+    return `
+      <div class="meter-row"><span>${esc(aspectLabel(key))}</span><b>${pct}% (${fmtNum(count)})</b></div>
+      <div class="meter"><div class="meter-fill" style="width:${pct}%"></div></div>`;
+  }).join('');
 }
 
 /** SHAP driver words from the API (IndoBERT SHAP cache); empty lists show an honest note. */

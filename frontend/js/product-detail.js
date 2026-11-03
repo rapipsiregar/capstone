@@ -22,19 +22,16 @@
   }
 
   function dossierHtml(info, total) {
-    const { esc, fmtNum, fmtRating, photoHtml, brandHref, prettyLabel } = window.charmUI;
+    const { esc, fmtNum, fmtRating, photoHtml, brandHref, prettyLabel, trustSourcePills } = window.charmUI;
     const aspects = Object.entries(info.aspect_distribution || {}).sort((a, b) => b[1] - a[1]);
     const trust = info.trust_distribution || {};
-    const claims = [
-      info.halal_claim ? '<span class="pill pill-claim">Klaim halal disebut di ulasan</span>' : '',
-      info.bpom_claim ? '<span class="pill pill-claim">Klaim BPOM disebut di ulasan</span>' : ''
-    ].join('');
+    const topAspect = aspects[0] ? aspects[0][0] : '';
     return `
       ${photoHtml(info.photo, info.product_name)}
       <div>
         <span class="dossier-label"><a href="${esc(brandHref(info.brand_name))}">${esc(info.brand_name)}</a> · ${esc(info.category_name)}</span>
         <h1>${esc(info.product_name)}</h1>
-        <div class="dossier-claims">${claims}</div>
+        <div class="dossier-claims">${trustSourcePills(info.high_trust_pct, topAspect)}</div>
         <div class="stat-row">
           <div class="stat-box"><strong class="is-trust">${info.high_trust_pct ?? 0}%</strong><span>Ulasan High Trust</span></div>
           <div class="stat-box"><strong class="is-accent">${fmtRating(info.avg_rating)}</strong><span>Rata-rata rating</span></div>

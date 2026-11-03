@@ -8,9 +8,10 @@ Urutan prioritas aturan: `AGENTS.md` > `DESIGN.md` > anti-slop > taste-skill. Se
 - **Jenis:** *app screen* (taste-skill `references/app-screens.md`), bukan landing page.
   *Alasan:* pengguna datang untuk menelusuri brand, produk, dan ulasan, lalu membaca alasan model. Tidak ada funnel pemasaran.
 - **Keputusan utama per layar:**
-  - Direktori Brand: "brand mana yang ingin saya periksa?" Kartu brand menampilkan jumlah produk, ulasan, rating, dan jumlah ulasan yang menyebut klaim halal/BPOM.
-  - Produk Brand: "produk mana yang ulasannya ingin saya baca?" Kartu produk tanpa tombol berulang; seluruh kartu adalah tautan.
+  - Direktori Brand: "brand mana yang ingin saya periksa?" Kartu brand menampilkan jumlah produk, ulasan, rating, persentase kepercayaan tinggi (`% Kepercayaan Tinggi`), dan aspek komunikasi utama pembentuk kepercayaan (`Unggul di: [Aspek Dominan]`).
+  - Produk Brand: "produk mana yang ulasannya ingin saya baca?" Kartu produk tanpa tombol berulang; seluruh kartu adalah tautan yang menampilkan persentase kepercayaan tinggi dan aspek dominannya.
   - Detail Produk & XAI: "kenapa ulasan ini dinilai High/Low Trust?" Teks ulasan dengan sorotan kata SHAP adalah isi utama halaman.
+  - Insight Reputasi: "faktor apa yang membentuk kepercayaan konsumen pada brand/produk ini?" Sidebar kanan menyajikan kata pendorong SHAP dan **Peta Faktor Pembentuk Kepercayaan** (proporsi 4 aspek komunikasi dari ulasan teranalisis).
 
 ## 2. Palet (proporsi 60-25-10-5)
 
@@ -47,7 +48,7 @@ Skala (5 ukuran): `--fs-1` 12px (meta), `--fs-2` 14px (UI, label), `--fs-3` 16px
 - **Header simetris:** breadcrumb kiri, logo + "CHARM" tengah, pill pencarian kanan; latar `#F5AFAF`. Di bawahnya baris navigasi tenang: Katalog Brand · Insight Reputasi · Metrik Skripsi.
   *Alasan:* mockup V4 menempatkan merek di tengah; navigasi guidebook harus tetap terjangkau tanpa menu admin.
 - **Unified L-Frame:** header + sidebar duduk di kanvas `#FBEFEF` yang sama, membungkus floating sheet `#FCF8F8`.
-- **Faceted Skincare Filter (sidebar):** Pilih Brand, Kategori Skincare, Klaim di Ulasan (Halal / BPOM), Rating Konsumen. Halaman Detail dan Guidebook memakai sheet lebar penuh tanpa sidebar.
+- **Faceted Skincare Filter (sidebar):** Pilih Brand, Kategori Skincare, Aspek Pembentuk Kepercayaan (`Efikasi & Manfaat`, `Kandungan & Sensitivitas`, `Harga & Kemasan`, `Legalitas & Keaslian`), dan Tingkat Kepercayaan & Rating (`Kepercayaan Tinggi ≥ 50%`, `Rata-rata ≥ 4.0`). Halaman Detail dan Guidebook memakai sheet lebar penuh tanpa sidebar.
 - **Responsif:** 1440px (sidebar 220px + sheet), 768px (sidebar menjadi panel di atas sheet), 390px (satu kolom, header bertumpuk; pill pencarian lebar penuh).
 - **Radius:** 12px untuk frame/sheet, 8px untuk kartu, 9999px hanya untuk pill dan pencarian.
 

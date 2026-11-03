@@ -317,7 +317,7 @@ Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang
 - [x] **Task 3.3**: **Endpoint `/explain`** (`backend/api/v1/explain.py`). *Koreksi audit:* atribusi dari bobot linear, bukan SHAP (K6 → Task 8.9).
 - [x] **Task 3.2**: **Endpoint `/predict`** (`backend/api/v1/predict.py`). *Koreksi audit:* memakai TF-IDF + LinearSVC, bukan `indobert-base-p1` (K4 → Task 8.8).
 - [x] **Task 3.1**: **Inisialisasi FastAPI, CORS, Router, Health** (`backend/main.py`).
-- [x] **Task 2.4**: **Integrasi SHAP** (`backend/services/xai_explainer.py`). *Koreksi audit:* modul tidak mengimpor `shap` (K6 → Task 8.9).
+- [x] **Task 2.4**: **Integrasi SHAP** (`backend/services/xai_explainer.py`). *Koreksi audit:* modul tidak mengimpor `shap` (K6 → Task 8.9).k
 - [x] **Task 2.3**: **Evaluasi Model** (`backend/services/model_evaluator.py`). *Koreksi audit:* tergantikan evaluator jujur (→ Task 8.6, 8.13).
 - [x] **Task 2.2**: **Pipeline Fine-Tuning & Notebook Colab** (`indobert_trainer.py`, `docs/notebooks/IndoBERT_Halal_Cosmetics_Finetuning.ipynb`). *Koreksi audit:* trainer melatih TF-IDF + LinearSVC; notebook belum pernah dijalankan untuk menghasilkan model yang dipakai (K4 → Task 8.4).
 - [x] **Task 2.1**: **Arsitektur Klasifikasi Ganda** (`backend/services/indobert_trainer.py`). *Koreksi audit:* lihat Task 2.2.

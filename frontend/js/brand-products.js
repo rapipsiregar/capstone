@@ -9,8 +9,8 @@
     return {
       brand: params.get('brand') || '',
       category: params.get('category') || '',
-      halal: params.get('halal') === '1',
-      bpom: params.get('bpom') === '1',
+      aspect: (params.get('aspect') || '').split(',').filter(Boolean),
+      highTrust: params.get('high_trust') === '1',
       rating: params.get('rating') === '4',
       page: Math.max(1, parseInt(params.get('page') || '1', 10) || 1)
     };
@@ -19,7 +19,7 @@
   function hrefFor(f, patch = {}) {
     const n = { ...f, page: 1, ...patch };
     return window.charmUI.routeWith('/brand/products', {
-      brand: n.brand, category: n.category, halal: n.halal ? 1 : '', bpom: n.bpom ? 1 : '',
+      brand: n.brand, category: n.category, aspect: n.aspect, high_trust: n.highTrust ? 1 : '',
       rating: n.rating ? 4 : '', page: n.page > 1 ? n.page : ''
     });
   }
@@ -27,12 +27,13 @@
   function renderFacets(f, profile) {
     const panel = document.getElementById('facetPanel');
     if (!panel) return;
-    const { esc, fmtNum } = window.charmUI;
+    const { esc, fmtNum, aspectLabel } = window.charmUI;
     const cats = profile ? profile.categories : [];
+    const aspects = profile ? (profile.aspects || []) : [];
     const radio = (value, label, count) => `
       <label class="facet-option"><input type="radio" name="brandCategory" value="${esc(value)}" ${f.category === value ? 'checked' : ''}>
       <span>${esc(label)}</span><span class="facet-count">${fmtNum(count)}</span></label>`;
-    const check = (id, label, checked) => `<label class="facet-option"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''}><span>${label}</span></label>`;
+    const check = (id, label, checked, count = null) => `<label class="facet-option"><input type="checkbox" id="${id}" ${checked ? 'checked' : ''}><span>${label}</span>${count !== null ? `<span class="facet-count">${fmtNum(count)}</span>` : ''}</label>`;
 
     panel.innerHTML = `
       <a class="btn-link" href="#/">&larr; Kembali ke direktori brand</a>
@@ -43,41 +44,46 @@
         <p class="facet-note">Angka = jumlah produk.</p>
       </div>
       <div class="facet-group">
-        <h2>Klaim di ulasan</h2>
-        ${check('brandHalal', 'Halal disebut', f.halal)}
-        ${check('brandBpom', 'BPOM disebut', f.bpom)}
-        <p class="facet-note">Produk yang ulasannya menyebut klaim tersebut.</p>
+        <h2>Aspek pembentuk kepercayaan</h2>
+        ${aspects.map((a, i) => check(`brandAsp${i}`, esc(aspectLabel(a.aspect_key)), f.aspect.includes(a.aspect_key), a.product_count).replace('<input', `<input data-aspect="${esc(a.aspect_key)}"`)).join('')}
+        <p class="facet-note">Aspek komunikasi dominan pada ulasan produk.</p>
       </div>
       <div class="facet-group">
-        <h2>Rating konsumen</h2>
+        <h2>Tingkat kepercayaan & rating</h2>
+        ${check('brandHighTrust', 'Kepercayaan Tinggi ≥ 50%', f.highTrust, profile ? profile.high_trust_products : null)}
         ${check('brandRating', 'Rata-rata ≥ 4.0', f.rating)}
       </div>`;
 
     const go = window.charmRouter.go;
     panel.querySelectorAll('input[name="brandCategory"]').forEach(r => r.addEventListener('change', () => go(hrefFor(f, { category: r.value }))));
-    panel.querySelector('#brandHalal').addEventListener('change', e => go(hrefFor(f, { halal: e.target.checked })));
-    panel.querySelector('#brandBpom').addEventListener('change', e => go(hrefFor(f, { bpom: e.target.checked })));
+    panel.querySelectorAll('input[data-aspect]').forEach(input => input.addEventListener('change', () => {
+      const key = input.dataset.aspect;
+      const aspect = input.checked ? [...f.aspect, key] : f.aspect.filter(a => a !== key);
+      go(hrefFor(f, { aspect }));
+    }));
+    panel.querySelector('#brandHighTrust')?.addEventListener('change', e => go(hrefFor(f, { highTrust: e.target.checked })));
     panel.querySelector('#brandRating').addEventListener('change', e => go(hrefFor(f, { rating: e.target.checked })));
   }
 
   function bannerHtml(p) {
-    const { esc, fmtNum, fmtRating, claimPills } = window.charmUI;
+    const { esc, fmtNum, fmtRating, trustSourcePills } = window.charmUI;
     return `
       <div>
-        <div class="brand-banner-line"><h1>${esc(p.brand_name)}</h1>${claimPills(p.halal_mentions, p.bpom_mentions)}</div>
+        <div class="brand-banner-line"><h1>${esc(p.brand_name)}</h1>${trustSourcePills(p.high_trust_pct, p.top_aspect)}</div>
         <p>${fmtNum(p.product_count)} produk · ${fmtNum(p.review_count)} ulasan teranotasi · ${p.high_trust_pct}% ulasan High Trust</p>
       </div>
       <div class="banner-figure"><strong>${fmtRating(p.avg_rating)}</strong><span>Rata-rata rating konsumen</span></div>`;
   }
 
   function productCard(p) {
-    const { esc, fmtNum, fmtRating, photoHtml, productHref } = window.charmUI;
-    const claims = [p.halal_claim ? 'Halal' : '', p.bpom_claim ? 'BPOM' : ''].filter(Boolean).join(' & ');
+    const { esc, fmtNum, fmtRating, photoHtml, productHref, aspectLabel } = window.charmUI;
+    const htPct = Math.round(p.high_trust_pct ?? ((p.high_trust_ratio || 0) * 100));
+    const trustLine = `${htPct}% Kepercayaan Tinggi${p.top_aspect ? ` · Unggul di: ${esc(aspectLabel(p.top_aspect))}` : ''}`;
     return `
       <a class="product-card" href="${esc(productHref(p.product_name, p.brand_name))}">
         ${photoHtml(p.photo, p.product_name)}
         <span class="product-card-title">${esc(p.product_name)}</span>
-        ${claims ? `<span class="product-card-claim">Klaim ${claims} disebut di ulasan</span>` : ''}
+        <span class="product-card-claim">${trustLine}</span>
         <span class="product-card-meta"><span>${esc(p.category_name)} · ${fmtNum(p.review_count)} ulasan</span><strong>${fmtRating(p.avg_rating)}</strong></span>
       </a>`;
   }
@@ -106,13 +112,13 @@
       renderFacets(f, profile);
       const q = new URLSearchParams({ brand: profile.brand_name, page: f.page, limit: PAGE_SIZE });
       if (f.category) q.set('category', f.category);
-      if (f.halal) q.set('halal', 'true');
-      if (f.bpom) q.set('bpom', 'true');
+      if (f.aspect.length) q.set('aspect', f.aspect.join(','));
+      if (f.highTrust) q.set('high_trust', 'true');
       if (f.rating) q.set('min_rating', '4');
       const data = await charmFetch(`/catalog/products?${q.toString()}`);
       heading.textContent = `${f.category || 'Semua produk'} · ${fmtNum(data.total_products)} produk`;
       if (!data.products.length) {
-        grid.innerHTML = stateBox('empty', 'Tidak ada produk yang cocok', `Filter ini tidak menyisakan produk ${f.brand}. Hapus filter klaim atau rating.`, 'Tampilkan semua produk', hrefFor(f, { category: '', halal: false, bpom: false, rating: false }));
+        grid.innerHTML = stateBox('empty', 'Tidak ada produk yang cocok', `Filter ini tidak menyisakan produk ${f.brand}. Hapus filter aspek, kepercayaan, atau rating.`, 'Tampilkan semua produk', hrefFor(f, { category: '', aspect: [], highTrust: false, rating: false }));
         return;
       }
       grid.innerHTML = data.products.map(productCard).join('');

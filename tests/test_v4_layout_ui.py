@@ -85,7 +85,7 @@ def test_product_cards_are_links_without_repeated_buttons():
 def test_honest_photo_placeholder_and_claim_wording():
     kit = _js("ui-kit.js")
     assert "Foto belum tersedia" in kit
-    assert "disebut" in kit
+    assert "Kepercayaan Tinggi" in kit
     for js in ["directory.js", "brand-products.js", "product-detail.js", "ui-kit.js"]:
         assert "MUI Verified" not in _js(js) and "Terverifikasi Halal" not in _js(js)
 

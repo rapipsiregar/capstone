@@ -30,8 +30,19 @@ function fmtRating(r) {
   return `${Number(r || 0).toFixed(1)}/5`;
 }
 
+const ASPECT_LABELS = {
+  Klaim_Efikasi_Manfaat: 'Efikasi & Manfaat',
+  Kandungan_Bahan_Sensitivitas: 'Kandungan & Sensitivitas',
+  Transparansi_Layanan_Harga: 'Harga & Kemasan',
+  Sertifikasi_Halal_BPOM: 'Legalitas & Keaslian'
+};
+
 function prettyLabel(key) {
   return String(key || '').replace(/_/g, ' ');
+}
+
+function aspectLabel(key) {
+  return ASPECT_LABELS[key] || prettyLabel(key);
 }
 
 function brandHref(brand, extra = {}) {
@@ -58,6 +69,16 @@ function claimPills(halalMentions, bpomMentions) {
   const out = [];
   if (halalMentions > 0) out.push(`<span class="pill pill-claim" title="Jumlah ulasan yang menyebut klaim halal">Halal disebut ${fmtNum(halalMentions)} ulasan</span>`);
   if (bpomMentions > 0) out.push(`<span class="pill pill-claim" title="Jumlah ulasan yang menyebut BPOM">BPOM disebut ${fmtNum(bpomMentions)} ulasan</span>`);
+  return out.join('');
+}
+
+/** Consumer trust source pills (Solusi 2): High Trust percentage + dominant communication aspect. */
+function trustSourcePills(highTrustPct, topAspect) {
+  const pct = Math.round(Number(highTrustPct || 0));
+  const out = [`<span class="pill pill-claim" title="Persentase ulasan konsumen dengan tingkat kepercayaan tinggi">${pct}% Kepercayaan Tinggi</span>`];
+  if (topAspect) {
+    out.push(`<span class="pill" title="Aspek komunikasi utama pembentuk kepercayaan">Unggul di: ${esc(aspectLabel(topAspect))}</span>`);
+  }
   return out.join('');
 }
 
@@ -99,7 +120,7 @@ function routeWith(path, params) {
 }
 
 window.charmUI = {
-  charmApiBase, charmFetch, esc, fmtNum, fmtRating, prettyLabel, brandHref, productHref,
-  photoHtml, claimPills, trustPill, stateBox, pagerHtml, routeWith
+  charmApiBase, charmFetch, esc, fmtNum, fmtRating, prettyLabel, aspectLabel, brandHref, productHref,
+  photoHtml, claimPills, trustSourcePills, trustPill, stateBox, pagerHtml, routeWith
 };
 
