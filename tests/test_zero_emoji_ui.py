@@ -29,15 +29,15 @@ def test_no_emojis_in_frontend_source_files():
 
 
 def test_index_html_headings_clean_from_emojis():
-    """Verify specific index.html elements are clean of emojis."""
+    """Verify the V4 index.html headings and labels are plain text without emojis."""
     index_path = FRONTEND_DIR / "index.html"
     assert index_path.exists(), "frontend/index.html not found"
 
     html = index_path.read_text(encoding="utf-8")
-    assert "Feed Ulasan Konsumen" in html
+    assert "Ulasan konsumen dan bobot SHAP IndoBERT" in html
     assert "Insight Reputasi" in html
-    assert "Unduh Laporan Eksekutif CSV" in html
-    assert "Pendorong Kepercayaan (High Trust)" in html
-    assert "Pemicu Keluhan (Low Trust)" in html
-    assert "Interactive XAI Sandbox" in html
-    assert "Model: IndoBERT Transformer" in html
+    assert "Unduh laporan CSV" in html
+    assert "Pendorong High Trust" in html
+    assert "Pemicu Low Trust" in html
+    assert "Simulasi XAI" in html
+    assert "Model: IndoBERT fine-tuned" in html

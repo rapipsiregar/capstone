@@ -1,47 +1,59 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100" role="img" aria-label="CHARM">
+  <title>CHARM</title>
+  <!-- V4 Konsep D "Purity Droplet & Crescent", Blossom Gloss master icon (DESIGN.md section 7).
+       Glossy gradients are allowed here only, by explicit user request (2026-11-03). Palette: #FCF8F8 #FBEFEF #F9DFDF #F5AFAF. -->
   <defs>
-    <linearGradient id="charmGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0D9488" />
-      <stop offset="50%" stop-color="#0F766E" />
-      <stop offset="100%" stop-color="#115E59" />
+    <linearGradient id="squircle" x1="10%" y1="5%" x2="90%" y2="95%">
+      <stop offset="0%" stop-color="#FBEFEF"/>
+      <stop offset="28%" stop-color="#F9DFDF"/>
+      <stop offset="68%" stop-color="#F5AFAF"/>
+      <stop offset="100%" stop-color="#EA9090"/>
     </linearGradient>
-    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FDE047" />
-      <stop offset="100%" stop-color="#F59E0B" />
+    <linearGradient id="rim" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FCF8F8"/>
+      <stop offset="50%" stop-color="#F9DFDF"/>
+      <stop offset="100%" stop-color="#E38888"/>
     </linearGradient>
-    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000000" flood-opacity="0.25"/>
+    <linearGradient id="dome" x1="30%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#FCF8F8" stop-opacity="0.78"/>
+      <stop offset="55%" stop-color="#FBEFEF" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#F9DFDF" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="crescent" x1="15%" y1="15%" x2="85%" y2="85%">
+      <stop offset="0%" stop-color="#FCF8F8"/>
+      <stop offset="55%" stop-color="#FBEFEF"/>
+      <stop offset="100%" stop-color="#F9DFDF"/>
+    </linearGradient>
+    <radialGradient id="serum" cx="42%" cy="35%" r="65%" fx="38%" fy="28%">
+      <stop offset="0%" stop-color="#FFFFFF"/>
+      <stop offset="32%" stop-color="#FCF8F8"/>
+      <stop offset="64%" stop-color="#FBEFEF"/>
+      <stop offset="86%" stop-color="#F9DFDF"/>
+      <stop offset="100%" stop-color="#F5AFAF"/>
+    </radialGradient>
+    <linearGradient id="specular" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" stop-opacity="0.96"/>
+      <stop offset="70%" stop-color="#FCF8F8" stop-opacity="0.55"/>
+      <stop offset="100%" stop-color="#FBEFEF" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="roseLift" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="3" stdDeviation="2.8" flood-color="#E38888" flood-opacity="0.55"/>
     </filter>
   </defs>
 
-  <!-- Rounded Squircle Background -->
-  <rect width="64" height="64" rx="16" fill="url(#charmGrad)" />
+  <!-- Glossy squircle with glass dome sheen and inner rim light -->
+  <rect x="4" y="4" width="92" height="92" rx="24" fill="url(#squircle)" stroke="url(#rim)" stroke-width="2"/>
+  <path d="M6 28C6 13 13 6 28 6H72C87 6 94 13 94 28C94 37 68 45 48 46C24 47 6 39 6 28Z" fill="url(#dome)"/>
+  <rect x="6.5" y="6.5" width="87" height="87" rx="21.5" fill="none" stroke="#FCF8F8" stroke-width="0.9" stroke-opacity="0.65"/>
 
-  <!-- Subtle Inner Border Highlight -->
-  <rect x="1.5" y="1.5" width="61" height="61" rx="14.5" fill="none" stroke="#FFFFFF" stroke-opacity="0.2" stroke-width="1.5" />
-
-  <!-- Letter C in Modern Bold Serif/Sans (CHARM) -->
-  <path d="M 43 23 
-           C 40 18.5, 34.5 16, 28 16 
-           C 18.5 16, 12 23, 12 32 
-           C 12 41, 18.5 48, 28 48 
-           C 34.5 48, 40 45.5, 43 41" 
-        fill="none" 
-        stroke="#FFFFFF" 
-        stroke-width="7" 
-        stroke-linecap="round" 
-        filter="url(#glow)"/>
-
-  <!-- Sparkling Star / Halal Purity Badge on the upper right -->
-  <!-- 4-pointed Star -->
-  <path d="M 46 8 
-           Q 46 17 55 17 
-           Q 46 17 46 26 
-           Q 46 17 37 17 
-           Q 46 17 46 8 Z" 
-        fill="url(#goldGrad)" 
-        filter="url(#glow)"/>
-
-  <!-- Smaller Accent Sparkle -->
-  <circle cx="36" cy="11" r="1.8" fill="#FEF08A" />
+  <g filter="url(#roseLift)">
+    <!-- Pearl crescent (halal protection) -->
+    <path d="M39 20C39 20 21 35 21 55C21 72 35 84 53 84C67 84 78 76 82 65C72 71 56 70 47 60C38 51 36 37 39 20Z" fill="url(#crescent)" stroke="#FCF8F8" stroke-width="1"/>
+    <path d="M36 27C27 38 24 51 27 63C29 70 35 76 43 79C34 73 30 63 30 52C30 42 33 33 36 27Z" fill="#FFFFFF" opacity="0.75"/>
+    <!-- Luminous serum droplet (purity) with subsurface glow, window reflection and catchlight -->
+    <path d="M57 18C57 18 37 39 37 55C37 66.6 46.2 76 57.5 76C68.8 76 78 66.6 78 55C78 39 57 18 57 18Z" fill="url(#serum)" stroke="#FFFFFF" stroke-width="1.4"/>
+    <path d="M46 68C53 74 65 73 71 65C75 60 76 53 74 46C73 56 67 64 58 67C54 68.5 49 68.5 46 68Z" fill="#F5AFAF" opacity="0.55"/>
+    <path d="M51 27C45 36 41.5 45 41.5 53C41.5 56.5 43.2 58.2 45 57.5C46.6 56.8 47 54 47.5 50.5C48.2 44 51.2 35.5 55 28.5C56 26.6 52.4 25 51 27Z" fill="url(#specular)"/>
+    <ellipse cx="45" cy="63" rx="2.2" ry="3.2" transform="rotate(-18 45 63)" fill="#FFFFFF" opacity="0.95"/>
+  </g>
 </svg>

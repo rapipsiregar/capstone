@@ -17,7 +17,7 @@ class TestFDSidebarUI(unittest.TestCase):
         with open(self.html_path, "r", encoding="utf-8") as f:
             content = f.read()
 
-        self.assertIn('class="dashboard-layout-container"', content)
+        self.assertIn('class="insight-layout"', content)
         self.assertIn('id="rightSidebarAnalytics"', content)
         self.assertIn('id="halalComplianceProgressBar"', content)
 

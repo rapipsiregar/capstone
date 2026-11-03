@@ -29,10 +29,10 @@ def test_zero_transition_all_in_css():
 
 def test_tabular_nums_and_numeric_alignment_in_styles():
     """Verify font-variant-numeric: tabular-nums and num-col/num-cell right-alignment."""
-    styles_css = (FRONTEND_CSS / "styles.css").read_text(encoding="utf-8")
-    assert "tabular-nums" in styles_css, "font-variant-numeric: tabular-nums missing in styles.css"
-    assert ".data-table th.num-col" in styles_css, "num-col header alignment rule missing"
-    assert "text-align: right" in styles_css, "text-align: right for numeric cells missing"
+    tokens_css = (FRONTEND_CSS / "tokens.css").read_text(encoding="utf-8")
+    assert "tabular-nums" in tokens_css, "font-variant-numeric: tabular-nums missing in tokens.css"
+    assert ".num-cell, .num-col" in tokens_css, "num-col / num-cell alignment rule missing"
+    assert "text-align: right" in tokens_css, "text-align: right for numeric cells missing"
 
 
 def test_table_headers_and_cells_have_numeric_classes():
@@ -40,6 +40,6 @@ def test_table_headers_and_cells_have_numeric_classes():
     index_html = (REPO_ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
     pagination_js = (REPO_ROOT / "frontend" / "js" / "pagination.js").read_text(encoding="utf-8")
 
-    assert '<th class="num-col">Confidence</th>' in index_html
+    assert '<th class="num-col">Keyakinan</th>' in index_html
     assert '<th class="num-col">Latensi</th>' in index_html
     assert 'class="num-cell"' in pagination_js

@@ -1,0 +1,82 @@
+/* CHARM V4 catalog views: brand directory cards, brand banner, product cards, pagination. */
+.count-pill { font-size: var(--fs-2); }
+
+/* Brand directory (mockup V4 halaman 2) */
+.brand-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.875rem; }
+.brand-card {
+  display: flex; flex-direction: column; gap: 0.6rem; padding: 1rem;
+  background: var(--blush-100); border: 1px solid var(--blush-200); border-radius: var(--radius-card);
+  color: var(--ink); transition: border-color var(--ease), background-color var(--ease);
+}
+.brand-card:hover { border-color: var(--blush-400); text-decoration: none; }
+.brand-card-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
+.brand-card-name { font-family: var(--font-display); font-size: var(--fs-4); font-weight: 700; overflow-wrap: anywhere; }
+.brand-card-meta { font-size: var(--fs-1); color: var(--ink-muted); }
+.brand-card-claims { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+.top-product {
+  display: flex; gap: 0.6rem; align-items: center; padding: 0.5rem;
+  background: var(--white); border: 1px solid var(--blush-200); border-radius: 6px;
+}
+.top-product-thumb { width: 48px; height: 48px; flex-shrink: 0; }
+.top-product-name { font-size: var(--fs-2); font-weight: 600; line-height: 1.3; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.top-product-meta { font-size: var(--fs-1); color: var(--ink-muted); }
+.brand-card-link { margin-top: auto; padding-top: 0.5rem; border-top: 1px solid var(--blush-200); font-size: var(--fs-2); font-weight: 700; color: var(--accent-text); }
+
+/* Photo frame + honest placeholder (AGENTS.md 14) */
+.photo-frame {
+  display: flex; align-items: center; justify-content: center; overflow: hidden;
+  background: var(--blush-50); border: 1px solid var(--blush-100); border-radius: 6px;
+}
+.photo-frame img { width: 100%; height: 100%; object-fit: contain; }
+.photo-missing { font-size: var(--fs-1); color: var(--ink-muted); text-align: center; line-height: 1.25; padding: 0.25rem; }
+
+/* Brand banner on the products page (mockup V4 halaman 3) */
+.brand-banner {
+  display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap;
+  padding: 1rem 1.25rem; background: var(--blush-100); border: 1px solid var(--blush-200); border-radius: var(--radius-card);
+}
+.brand-banner h1 { font-family: var(--font-display); font-size: var(--fs-5); }
+.brand-banner-line { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
+.brand-banner p { font-size: var(--fs-2); color: var(--ink-muted); margin-top: 0.15rem; }
+.banner-figure { text-align: right; }
+.banner-figure strong { display: block; font-size: var(--fs-4); color: var(--accent-text); }
+.banner-figure span { font-size: var(--fs-1); color: var(--ink-muted); }
+
+/* Product cards: whole card is the link, no repeated buttons */
+.product-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.75rem; }
+.product-card {
+  display: flex; flex-direction: column; gap: 0.4rem; padding: 0.6rem 0.75rem 0.75rem;
+  background: var(--white); border: 1px solid var(--blush-200); border-radius: var(--radius-card);
+  color: var(--ink); transition: border-color var(--ease);
+}
+.product-card:hover { border-color: var(--blush-400); text-decoration: none; }
+.product-card .photo-frame { height: 132px; }
+.product-card-title { font-size: var(--fs-2); font-weight: 600; line-height: 1.35; min-height: 2.7em; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.product-card-meta {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem;
+  margin-top: auto; padding-top: 0.35rem; border-top: 1px solid var(--blush-100);
+  font-size: var(--fs-1); color: var(--ink-muted);
+}
+.product-card-meta strong { color: var(--accent-text); white-space: nowrap; }
+.product-card-claim { font-size: var(--fs-1); color: var(--trust-high); font-weight: 600; }
+
+/* Pagination */
+.pager { display: flex; justify-content: center; align-items: center; gap: 0.75rem; flex-wrap: wrap; font-size: var(--fs-2); color: var(--ink-muted); }
+.pager:empty { display: none; }
+
+@media (max-width: 1200px) {
+  .product-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 1024px) {
+  .brand-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 768px) {
+  .product-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .banner-figure { text-align: left; }
+}
+@media (max-width: 480px) {
+  .brand-grid { grid-template-columns: minmax(0, 1fr); }
+  .product-card .photo-frame { height: 112px; }
+  .brand-banner h1 { font-size: var(--fs-4); }
+}
+

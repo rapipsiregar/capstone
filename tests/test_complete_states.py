@@ -13,20 +13,22 @@ ARTIFACT_DIR = Path(r"C:\Users\rafif\.gemini\antigravity\brain\765091c6-444d-4ee
 
 
 def test_catalog_levels_have_cause_and_action_states():
-    """catalog.js must include honest empty states with causes and call-to-action buttons."""
-    catalog_js = (FRONTEND_JS / "catalog.js").read_text(encoding="utf-8")
+    """V4 catalog views (directory, brand, detail) must name the cause and offer a next step."""
+    directory = (FRONTEND_JS / "directory.js").read_text(encoding="utf-8")
+    brand = (FRONTEND_JS / "brand-products.js").read_text(encoding="utf-8")
+    detail = (FRONTEND_JS / "product-detail.js").read_text(encoding="utf-8")
 
-    # Level 1 Categories empty/error state
-    assert "Belum ada kategori terindeks" in catalog_js
-    assert "catalogApp.loadCatalogCategories()" in catalog_js
+    # Direktori Brand empty/error state
+    assert "Tidak ada brand yang cocok dengan filter ini" in directory
+    assert "Hapus semua filter" in directory
 
-    # Level 2 Products empty/error state
-    assert "Tidak ada produk untuk kategori" in catalog_js
-    assert "catalogApp.backToCategories()" in catalog_js
+    # Produk Brand empty/error state
+    assert "Tidak ada produk yang cocok" in brand
+    assert "Tampilkan semua produk" in brand
 
-    # Level 3 Reviews empty/error state
-    assert "Belum ada ulasan untuk" in catalog_js
-    assert "tabNavigation.switchToTab('tab-content-sandbox')" in catalog_js
+    # Detail Produk empty state points to the XAI simulator
+    assert "Belum ada ulasan untuk" in detail
+    assert "'#/sandbox'" in detail
 
 
 def test_pagination_and_sandbox_states():

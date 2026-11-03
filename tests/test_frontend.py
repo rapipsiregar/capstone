@@ -5,7 +5,7 @@ import pytest
 def test_frontend_files_exist():
     frontend_dir = os.path.join(os.getcwd(), "frontend")
     assert os.path.exists(os.path.join(frontend_dir, "index.html"))
-    assert os.path.exists(os.path.join(frontend_dir, "css", "styles.css"))
+    assert os.path.exists(os.path.join(frontend_dir, "css", "tokens.css"))
     assert os.path.exists(os.path.join(frontend_dir, "js", "api.js"))
     assert os.path.exists(os.path.join(frontend_dir, "js", "charts.js"))
     assert os.path.exists(os.path.join(frontend_dir, "js", "app.js"))

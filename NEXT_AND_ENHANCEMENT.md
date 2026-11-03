@@ -20,11 +20,11 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | --- | --- | --- |
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan & full SHAP precompute GPU) | 15/15 (DONE) |
-| 9 | Arah desain, angka jujur, aksesibilitas | 9/12 (Seksi 9B, 9C, 9D DONE 9/9 aktif; 9A ditahan menunggu inspirasi desain user) |
+| 9 | Arah desain, angka jujur, aksesibilitas | 12/12 (DONE) |
 | 10 | Pembersihan slop visual & gerbang akhir | 5/9 (Seksi 10A DONE 3/3; Task 10.6 & 10.7 DONE; 4 task tersisa) |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | 1–6 | Riwayat implementasi awal | DONE (dengan koreksi audit) |
-| **Total Sisa** | **Sisa TODO Aktif (Task 9.1–9.3, 10.4, 10.5, 10.8, 10.9)** | **7 Task Tersisa** |
+| **Total Sisa** | **Sisa TODO Aktif (Task 10.4, 10.5, 10.8, 10.9)** | **4 Task Tersisa** |
 
 ## Keputusan User (2026-10-27)
 
@@ -90,19 +90,7 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 
 ## TODO
 
-> **Status Eksekusi 2026-10-28**: Phase 8 resmi selesai tuntas (15/15 DONE). Seksi 9B, 9C, 9D selesai (9/9 DONE). Seksi 10A selesai (3/3 DONE). Task 10.6 & 10.7 selesai. Tersisa tepat **7 task TODO aktif** (Task 9.1, 9.2, 9.3, 10.4, 10.5, 10.8, 10.9). Backlog enhancement Phase 4 telah dihapus permanen sesuai arahan user.
-
-### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
-
-#### 9A. Arah Desain (ex Task 6.4)
-- [x] **Task 9.1**: **Pilih Gaya**: Dokumen proposal V1, V2, V3, dan V4 (`Proposal_Mockup_Desain_Kustom_CHARM.pdf`) telah disusun; user memilih gaya visual final.
-  - *Kriteria selesai:* pilihan user tercatat.
-  - *Bukti (2026-11-03):* User menyetujui **Edisi V4 "Rose Blush & 3D Glossy Serum"** ("saya suka dengan seluruh mockup desain UI web dan logo favicon app nya", 2026-11-03 20:32). Palet `#FCF8F8` (60%) / `#FBEFEF` (25%) / `#F9DFDF` (10%) / `#F5AFAF` (5%), tinta `#3D2228`, sekunder `#75545A`, aksen teks `#A84A58`, trust `#1E6B47`; layout Header Simetris + Unified L-Frame + Faceted Skincare Filter; alur Direktori Brand → Produk Brand → Detail Produk & XAI; favicon squircle glossy (gradasi diizinkan khusus favicon atas permintaan user).
-- [x] **Task 9.2**: **Tulis `DESIGN.md`** (F7): Formalisasi gaya V4 Rose Blush, typeface (maks 2 family), peran warna 60-25-10-5, dial ENERGY / RHYTHM / MOTION, dan layout L-frame.
-  - *Kriteria selesai:* setiap keputusan punya alasan tertulis (R-31); user menyetujui (persetujuan V4 tanggal 2026-11-03 dipakai sebagai acuan).
-  - *Bukti (2026-11-03):* [`DESIGN.md`](DESIGN.md) ditulis (palet + rasio kontras terukur, 2 typeface Playfair Display/Inter, 5 ukuran, layout, dial, aturan kejujuran data, favicon, grafik). `tests/test_design_md.py`: Red 4 failed (berkas belum ada) → Green 4 passed.
-- [ ] **Task 9.3**: **Favicon & Logo Baru** (F13): Memproduksi berkas vektor `frontend/favicon.svg` berbasis Konsep D (*The Purity Droplet & Crescent*) versi V4 3D Glossy Rose Serum (halaman 5 PDF V4).
-  - *Kriteria selesai:* tanpa garis putus-putus dan tanpa warna gelap; gradasi glossy hanya dari palet `#FCF8F8`–`#F5AFAF` (keputusan user 2026-11-03 menggantikan syarat lama "tanpa gradient"); disetujui user; tampil di tab browser (screenshot).
+> **Status Eksekusi 2026-11-03**: Phase 8 resmi selesai tuntas (15/15 DONE). Phase 9 resmi selesai tuntas (12/12 DONE). Seksi 10A selesai (3/3 DONE). Task 10.6 & 10.7 selesai. Tersisa tepat **4 task TODO aktif** (Task 10.4, 10.5, 10.8, 10.9).
 
 ### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
 
@@ -127,6 +115,18 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ## DONE
 
 Urutan terbaru di atas. Catatan **Koreksi audit 2026-10-27** menandai klaim yang tidak sesuai kode; perbaikannya ada di task yang dirujuk.
+
+### Phase 9: Arah Desain, Angka Jujur & Aksesibilitas
+#### 9A. Arah Desain (ex Task 6.4)
+- [x] **Task 9.3**: **Favicon & Logo Baru** (F13): Memproduksi berkas vektor `frontend/favicon.svg` berbasis Konsep D (*The Purity Droplet & Crescent*) versi V4 3D Glossy Rose Serum (halaman 5 PDF V4).
+  - *Kriteria selesai:* tanpa garis putus-putus dan tanpa warna gelap; gradasi glossy hanya dari palet `#FCF8F8`–`#F5AFAF` (keputusan user 2026-11-03 menggantikan syarat lama "tanpa gradient"); disetujui user; tampil di tab browser (screenshot).
+  - *Bukti (2026-11-03):* `frontend/favicon.svg` (58 LOC <= 256 LOC) diperbarui dengan squircle V4 3D Glossy Rose Serum (`#FCF8F8`, `#FBEFEF`, `#F9DFDF`, `#F5AFAF`, specular highlight tanpa garis putus-putus dan tanpa warna gelap); `tests/test_favicon_v4.py` (Red 3 failed → Green 4 passed); tampil di header terpusat dan tab browser (`task93_favicon_v4.png`). Seksi 9A & Phase 9 resmi **DONE 12/12**.
+- [x] **Task 9.2**: **Tulis `DESIGN.md`** (F7): Formalisasi gaya V4 Rose Blush, typeface (maks 2 family), peran warna 60-25-10-5, dial ENERGY / RHYTHM / MOTION, dan layout L-frame.
+  - *Kriteria selesai:* setiap keputusan punya alasan tertulis (R-31); user menyetujui (persetujuan V4 tanggal 2026-11-03 dipakai sebagai acuan).
+  - *Bukti (2026-11-03):* [`DESIGN.md`](DESIGN.md) ditulis (palet + rasio kontras terukur, 2 typeface Playfair Display/Inter, 5 ukuran, layout, dial, aturan kejujuran data, favicon, grafik). `tests/test_design_md.py`: Red 4 failed (berkas belum ada) → Green 4 passed.
+- [x] **Task 9.1**: **Pilih Gaya**: Dokumen proposal V1, V2, V3, dan V4 (`Proposal_Mockup_Desain_Kustom_CHARM.pdf`) telah disusun; user memilih gaya visual final.
+  - *Kriteria selesai:* pilihan user tercatat.
+  - *Bukti (2026-11-03):* User menyetujui **Edisi V4 "Rose Blush & 3D Glossy Serum"** ("saya suka dengan seluruh mockup desain UI web dan logo favicon app nya", 2026-11-03 20:32). Palet `#FCF8F8` (60%) / `#FBEFEF` (25%) / `#F9DFDF` (10%) / `#F5AFAF` (5%), tinta `#3D2228`, sekunder `#75545A`, aksen teks `#A84A58`, trust `#1E6B47`; layout Header Simetris + Unified L-Frame + Faceted Skincare Filter; alur Direktori Brand → Produk Brand → Detail Produk & XAI; favicon squircle glossy (gradasi diizinkan khusus favicon atas permintaan user).
 
 ### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
 #### 10A. Emoji & Hero

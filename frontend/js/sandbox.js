@@ -1,5 +1,6 @@
 /**
- * Interactive XAI Sandbox Playground Controller
+ * Simulasi XAI controller: IndoBERT prediction + SHAP word attributions.
+ * Shows "–" when the API omits a value instead of a made-up default.
  */
 
 function bindSandboxEvents() {
@@ -13,35 +14,39 @@ function bindSandboxEvents() {
   document.getElementById('btn-analyze-review')?.addEventListener('click', async () => {
     const text = document.getElementById('input-review-text')?.value?.trim();
     const resultCard = document.getElementById('xai-result-card');
+    const summary = document.getElementById('xai-summary-text');
+    const tokens = document.getElementById('xai-highlighted-text');
+    resultCard?.classList.remove('hidden');
     if (!text) {
-      if (resultCard) {
-        resultCard.classList.remove('hidden');
-        document.getElementById('xai-summary-text').textContent = 'Teks ulasan masih kosong. Ketik teks ulasan kosmetik atau pilih salah satu contoh preset di atas untuk menganalisis.';
-      }
+      if (tokens) tokens.innerHTML = '';
+      summary.textContent = 'Teks ulasan masih kosong. Ketik ulasan kosmetik atau pilih salah satu contoh di atas.';
       return;
     }
-    const model = 'indobert';
-    resultCard?.classList.remove('hidden');
-    document.getElementById('xai-summary-text').textContent = 'Memproses inferensi model IndoBERT dan menghitung bobot SHAP...';
+    summary.textContent = 'Memproses inferensi IndoBERT dan menghitung bobot SHAP...';
 
     try {
-      const pred = await requestPrediction(text, model);
-      document.getElementById('xai-aspect-badge').textContent = (pred.predicted_aspect || 'Aspek').replace(/_/g, ' ');
-      document.getElementById('xai-trust-badge').textContent = (pred.predicted_trust || 'Kepercayaan').replace(/_/g, ' ');
-      document.getElementById('xai-confidence-val').textContent = `${Math.round((pred.trust_confidence || 0.95) * 100)}%`;
-      document.getElementById('xai-latency-val').textContent = `${pred.execution_time_ms || 12} ms`;
+      const pred = await requestPrediction(text, 'indobert');
+      const conf = typeof pred.trust_confidence === 'number' ? `${Math.round(pred.trust_confidence * 100)}%` : '–';
+      const latency = typeof pred.execution_time_ms === 'number' ? `${pred.execution_time_ms} ms` : '–';
+      const trustBadge = document.getElementById('xai-trust-badge');
+      document.getElementById('xai-aspect-badge').textContent = (pred.predicted_aspect || '–').replace(/_/g, ' ');
+      trustBadge.textContent = (pred.predicted_trust || '–').replace(/_/g, ' ');
+      trustBadge.className = `pill ${pred.predicted_trust === 'High_Trust' ? 'pill-trust-high' : pred.predicted_trust === 'Low_Trust' ? 'pill-trust-low' : 'pill-trust-neutral'}`;
+      document.getElementById('xai-confidence-val').textContent = conf;
+      document.getElementById('xai-latency-val').textContent = latency;
 
-      const explain = await requestExplanation(text, model);
-      const container = document.getElementById('xai-highlighted-text');
-      if (container && explain.word_attributions) {
-        container.innerHTML = explain.word_attributions.map(item => {
-          const colorClass = item.impact === 'High_Trust' ? 'xai-token-green' : item.impact === 'Low_Trust' ? 'xai-token-red' : 'xai-token-yellow';
-          return `<span class="xai-token ${colorClass}" title="Bobot SHAP: ${item.weight > 0 ? '+' : ''}${item.weight.toFixed(3)}">${item.word}</span>`;
+      const explain = await requestExplanation(text, 'indobert');
+      if (tokens && explain.word_attributions) {
+        const { esc } = window.charmUI;
+        tokens.innerHTML = explain.word_attributions.map(item => {
+          const cls = item.impact === 'High_Trust' ? 'xai-token-green' : item.impact === 'Low_Trust' ? 'xai-token-red' : 'xai-token-yellow';
+          const w = Number(item.weight);
+          return `<span class="xai-token ${cls}" title="Bobot SHAP: ${w > 0 ? '+' : ''}${w.toFixed(3)}">${esc(item.word)}</span>`;
         }).join(' ');
       }
-      document.getElementById('xai-summary-text').textContent = explain.summary || 'Analisis selesai.';
+      summary.textContent = explain.summary || 'Analisis selesai.';
     } catch (e) {
-      document.getElementById('xai-summary-text').textContent = `Gagal menganalisis ulasan: ${e.message}. Pastikan server backend aktif di port 8000.`;
+      summary.textContent = `Gagal menganalisis ulasan (${e.message}). Pastikan server backend aktif di port 8000.`;
     }
   });
 }

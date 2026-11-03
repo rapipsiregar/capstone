@@ -71,3 +71,4 @@ Skala (5 ukuran): `--fs-1` 12px (meta), `--fs-2` 14px (UI, label), `--fs-3` 16px
 
 - Satu keluarga hue per grafik. Aspek (kategori): tangga rose `#F5AFAF`, `#E8959B`, `#C9636F`, `#A84A58` dengan pemisah putih 2px. Kepercayaan: warna status §2 (hijau/kuning-tua/merah). Metrik model: batang `#F5AFAF` bergaris `#A84A58` (garis memberi 3:1 terhadap putih).
 - Judul grafik menyebut pertanyaannya, misalnya "Distribusi aspek dari N ulasan".
+

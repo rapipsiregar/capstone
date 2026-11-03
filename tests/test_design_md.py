@@ -36,3 +36,4 @@ def test_design_md_records_reasons_dials_and_honesty_rules():
     for word in ["ENERGY", "RHYTHM", "MOTION", "L-Frame", "Faceted", "favicon", "Foto belum tersedia"]:
         assert word in text
     assert "terakota" in text.lower()
+

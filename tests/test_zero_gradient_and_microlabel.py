@@ -27,10 +27,8 @@ def test_zero_gradients_in_css():
 
 
 def test_hero_editorial_badge_no_microlabel():
-    """Hero badge must use sentence case and normal letter spacing."""
-    hero_css = FRONTEND_CSS / "catalog-hero.css"
-    assert hero_css.exists(), "catalog-hero.css not found"
-
-    content = hero_css.read_text(encoding="utf-8")
-    assert "text-transform: uppercase" not in content, "micro-label uppercase still present"
-    assert "letter-spacing: 0.06em" not in content, "micro-label wide letter-spacing still present"
+    """V4 labels use sentence case: no uppercase letter-spaced micro-labels in any stylesheet."""
+    for css_file in FRONTEND_CSS.glob("*.css"):
+        content = css_file.read_text(encoding="utf-8")
+        assert "text-transform: uppercase" not in content, f"micro-label uppercase in {css_file.name}"
+        assert "letter-spacing: 0.06em" not in content, f"micro-label letter-spacing in {css_file.name}"

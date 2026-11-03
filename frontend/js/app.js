@@ -1,253 +1,173 @@
 /**
- * Halal Cosmetics NLP & XAI Analytics Dashboard - Core Application Logic
- * 100% Real Empirical Data & Live Dynamic API Synchronization
+ * CHARM guidebook controller: Insight Reputasi filters, KPI, charts and SHAP drivers.
+ * Every number comes from the API. A selected product uses its own review distributions
+ * from /catalog/reviews (no estimated splits, finding F26).
  */
 
 document.addEventListener('DOMContentLoaded', async () => {
-  await initDashboard();
+  const exportLink = document.getElementById('btnExportSummary');
+  if (exportLink) exportLink.href = `${API_BASE_URL}/export/summary?format=csv`;
   if (typeof bindSandboxEvents === 'function') bindSandboxEvents();
   if (typeof bindPaginationEvents === 'function') bindPaginationEvents();
-  document.getElementById('btn-refresh-history')?.addEventListener('click', () => {
-    if (typeof renderHistoryWithPagination === 'function') renderHistoryWithPagination(1);
-  });
+  document.getElementById('btn-refresh-history')?.addEventListener('click', () => renderHistoryWithPagination(1));
+  bindFilterEvents();
+  populateAllCategoriesDropdown();
+  await loadAnalyticsData('ALL', 'ALL', 'ALL');
+  populateAllBrandsDropdown();
+  if (typeof renderHistoryWithPagination === 'function') renderHistoryWithPagination(1);
 });
 
-async function initDashboard() {
-  loadAnalyticsData('ALL', 'ALL', 'ALL', true);
-  await renderComparisonChart();
-  renderRightSidebarAnalytics('ALL');
-
-  if (window.tabNavigation?.restoreTabFromHashOrStorage) {
-    window.tabNavigation.restoreTabFromHashOrStorage();
-  }
-
-  checkApiHealth();
-  populateAllBrandsDropdown();
-  populateAllCategoriesDropdown();
-  loadAnalyticsData('ALL');
-  if (typeof renderHistoryWithPagination === 'function') await renderHistoryWithPagination(1);
-  bindFilterEvents();
-}
+window.charmViews = window.charmViews || {};
+window.charmViews.insight = { render: () => setTimeout(() => window.refreshCurrentAnalyticsCharts(), 40) };
+window.charmViews.sandbox = { render: () => {} };
+window.charmViews.metrics = { render: () => setTimeout(() => renderComparisonChart(), 40) };
 
 async function populateAllBrandsDropdown() {
-  const brandSelect = document.getElementById('brandFilter');
-  if (!brandSelect) return;
+  const select = document.getElementById('brandFilter');
+  if (!select) return;
   try {
-    const res = await fetch(`${API_BASE_URL}/analytics/brands`);
-    if (res.ok) {
-      const data = await res.json();
-      const brands = (data.all_brands || data.brands_summary?.map(b => b.brand_name) || [])
-        .slice().sort((a, b) => a.localeCompare(b));
-      brandSelect.innerHTML = '<option value="ALL">Semua Brand (All Brands)</option>' +
-        brands.map(b => `<option value="${b}">${b}</option>`).join('');
-    }
+    const data = await fetchBrandAnalytics('ALL', 'ALL');
+    const brands = (data?.all_brands || []).slice().sort((a, b) => a.localeCompare(b));
+    select.innerHTML = `<option value="ALL">Semua brand (${brands.length})</option>` +
+      brands.map(b => `<option value="${window.charmUI.esc(b)}">${window.charmUI.esc(b)}</option>`).join('');
   } catch (e) {
-    console.warn("Could not load dynamic brands list:", e);
+    console.warn('Daftar brand tidak termuat:', e);
   }
 }
 
 async function populateAllCategoriesDropdown() {
-  const catSelect = document.getElementById('categoryFilter');
-  if (!catSelect) return;
+  const select = document.getElementById('categoryFilter');
+  if (!select) return;
   try {
-    const res = await fetch(`${API_BASE_URL}/catalog/categories`);
-    if (res.ok) {
-      const data = await res.json();
-      const cats = (data.categories || [])
-        .slice().sort((a, b) => (a.category_name || '').localeCompare(b.category_name || ''));
-      catSelect.innerHTML = '<option value="ALL">Semua Kategori (All Categories)</option>' +
-        cats.map(c => `<option value="${c.category_name}">${c.category_name}</option>`).join('');
-    }
+    const data = await window.charmUI.charmFetch('/catalog/categories');
+    const cats = (data.categories || []).map(c => c.category_name).sort((a, b) => a.localeCompare(b));
+    select.innerHTML = `<option value="ALL">Semua kategori (${cats.length})</option>` +
+      cats.map(c => `<option value="${window.charmUI.esc(c)}">${window.charmUI.esc(c)}</option>`).join('');
   } catch (e) {
-    console.warn("Could not load dynamic categories list:", e);
+    console.warn('Daftar kategori tidak termuat:', e);
   }
 }
 
-async function checkApiHealth() {
-  const status = await fetchHealthStatus();
-  const indicator = document.querySelector('.status-indicator');
-  const textElem = document.getElementById('api-status-text');
-  if (indicator && textElem) {
-    const ok = status.status === 'healthy';
-    indicator.className = `status-indicator ${ok ? 'online' : 'offline'}`;
-    textElem.textContent = ok ? 'Backend API Connected (v1.0.0)' : 'Demo Mode (Offline)';
-  }
-}
-
-let currentBrandProducts = [];
-
-function extractProductStats(p) {
-  const h = p.high_trust_ratio || 0;
+/** Real per-product distributions: product_info from /catalog/reviews covers all its reviews. */
+async function fetchProductStats(productName) {
+  const data = await window.charmUI.charmFetch(`/catalog/reviews?product_name=${encodeURIComponent(productName)}&limit=1`);
+  const info = data.product_info || {};
+  const aspects = info.aspect_distribution || {};
+  const top = Object.entries(aspects).sort((a, b) => b[1] - a[1])[0];
   return {
-    total: p.total_reviews, highTrustPct: Math.round(h * 100),
-    topAspect: p.top_aspect || 'Klaim Efikasi & Manfaat',
-    aspectCounts: { [p.top_aspect || "Klaim_Efikasi_Manfaat"]: p.total_reviews },
-    trustCounts: {
-      "High_Trust": Math.round(p.total_reviews * h),
-      "Low_Trust": Math.round(p.total_reviews * (1 - h) * 0.5),
-      "Neutral": Math.round(p.total_reviews * (1 - h) * 0.5)
-    }
+    total: data.total_reviews || 0,
+    highTrustPct: Math.round(info.high_trust_pct || 0),
+    topAspect: top ? top[0] : '–',
+    aspectCounts: aspects,
+    trustCounts: info.trust_distribution || {}
   };
 }
 
-async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', productName = 'ALL', syncOnly = false) {
-  if (syncOnly) return;
+function statsFromScope(scope, apiData) {
+  return {
+    total: scope.total_reviews,
+    highTrustPct: Math.round((scope.high_trust_ratio || 0) * 100),
+    topAspect: scope.top_aspect || '–',
+    aspectCounts: scope.aspect_distribution || {},
+    trustCounts: scope.trust_counts || null,
+    trust_drivers: apiData.trust_drivers || null,
+    compliance: apiData.compliance || null
+  };
+}
+
+async function loadAnalyticsData(brandName = 'ALL', categoryName = 'ALL', productName = 'ALL') {
   let stats = null;
-
   try {
-    if (typeof fetchBrandAnalytics === 'function') {
-      const apiData = await fetchBrandAnalytics(brandName, categoryName);
-      if (apiData) {
-        if (brandName === 'ALL') {
-          currentBrandProducts = apiData.all_products || [];
-          updateProductDropdown(currentBrandProducts, productName, 'ALL');
-          if (productName !== 'ALL') {
-            const matched = currentBrandProducts.find(p => p.product_name === productName);
-            if (matched) stats = extractProductStats(matched);
-          } else {
-            stats = {
-              total: apiData.total_reviews,
-              highTrustPct: Math.round(apiData.high_trust_ratio * 100),
-              topAspect: apiData.top_aspect || 'Klaim Efikasi & Manfaat',
-              aspectCounts: apiData.aspect_distribution || { "Klaim_Efikasi_Manfaat": apiData.total_reviews },
-              trustCounts: apiData.trust_counts || {
-                "High_Trust": Math.round(apiData.total_reviews * (apiData.high_trust_ratio || 0.48)),
-                "Low_Trust": Math.round(apiData.total_reviews * 0.28),
-                "Neutral": Math.round(apiData.total_reviews * 0.24)
-              },
-              trust_drivers: apiData.trust_drivers || null,
-              compliance: apiData.compliance || null
-            };
-          }
-        } else if (apiData.brands_summary) {
-          const found = apiData.brands_summary.find(b => b.brand_name.toLowerCase() === brandName.toLowerCase());
-          if (found) {
-            currentBrandProducts = found.products || [];
-            updateProductDropdown(currentBrandProducts, productName, brandName);
-            if (productName !== 'ALL') {
-              const matched = currentBrandProducts.find(p => p.product_name === productName);
-              if (matched) stats = extractProductStats(matched);
-            } else {
-              stats = {
-                total: found.total_reviews,
-                highTrustPct: Math.round(found.high_trust_ratio * 100),
-                topAspect: found.top_aspect || 'Klaim Efikasi & Manfaat',
-                aspectCounts: (found.aspect_distribution && Object.keys(found.aspect_distribution).length > 0)
-                  ? found.aspect_distribution : { "Klaim_Efikasi_Manfaat": found.total_reviews },
-                trustCounts: {
-                  "High_Trust": Math.round(found.total_reviews * found.high_trust_ratio),
-                  "Low_Trust": Math.round(found.total_reviews * found.low_trust_ratio),
-                  "Neutral": Math.round(found.total_reviews * found.neutral_ratio)
-                },
-                trust_drivers: apiData.trust_drivers || null,
-                compliance: apiData.compliance || null
-              };
-            }
-          }
-        }
-      }
+    const apiData = await fetchBrandAnalytics(brandName, categoryName);
+    if (!apiData) return;
+    let products = apiData.all_products || [];
+    let scope = apiData;
+    if (brandName !== 'ALL') {
+      const found = (apiData.brands_summary || []).find(b => b.brand_name.toLowerCase() === brandName.toLowerCase());
+      if (!found) return;
+      products = found.products || [];
+      const counts = { High_Trust: 0, Neutral: 0, Low_Trust: 0 };
+      // brands_summary carries ratios; counts are derived back from the exact totals of that brand
+      counts.High_Trust = Math.round(found.total_reviews * found.high_trust_ratio);
+      counts.Low_Trust = Math.round(found.total_reviews * found.low_trust_ratio);
+      counts.Neutral = found.total_reviews - counts.High_Trust - counts.Low_Trust;
+      scope = { ...found, trust_counts: counts };
     }
+    updateProductDropdown(products, productName, brandName);
+    stats = productName !== 'ALL' ? await fetchProductStats(productName) : statsFromScope(scope, apiData);
+    stats.trust_drivers = apiData.trust_drivers || null;
+    stats.compliance = apiData.compliance || null;
   } catch (e) {
-    console.warn("Error fetching analytics data:", e);
+    console.warn('Analitik tidak termuat:', e);
   }
-
   if (!stats) return;
   window._currentStats = stats;
 
-  const totalReviewsElem = document.getElementById('stat-total-reviews');
-  const highTrustElem = document.getElementById('stat-high-trust');
-  const topAspectElem = document.getElementById('stat-top-aspect');
-
-  if (totalReviewsElem) totalReviewsElem.textContent = stats.total.toLocaleString();
-  if (highTrustElem) highTrustElem.textContent = `${stats.highTrustPct}%`;
-  if (topAspectElem) topAspectElem.textContent = stats.topAspect.replace(/_/g, ' ');
-
+  const set = (id, text) => { const el = document.getElementById(id); if (el) el.textContent = text; };
+  set('stat-total-reviews', Number(stats.total).toLocaleString('id-ID'));
+  set('stat-high-trust', `${stats.highTrustPct}%`);
+  set('stat-top-aspect', String(stats.topAspect).replace(/_/g, ' '));
   renderAspectChart(stats.aspectCounts);
-  renderTrustChart(stats.trustCounts);
-
-  if (typeof renderRightSidebarAnalytics === 'function') {
-    renderRightSidebarAnalytics(brandName, stats.trust_drivers || null, stats.compliance || null);
-  }
+  if (stats.trustCounts) renderTrustChart(stats.trustCounts);
+  renderRightSidebarAnalytics(brandName, stats.trust_drivers, stats.compliance);
 }
 
-window.refreshCurrentAnalyticsCharts = function() {
-  if (window._currentStats) {
-    if (typeof renderAspectChart === 'function') renderAspectChart(window._currentStats.aspectCounts);
-    if (typeof renderTrustChart === 'function') renderTrustChart(window._currentStats.trustCounts);
-  }
+window.refreshCurrentAnalyticsCharts = function () {
+  const s = window._currentStats;
+  if (!s) return;
+  renderAspectChart(s.aspectCounts);
+  if (s.trustCounts) renderTrustChart(s.trustCounts);
 };
 
-function updateProductDropdown(products, selectedProduct = 'ALL', brandName = 'ALL') {
-  const prodSelect = document.getElementById('productFilter');
-  const prodGroup = document.getElementById('productFilterGroup');
-  if (!prodSelect) return;
-
-  if (!products || products.length === 0) {
-    if (prodGroup) prodGroup.style.display = 'none';
-    prodSelect.innerHTML = '<option value="ALL">Tidak ada produk</option>';
+function updateProductDropdown(products, selected = 'ALL', brandName = 'ALL') {
+  const select = document.getElementById('productFilter');
+  const group = document.getElementById('productFilterGroup');
+  if (!select) return;
+  const { esc } = window.charmUI;
+  if (!products || !products.length) {
+    if (group) group.hidden = true;
+    select.innerHTML = '<option value="ALL">Tidak ada produk</option>';
     return;
   }
-
-  if (prodGroup) prodGroup.style.display = 'flex';
-  const label = brandName === 'ALL' ? 'Semua Produk' : `Semua Produk ${brandName}`;
-  prodSelect.innerHTML = `<option value="ALL">${label}</option>` +
-    products.map(p => `<option value="${p.product_name}" ${p.product_name === selectedProduct ? 'selected' : ''}>${p.product_name} (${p.total_reviews} ulasan)</option>`).join('');
+  if (group) group.hidden = false;
+  const label = brandName === 'ALL' ? `Semua produk (${products.length})` : `Semua produk ${esc(brandName)} (${products.length})`;
+  select.innerHTML = `<option value="ALL">${label}</option>` + products.map(p =>
+    `<option value="${esc(p.product_name)}" ${p.product_name === selected ? 'selected' : ''}>${esc(p.product_name)} (${p.total_reviews} ulasan)</option>`).join('');
 }
 
 function bindFilterEvents() {
-  const brandSelect = document.getElementById('brandFilter');
-  const categorySelect = document.getElementById('categoryFilter');
-  const productSelect = document.getElementById('productFilter');
-
-  const handleFilterChange = async () => {
-    await loadAnalyticsData(brandSelect?.value || 'ALL', categorySelect?.value || 'ALL', productSelect?.value || 'ALL');
-  };
-
-  brandSelect?.addEventListener('change', async () => {
-    if (productSelect) productSelect.value = 'ALL';
-    await handleFilterChange();
-  });
-
-  categorySelect?.addEventListener('change', async () => {
-    if (productSelect) productSelect.value = 'ALL';
-    await handleFilterChange();
-  });
-
-  productSelect?.addEventListener('change', handleFilterChange);
+  const brand = document.getElementById('brandFilter');
+  const category = document.getElementById('categoryFilter');
+  const product = document.getElementById('productFilter');
+  const reload = () => loadAnalyticsData(brand?.value || 'ALL', category?.value || 'ALL', product?.value || 'ALL');
+  brand?.addEventListener('change', () => { if (product) product.value = 'ALL'; reload(); });
+  category?.addEventListener('change', () => { if (product) product.value = 'ALL'; reload(); });
+  product?.addEventListener('change', reload);
 }
 
-function renderRightSidebarAnalytics(brandName = 'ALL', dynamicDrivers = null, dynamicCompliance = null) {
-  renderBrandTrustInsightCard(brandName, dynamicDrivers);
-  const progressBar = document.getElementById('halalComplianceProgressBar');
-  const ratioText = document.getElementById('halalComplianceRatioText');
-  const infoCount = document.getElementById('complianceInfoReviewCount');
-
-  if (dynamicCompliance) {
-    const pct = dynamicCompliance.compliance_percentage || `${Math.round((dynamicCompliance.compliance_ratio || 0) * 100)}%`;
-    if (progressBar) progressBar.style.width = pct;
-    if (ratioText) ratioText.textContent = `${pct} (${dynamicCompliance.either_count} dari ${dynamicCompliance.total_reviews} ulasan)`;
-    if (infoCount) infoCount.textContent = Number(dynamicCompliance.total_reviews).toLocaleString();
+function renderRightSidebarAnalytics(brandName = 'ALL', drivers = null, compliance = null) {
+  renderBrandTrustInsightCard(brandName, drivers);
+  if (compliance) {
+    const pct = compliance.compliance_percentage || `${Math.round((compliance.compliance_ratio || 0) * 100)}%`;
+    const bar = document.getElementById('halalComplianceProgressBar');
+    const text = document.getElementById('halalComplianceRatioText');
+    const count = document.getElementById('complianceInfoReviewCount');
+    if (bar) bar.style.width = pct;
+    if (text) text.textContent = `${pct} (${compliance.either_count} dari ${compliance.total_reviews})`;
+    if (count) count.textContent = Number(compliance.total_reviews).toLocaleString('id-ID');
   }
 }
 
+/** SHAP driver words from the API (IndoBERT SHAP cache); empty lists show an honest note. */
 function renderBrandTrustInsightCard(brandName = 'ALL', dynamicDrivers = null) {
-  const titleElem = document.getElementById('insightCardBrandTitle');
-  const highContainer = document.getElementById('highTrustDriversList');
-  const lowContainer = document.getElementById('lowTrustDriversList');
-
-  if (titleElem) titleElem.textContent = brandName === 'ALL' ? 'Semua Brand' : brandName;
-
-  const drivers = (dynamicDrivers && (dynamicDrivers.high?.length || dynamicDrivers.low?.length))
-    ? dynamicDrivers : { high: [], low: [] };
-
-  if (highContainer) {
-    highContainer.innerHTML = (drivers.high?.length)
-      ? drivers.high.map(d => `<span class="badge badge-green" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`).join(' ')
-      : '<span class="text-muted" style="font-size:0.85rem;color:#64748B;">Data kata belum cukup</span>';
-  }
-  if (lowContainer) {
-    lowContainer.innerHTML = (drivers.low?.length)
-      ? drivers.low.map(d => `<span class="badge badge-red" title="SHAP Attribution: ${d.raw_score ?? d.score}">${d.word} (${d.score})</span>`).join(' ')
-      : '<span class="text-muted" style="font-size:0.85rem;color:#64748B;">Tidak ada keluhan dominan</span>';
-  }
+  const { esc } = window.charmUI;
+  const title = document.getElementById('insightCardBrandTitle');
+  if (title) title.textContent = brandName === 'ALL' ? 'Semua brand' : brandName;
+  const list = (items, cls, emptyText) => (items && items.length)
+    ? items.map(d => `<span class="badge ${cls}" title="Atribusi SHAP: ${esc(d.raw_score ?? d.score)}">${esc(d.word)} (${esc(d.score)})</span>`).join(' ')
+    : `<span class="muted">${emptyText}</span>`;
+  const high = document.getElementById('highTrustDriversList');
+  const low = document.getElementById('lowTrustDriversList');
+  if (high) high.innerHTML = list(dynamicDrivers?.high, 'badge-green', 'Data kata belum cukup untuk filter ini.');
+  if (low) low.innerHTML = list(dynamicDrivers?.low, 'badge-red', 'Tidak ada pemicu Low Trust dominan.');
 }

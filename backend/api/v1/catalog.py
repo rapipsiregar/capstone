@@ -12,14 +12,12 @@ from functools import lru_cache
 from fastapi import APIRouter, Query, HTTPException
 from backend.services.review_explainer import generate_review_xai_explanation
 from backend.services.product_summary import build_product_summary
-from backend.services.catalog_shap_cacher import get_cached_review_shap
+from backend.services.review_highlighter import highlight_keywords
+from backend.services.brand_directory import refine_products, product_photo
 
 router = APIRouter(prefix="/catalog", tags=["Catalog"])
 
 DATASET_CSV = os.path.join("data", "annotated", "female_daily_skincare_annotated.csv")
-
-HIGH_TRUST_WORDS = ["bpom", "halal", "mui", "original", "resmi", "melembabkan", "mencerahkan", "bagus", "cocok", "segel", "ringan", "alami"]
-LOW_TRUST_WORDS = ["breakout", "beruntusan", "bruntusan", "iritasi", "gatal", "panas", "perih", "bocor", "penyok", "meragukan", "palsu"]
 
 
 @lru_cache(maxsize=1)
@@ -32,23 +30,6 @@ def load_dataset_dataframe() -> pd.DataFrame:
         "kondisi_kulit_usia", "rating_bintang", "status_rekomendasi",
         "teks_ulasan_mentah", "aspek_komunikasi", "label_kepercayaan"
     ])
-
-
-def highlight_keywords(text: str) -> str:
-    """Highlights SHAP trust words in review text, prioritizing authentic cached SHAP attributions."""
-    if not isinstance(text, str) or not text:
-        return ""
-    cached = get_cached_review_shap(text)
-    pos = cached.get("top_positive_words", []) if cached else HIGH_TRUST_WORDS
-    neg = cached.get("top_negative_words", []) if cached else LOW_TRUST_WORDS
-    res = text
-    for kw in pos:
-        if kw and len(kw) > 1:
-            res = re.sub(rf"\b({re.escape(kw)})\b", r'<span class="xai-highlight-green">\1</span>', res, flags=re.IGNORECASE)
-    for kw in neg:
-        if kw and len(kw) > 1:
-            res = re.sub(rf"\b({re.escape(kw)})\b", r'<span class="xai-highlight-red">\1</span>', res, flags=re.IGNORECASE)
-    return res
 
 
 @router.get("/categories")
@@ -91,6 +72,9 @@ def get_catalog_products(
     category: Optional[str] = Query(None, description="Category name to filter"),
     brand: Optional[str] = Query(None, description="Brand name to filter"),
     search: Optional[str] = Query("", description="Optional search keyword"),
+    halal: bool = Query(False, description="Only products whose reviews mention a halal claim"),
+    bpom: bool = Query(False, description="Only products whose reviews mention a BPOM claim"),
+    min_rating: Optional[float] = Query(None, ge=0, le=5, description="Minimum average rating"),
     page: int = Query(1, ge=1),
     limit: int = Query(12, ge=1, le=50)
 ) -> Dict[str, Any]:
@@ -158,6 +142,7 @@ def get_catalog_products(
         })
 
     products_list.sort(key=lambda x: x["review_count"], reverse=True)
+    products_list = refine_products(products_list, halal, bpom, min_rating)
     total_prods = len(products_list)
     total_pages = max(1, (total_prods + limit - 1) // limit)
     start_idx = (page - 1) * limit
@@ -207,6 +192,7 @@ def get_catalog_product_reviews(
         "bpom_claim": bool((matched["klaim_bpom"] == 1).any()) if "klaim_bpom" in matched.columns else False
     }
     prod_info.update(build_product_summary(df, matched))
+    prod_info["photo"] = product_photo(prod_info["brand_name"], prod_info["product_name"])
 
     total_reviews = len(matched)
     total_pages = max(1, (total_reviews + limit - 1) // limit)

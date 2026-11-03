@@ -27,12 +27,8 @@ def test_zero_backdrop_blur_in_css():
 
 
 def test_panels_at_rest_carry_no_heavy_shadows():
-    """Verify primary panels and cards have no heavy resting shadows."""
-    styles_css = (FRONTEND_CSS / "styles.css").read_text(encoding="utf-8")
-    catalog_css = (FRONTEND_CSS / "catalog.css").read_text(encoding="utf-8")
-    hero_css = (FRONTEND_CSS / "catalog-hero.css").read_text(encoding="utf-8")
-
-    assert "--shadow-sm: none" not in styles_css  # Cleaned completely
-    assert "box-shadow: 0 10px 30px" not in hero_css
-    assert "box-shadow: 0 20px 45px" not in hero_css
-    assert "box-shadow: 0 8px 20px" not in catalog_css
+    """Panels and cards rest flat; only the real search overlay may carry a marked shadow."""
+    for css_file in FRONTEND_CSS.glob("*.css"):
+        for line in css_file.read_text(encoding="utf-8").splitlines():
+            if "box-shadow" in line and "none" not in line:
+                assert "taste-skill-ignore: real overlay" in line, f"resting shadow in {css_file.name}: {line.strip()}"

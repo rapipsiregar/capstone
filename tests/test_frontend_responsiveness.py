@@ -12,9 +12,12 @@ def test_responsive_viewport_meta():
 
 
 def test_responsive_css_media_queries():
-    css_path = os.path.join(os.getcwd(), "frontend", "css", "styles.css")
-    with open(css_path, "r", encoding="utf-8") as f:
-        css = f.read()
+    css_dir = os.path.join(os.getcwd(), "frontend", "css")
+    css = ""
+    for name in sorted(os.listdir(css_dir)):
+        if name.endswith(".css"):
+            with open(os.path.join(css_dir, name), "r", encoding="utf-8") as f:
+                css += f.read()
 
     assert "@media" in css
     assert "max-width: 768px" in css

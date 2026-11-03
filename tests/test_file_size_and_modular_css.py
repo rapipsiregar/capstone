@@ -40,14 +40,8 @@ def test_all_repo_code_files_under_256_loc():
 
 
 def test_modular_catalog_css_files_exist_and_sized():
-    """All split catalog CSS files must exist and be <= 256 LOC."""
-    expected_modules = [
-        "catalog-nav.css",
-        "catalog-categories.css",
-        "catalog-products.css",
-        "catalog-reviews.css",
-        "catalog.css",
-    ]
+    """All V4 stylesheet modules must exist and be <= 256 LOC."""
+    expected_modules = ["tokens.css", "shell.css", "catalog-views.css", "detail.css", "guidebook.css"]
 
     for mod in expected_modules:
         mod_path = FRONTEND_CSS / mod
@@ -57,7 +51,7 @@ def test_modular_catalog_css_files_exist_and_sized():
 
 
 def test_catalog_css_entrypoint_imports_all_modules():
-    """catalog.css must import all sub-modules for backward compatibility."""
-    catalog_css = (FRONTEND_CSS / "catalog.css").read_text(encoding="utf-8")
-    for mod in ["catalog-nav.css", "catalog-categories.css", "catalog-products.css", "catalog-reviews.css"]:
-        assert mod in catalog_css, f"Import for {mod} missing in catalog.css"
+    """index.html must link every V4 stylesheet module (no @import chain)."""
+    index_html = (REPO_ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
+    for mod in ["tokens.css", "shell.css", "catalog-views.css", "detail.css", "guidebook.css"]:
+        assert f'href="./css/{mod}' in index_html, f"Stylesheet {mod} not linked in index.html"

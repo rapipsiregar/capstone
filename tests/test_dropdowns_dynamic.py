@@ -97,4 +97,7 @@ def test_app_js_has_populate_categories_and_brands():
     assert "populateAllBrandsDropdown" in content
     assert "populateAllCategoriesDropdown" in content
     assert "/catalog/categories" in content
-    assert "/analytics/brands" in content
+    # brands come from fetchBrandAnalytics(), which calls /analytics/brands in api.js
+    assert "fetchBrandAnalytics" in content
+    with open(os.path.join("frontend", "js", "api.js"), "r", encoding="utf-8") as f:
+        assert "/analytics/brands" in f.read()

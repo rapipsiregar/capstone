@@ -1,0 +1,112 @@
+/* CHARM V4 "Rose Blush" design tokens and base elements. Source of truth: DESIGN.md. */
+:root {
+  --blush-50: #FCF8F8;   /* 60% sheet and reading surface */
+  --blush-100: #FBEFEF;  /* 25% L-frame canvas, sidebar, banners */
+  --blush-200: #F9DFDF;  /* 10% 1px borders, pills, halal/BPOM highlight */
+  --blush-400: #F5AFAF;  /* 5% header bar, active checkbox, chart bars, logo */
+  --white: #FFFFFF;
+  --ink: #3D2228;
+  --ink-muted: #75545A;
+  --accent-text: #A84A58;
+  --trust-high: #1E6B47;
+  --trust-high-bg: #E6F2EB;
+  --trust-neutral: #8A5A0B;
+  --trust-neutral-bg: #FBF1DC;
+  --trust-low: #A3262E;
+  --trust-low-bg: #FBE6E7;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-text: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+  --fs-1: 0.75rem;
+  --fs-2: 0.875rem;
+  --fs-3: 1rem;
+  --fs-4: 1.25rem;
+  --fs-5: 1.75rem;
+  --radius-frame: 12px;
+  --radius-card: 8px;
+  --ease: 150ms ease-out;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--blush-200);
+  color: var(--ink);
+  font-family: var(--font-text);
+  font-size: var(--fs-3);
+  line-height: 1.6;
+  font-variant-numeric: tabular-nums;
+  min-height: 100svh;
+}
+
+h1, h2, h3, h4 { font-weight: 700; line-height: 1.25; color: var(--ink); }
+.display { font-family: var(--font-display); }
+a { color: var(--accent-text); text-decoration: none; }
+a:hover { text-decoration: underline; }
+img { max-width: 100%; display: block; }
+
+:focus-visible { outline: 2px solid var(--accent-text); outline-offset: 2px; }
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+.skip-link { position: absolute; left: -9999px; top: 0; }
+.skip-link:focus { left: 1rem; top: 1rem; z-index: 300; background: var(--white); padding: 0.5rem 1rem; border-radius: var(--radius-card); }
+.hidden, [hidden] { display: none !important; }
+.muted { color: var(--ink-muted); }
+.text-center { text-align: center; }
+.num-cell, .num-col { text-align: right; font-variant-numeric: tabular-nums; }
+
+/* Buttons: flat, no shadow (taste button rules) */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+  min-height: 40px; padding: 0.5rem 1rem; border-radius: var(--radius-card);
+  font: 600 var(--fs-2) var(--font-text); cursor: pointer;
+  border: 1px solid var(--blush-200); background: var(--white); color: var(--ink);
+  transition: background-color var(--ease), border-color var(--ease), color var(--ease);
+}
+.btn:hover { background: var(--blush-100); border-color: var(--blush-400); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.btn-primary { background: var(--blush-400); border-color: var(--blush-400); color: var(--ink); }
+.btn-primary:hover { background: var(--blush-200); }
+.btn-secondary { background: var(--white); }
+.btn-link { background: none; border: 0; min-height: 0; padding: 0; color: var(--accent-text); font-weight: 600; }
+.btn-link:hover { background: none; text-decoration: underline; }
+
+/* Pills and badges */
+.pill {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.15rem 0.6rem; border-radius: 9999px;
+  font-size: var(--fs-1); font-weight: 600; line-height: 1.5;
+  background: var(--blush-200); color: var(--ink); border: 1px solid var(--blush-400);
+  white-space: nowrap;
+}
+.pill-trust-high { background: var(--trust-high-bg); color: var(--trust-high); border-color: #B9DCC7; }
+.pill-trust-neutral { background: var(--trust-neutral-bg); color: var(--trust-neutral); border-color: #EBD3A3; }
+.pill-trust-low { background: var(--trust-low-bg); color: var(--trust-low); border-color: #EFC0C3; }
+.pill-claim { background: var(--white); color: var(--trust-high); border-color: #B9DCC7; }
+
+/* Legacy badge names still produced by guidebook scripts */
+.badge { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 9999px; font-size: var(--fs-1); font-weight: 600; }
+.badge-green { background: var(--trust-high-bg); color: var(--trust-high); }
+.badge-red { background: var(--trust-low-bg); color: var(--trust-low); }
+.badge-amber { background: var(--trust-neutral-bg); color: var(--trust-neutral); }
+.badge-blue { background: var(--blush-200); color: var(--ink); }
+
+/* Inline SHAP highlights (AGENTS.md 2.3: green High, red Low, yellow Neutral) */
+.xai-highlight-green, .shap-positive {
+  background: var(--trust-high-bg); color: var(--trust-high);
+  border-bottom: 2px solid var(--trust-high); padding: 0 0.2rem; border-radius: 2px; font-weight: 600;
+}
+.xai-highlight-red, .shap-negative {
+  background: var(--trust-low-bg); color: var(--trust-low);
+  border-bottom: 2px solid var(--trust-low); padding: 0 0.2rem; border-radius: 2px; font-weight: 600;
+}
+.shap-entity { background: var(--blush-200); color: var(--ink); border-bottom: 2px solid var(--blush-400); padding: 0 0.2rem; border-radius: 2px; font-weight: 600; }
+
+/* Honest state boxes (empty / loading / error) */
+.state-box { grid-column: 1 / -1; padding: 2rem 1rem; text-align: center; color: var(--ink-muted); }
+.state-box strong { display: block; color: var(--ink); font-size: var(--fs-3); margin-bottom: 0.25rem; }
+.state-box p { font-size: var(--fs-2); margin-bottom: 0.75rem; }
+.state-box.is-error strong { color: var(--trust-low); }
+

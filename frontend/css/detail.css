@@ -1,0 +1,55 @@
+/* CHARM V4 product detail: dossier, distribution bars, review feed with SHAP highlights. */
+.dossier {
+  display: grid; grid-template-columns: 112px minmax(0, 1.3fr) minmax(0, 1fr); gap: 1.25rem; align-items: start;
+  padding: 1rem 1.25rem; background: var(--blush-100); border: 1px solid var(--blush-200); border-radius: var(--radius-card);
+}
+.dossier .photo-frame { width: 112px; height: 112px; background: var(--white); border-color: var(--blush-200); }
+.dossier-label { font-size: var(--fs-1); font-weight: 600; color: var(--accent-text); }
+.dossier h1 { font-family: var(--font-display); font-size: var(--fs-4); margin: 0.2rem 0 0.4rem; }
+.dossier-claims { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.6rem; }
+.stat-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.stat-box { min-width: 96px; padding: 0.4rem 0.75rem; background: var(--white); border: 1px solid var(--blush-200); border-radius: 6px; }
+.stat-box strong { display: block; font-size: var(--fs-4); line-height: 1.2; color: var(--ink); }
+.stat-box strong.is-trust { color: var(--trust-high); }
+.stat-box strong.is-accent { color: var(--accent-text); }
+.stat-box span { font-size: var(--fs-1); color: var(--ink-muted); }
+
+.dist-panel { display: flex; flex-direction: column; gap: 0.9rem; padding-left: 1.25rem; border-left: 1px solid var(--blush-200); }
+.dist-panel h2 { font-size: var(--fs-2); font-weight: 700; margin-bottom: 0.35rem; }
+.dist-row { margin-bottom: 0.4rem; }
+.dist-label { display: flex; justify-content: space-between; gap: 0.5rem; font-size: var(--fs-1); color: var(--ink); }
+.dist-label b { font-variant-numeric: tabular-nums; }
+.dist-track { height: 8px; margin-top: 0.15rem; background: var(--white); border: 1px solid var(--blush-200); border-radius: 4px; overflow: hidden; }
+.dist-fill { height: 100%; background: var(--blush-400); border-right: 1px solid var(--accent-text); }
+.dist-fill.is-high { background: var(--trust-high); border: 0; }
+.dist-fill.is-neutral { background: #D4A62A; border: 0; }
+.dist-fill.is-low { background: var(--trust-low); border: 0; }
+
+.section-title { font-size: var(--fs-4); font-family: var(--font-display); }
+.section-sub { font-size: var(--fs-2); color: var(--ink-muted); margin-top: 0.1rem; }
+
+.review-feed { display: flex; flex-direction: column; gap: 0.75rem; }
+.review-card { display: flex; flex-direction: column; gap: 0.6rem; padding: 0.9rem 1.1rem; background: var(--white); border: 1px solid var(--blush-200); border-radius: var(--radius-card); }
+.review-head { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; font-size: var(--fs-2); }
+.review-who strong { color: var(--ink); }
+.review-who span { color: var(--ink-muted); }
+.review-score { display: flex; align-items: center; gap: 0.5rem; }
+.review-score b { color: var(--accent-text); }
+.review-body { font-size: var(--fs-3); line-height: 1.65; color: var(--ink); overflow-wrap: anywhere; }
+.review-note {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 0.2rem 0.75rem;
+  padding: 0.5rem 0.75rem; background: var(--blush-50); border: 1px solid var(--blush-200); border-radius: 6px;
+  font-size: var(--fs-2); color: var(--ink-muted);
+}
+.review-note dt { font-weight: 700; color: var(--ink); }
+
+@media (max-width: 1024px) {
+  .dossier { grid-template-columns: 112px minmax(0, 1fr); }
+  .dist-panel { grid-column: 1 / -1; padding-left: 0; border-left: 0; padding-top: 0.9rem; border-top: 1px solid var(--blush-200); display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+}
+@media (max-width: 600px) {
+  .dossier { grid-template-columns: minmax(0, 1fr); }
+  .dist-panel { grid-template-columns: minmax(0, 1fr); }
+  .review-note { grid-template-columns: minmax(0, 1fr); }
+}
+
