@@ -7,13 +7,10 @@
 document.addEventListener('DOMContentLoaded', async () => {
   const exportLink = document.getElementById('btnExportSummary');
   if (exportLink) exportLink.href = `${API_BASE_URL}/export/summary?format=csv`;
-  if (typeof bindPaginationEvents === 'function') bindPaginationEvents();
-  document.getElementById('btn-refresh-history')?.addEventListener('click', () => renderHistoryWithPagination(1));
   bindFilterEvents();
   populateAllCategoriesDropdown();
   await loadAnalyticsData('ALL', 'ALL', 'ALL');
   populateAllBrandsDropdown();
-  if (typeof renderHistoryWithPagination === 'function') renderHistoryWithPagination(1);
 });
 
 window.charmViews = window.charmViews || {};

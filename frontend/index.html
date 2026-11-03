@@ -144,25 +144,35 @@
             <p class="panel-sub">Diukur pada <span id="metricsTestSampleCount">–</span> ulasan test.csv untuk klasifikasi kepercayaan dan aspek.</p>
             <div class="chart-box is-tall"><canvas id="comparisonChart" aria-label="Grafik metrik evaluasi IndoBERT"></canvas></div>
           </div>
-          <div class="panel">
+          <div class="panel" id="perClassEvaluationPanel">
             <div class="panel-head">
-              <div><h2>Riwayat inferensi</h2><p class="panel-sub">Ulasan yang pernah diproses lewat endpoint inferensi API.</p></div>
-              <button type="button" id="btn-refresh-history" class="btn btn-secondary">Muat ulang riwayat</button>
+              <div>
+                <h2>Evaluasi per kelas pada data uji (test.csv)</h2>
+                <p class="panel-sub">Precision, Recall, F1-Score, dan jumlah sampel uji (support) untuk model Kepercayaan (3 kelas) dan Aspek Komunikasi (4 kelas).</p>
+              </div>
             </div>
             <div class="table-wrapper">
               <table class="data-table">
-                <thead><tr><th>ID</th><th>Teks ulasan</th><th>Aspek</th><th>Kepercayaan</th><th class="num-col">Keyakinan</th><th>Model</th><th class="num-col">Latensi</th></tr></thead>
-                <tbody id="historyTableBody"><tr><td colspan="7" class="text-center">Memuat riwayat inferensi...</td></tr></tbody>
+                <thead>
+                  <tr>
+                    <th>Model IndoBERT</th>
+                    <th>Kelas / Aspek</th>
+                    <th class="num-col">Precision</th>
+                    <th class="num-col">Recall</th>
+                    <th class="num-col">F1-Score</th>
+                    <th class="num-col">Sampel Uji</th>
+                  </tr>
+                </thead>
+                <tbody id="perClassMetricsBody">
+                  <tr><td colspan="6" class="text-center">Memuat metrik evaluasi per kelas...</td></tr>
+                </tbody>
               </table>
             </div>
-            <div class="table-pager">
-              <div id="paginationInfoText">Memuat status halaman...</div>
-              <div class="page-buttons">
-                <button type="button" id="btnPrevPage" class="btn btn-secondary" disabled>Sebelumnya</button>
-                <div id="pageNumberButtons" class="page-buttons"></div>
-                <button type="button" id="btnNextPage" class="btn btn-secondary">Berikutnya</button>
-              </div>
-            </div>
+          </div>
+          <div class="panel" id="confusionMatrixPanel">
+            <h2>Confusion matrix data uji (test.csv)</h2>
+            <p class="panel-sub">Distribusi prediksi benar (diagonal) dan salah pada masing-masing kelas uji.</p>
+            <div id="confusionMatrixGrid" class="cm-grid">Memuat confusion matrix...</div>
           </div>
         </section>
       </main>
@@ -179,7 +189,6 @@
   <script src="./js/brand-products.js?v=4"></script>
   <script src="./js/product-detail.js?v=4"></script>
   <script src="./js/charts.js?v=4"></script>
-  <script src="./js/pagination.js?v=4"></script>
   <script src="./js/app.js?v=4"></script>
 </body>
 </html>

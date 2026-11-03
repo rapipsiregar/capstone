@@ -34,37 +34,6 @@ async function fetchBrandAnalytics(brand = null, category = null) {
   }
 }
 
-/** Inference log. Offline returns an empty list flagged `offline` (no invented rows). */
-async function fetchReviewHistory(limit = 25, page = 1) {
-  try {
-    const res = await fetch(`${API_BASE_URL}/history?limit=${limit}&page=${page}`);
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    return await res.json();
-  } catch (err) {
-    return { count: 0, total: 0, logs: [], offline: true, error: err.message };
-  }
-}
-
-async function requestPrediction(text, modelChoice = 'indobert') {
-  const res = await fetch(`${API_BASE_URL}/predict`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, model_choice: modelChoice })
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
-}
-
-async function requestExplanation(text, modelChoice = 'indobert') {
-  const res = await fetch(`${API_BASE_URL}/explain`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ text, model_choice: modelChoice })
-  });
-  if (!res.ok) throw new Error(`HTTP ${res.status}`);
-  return await res.json();
-}
-
 async function fetchModelEvaluationMetrics() {
   try {
     const res = await fetch(`${API_BASE_URL}/model/metrics`);
@@ -99,7 +68,6 @@ async function loadDatasetStats() {
   setText('metricsDatasetReviewCount', stats.total_reviews && fmt(stats.total_reviews));
   setText('metricsDatasetBrandCount', stats.total_brands && fmt(stats.total_brands));
   setText('metricsDatasetProductCount', stats.total_products && fmt(stats.total_products));
-  setText('complianceInfoReviewCount', stats.total_reviews && fmt(stats.total_reviews));
 
   const split = stats.split_counts;
   if (split) {

@@ -104,13 +104,14 @@ async function runClickthrough() {
     const gb3Res = await page.eval(() => ({
       numCols: document.querySelectorAll('.data-table th.num-col').length,
       numCells: document.querySelectorAll('.data-table td.num-cell').length,
-      historyRows: document.querySelectorAll('#historyTableBody tr').length,
+      evalRows: document.querySelectorAll('#perClassMetricsBody tr').length,
+      cmTables: document.querySelectorAll('#confusionMatrixGrid .cm-table').length,
       totalSplit: document.getElementById('metricsSplitTotal')?.textContent?.trim() || ''
     }));
     results.steps.push({
-      step: 'Guidebook 2 (Metrik Skripsi & Tabel Riwayat)',
-      status: (gb3Res.numCols >= 2 && gb3Res.totalSplit !== '–') ? 'PASS' : 'FAIL',
-      detail: `Split total: ${gb3Res.totalSplit}, Right-aligned headers: ${gb3Res.numCols}, History rows: ${gb3Res.historyRows}`
+      step: 'Guidebook 2 (Metrik Skripsi, Evaluasi Per Kelas & Confusion Matrix)',
+      status: (gb3Res.numCols >= 4 && gb3Res.evalRows === 7 && gb3Res.cmTables === 2 && gb3Res.totalSplit !== '–') ? 'PASS' : 'FAIL',
+      detail: `Split total: ${gb3Res.totalSplit}, Right-aligned headers: ${gb3Res.numCols}, Per-class rows: ${gb3Res.evalRows}, Confusion matrices: ${gb3Res.cmTables}`
     });
 
     if (page.consoleErrors?.length) results.errors.push(...page.consoleErrors);

@@ -1,6 +1,6 @@
 /**
- * CHARM charts (Chart.js). Colours follow DESIGN.md section 8:
- * one rose hue family for categories, status colours for trust, rose bars for model metrics.
+ * CHARM charts & evaluation tables (Chart.js + Solusi C per-class evaluation & confusion matrix).
+ * Colours follow DESIGN.md section 8: rose hue family for categories, status colours for trust.
  */
 let aspectChartInstance = null;
 let trustChartInstance = null;
@@ -29,11 +29,12 @@ function renderAspectChart(aspectData) {
   if (!canvas || typeof Chart === 'undefined') return;
   const entries = Object.entries(aspectData || {}).sort((a, b) => b[1] - a[1]);
   const total = entries.reduce((s, [, v]) => s + v, 0);
+  const labelFn = window.charmUI?.aspectLabel || (k => k.replace(/_/g, ' '));
   if (aspectChartInstance) aspectChartInstance.destroy();
   aspectChartInstance = new Chart(canvas.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: entries.map(([k]) => k.replace(/_/g, ' ')),
+      labels: entries.map(([k]) => labelFn(k)),
       datasets: [{ data: entries.map(([, v]) => v), backgroundColor: entries.map((_, i) => ROSE_RAMP[i % ROSE_RAMP.length]), borderColor: '#FFFFFF', borderWidth: 2 }]
     },
     options: { responsive: true, maintainAspectRatio: false, animation: false, cutout: '55%', plugins: { legend: legendOptions(), tooltip: countTooltip(total) } }
@@ -57,13 +58,74 @@ function renderTrustChart(trustData) {
   });
 }
 
+function renderPerClassMetrics(metrics) {
+  const tbody = document.getElementById('perClassMetricsBody');
+  const cmGrid = document.getElementById('confusionMatrixGrid');
+  if (!tbody) return;
+  const { esc, fmtNum, aspectLabel } = window.charmUI;
+  if (!metrics || (!metrics.trust_classifier && !metrics.aspect_classifier)) {
+    tbody.innerHTML = '<tr><td colspan="6" class="text-center"><div class="state-box is-error" role="alert"><strong>Metrik evaluasi tidak dapat dimuat</strong><p>Server API di port 8000 belum merespons.</p></div></td></tr>';
+    if (cmGrid) cmGrid.innerHTML = '<span class="muted">Confusion matrix belum dapat dimuat dari API.</span>';
+    return;
+  }
+
+  const pct = v => `${(Number(v || 0) * 100).toFixed(2)}%`;
+  const rows = [];
+  const addGroup = (modelTitle, clf, isAspect) => {
+    const report = clf?.classification_report || {};
+    (clf?.labels || []).forEach(label => {
+      const r = report[label];
+      if (!r) return;
+      const displayLabel = isAspect ? aspectLabel(label) : label.replace(/_/g, ' ');
+      rows.push(`
+        <tr>
+          <td><strong>${esc(modelTitle)}</strong></td>
+          <td><span class="pill">${esc(displayLabel)}</span></td>
+          <td class="num-cell">${pct(r.precision)}</td>
+          <td class="num-cell">${pct(r.recall)}</td>
+          <td class="num-cell"><strong>${pct(r['f1-score'])}</strong></td>
+          <td class="num-cell">${fmtNum(Math.round(r.support || 0))}</td>
+        </tr>`);
+    });
+  };
+  addGroup('IndoBERT Kepercayaan', metrics.trust_classifier, false);
+  addGroup('IndoBERT Aspek Komunikasi', metrics.aspect_classifier, true);
+  tbody.innerHTML = rows.join('');
+
+  if (cmGrid) {
+    const buildMatrix = (title, clf, isAspect) => {
+      const labels = (clf?.labels || []).map(l => isAspect ? aspectLabel(l) : l.replace(/_/g, ' '));
+      const matrix = clf?.confusion_matrix || [];
+      return `
+        <div class="cm-card">
+          <h3>${esc(title)} (Total ${fmtNum(clf?.num_samples || 0)} sampel)</h3>
+          <div class="table-wrapper">
+            <table class="data-table cm-table">
+              <thead><tr><th>Aktual \\ Prediksi</th>${labels.map(l => `<th class="num-col">${esc(l)}</th>`).join('')}</tr></thead>
+              <tbody>
+                ${matrix.map((row, i) => `
+                  <tr>
+                    <td><strong>${esc(labels[i] || '')}</strong></td>
+                    ${row.map((val, j) => `<td class="num-cell ${i === j ? 'cm-diag' : ''}">${fmtNum(val)}</td>`).join('')}
+                  </tr>`).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>`;
+    };
+    cmGrid.innerHTML = buildMatrix('Confusion Matrix Kepercayaan (3×3)', metrics.trust_classifier, false) +
+      buildMatrix('Confusion Matrix Aspek Komunikasi (4×4)', metrics.aspect_classifier, true);
+  }
+}
+
 async function renderComparisonChart(preloadedMetrics = null) {
   const canvas = document.getElementById('comparisonChart');
   if (!canvas || typeof Chart === 'undefined') return;
   let metrics = preloadedMetrics;
   if (!metrics && typeof fetchModelEvaluationMetrics === 'function') metrics = await fetchModelEvaluationMetrics();
 
-  // Values come straight from /model/metrics (computed on test.csv); missing values stay at 0 and the legend says so.
+  renderPerClassMetrics(metrics);
+
   const values = [
     metrics?.trust_classifier?.accuracy ?? 0,
     metrics?.trust_classifier?.f1_macro ?? 0,

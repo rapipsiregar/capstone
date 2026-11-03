@@ -1,9 +1,7 @@
-import time
 from typing import Optional
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel, Field
 from backend.services.indobert_predictor import predict_indobert_authentic
-from backend.services.database import save_review_log
 
 
 router = APIRouter(prefix="/predict", tags=["Inference & Prediction"])
@@ -44,12 +42,6 @@ def predict_sentiment_and_aspect(request: PredictRequest):
             "model_type": prediction["model_type"],
             "execution_time_ms": prediction["execution_time_ms"]
         }
-
-        # Log inference to SQLite history database
-        try:
-            save_review_log(result_payload)
-        except Exception:
-            pass  # Non-blocking log save
 
         return PredictResponse(**result_payload)
     except Exception as e:

@@ -77,7 +77,7 @@ def test_homepage_is_the_catalog_and_analytics_live_in_insight():  # test_homepa
         assert absent not in home
     insight = _view("insight")
     for el in ["stat-total-reviews", "stat-high-trust", "stat-top-aspect", "aspectChart", "trustChart",
-               "highTrustDriversList", "lowTrustDriversList", "halalComplianceProgressBar"]:
+               "highTrustDriversList", "lowTrustDriversList", "trustFactorMapPanel", "trustFactorMapList"]:
         assert f'id="{el}"' in insight
     assert 'id="reviewFeedContainer"' not in HTML and "100% Teranotasi" not in HTML
     metrics = _view("metrics")
@@ -87,9 +87,9 @@ def test_homepage_is_the_catalog_and_analytics_live_in_insight():  # test_homepa
 
 def test_claim_badges_are_data_driven():  # test_homepage_layout, test_fd_design_system
     brand = _js("brand-products.js")
-    assert "halal_claim" in brand and "bpom_claim" in brand
+    assert "high_trust_pct" in brand and "top_aspect" in brand
     kit = _js("ui-kit.js")
-    assert "halalMentions > 0" in kit and "bpomMentions > 0" in kit
+    assert "trustSourcePills" in kit and "Kepercayaan Tinggi" in kit
     tokens = _css("tokens.css")
     assert ".xai-highlight-green" in tokens and ".xai-highlight-red" in tokens
 

@@ -10,12 +10,11 @@
 .toolbar-fields { display: flex; gap: 0.75rem; flex-wrap: wrap; }
 .field { display: flex; flex-direction: column; gap: 0.25rem; font-size: var(--fs-2); }
 .field label { font-weight: 600; color: var(--ink-muted); }
-.field select, .field textarea {
+.field select {
   min-height: 40px; padding: 0.45rem 0.6rem; border-radius: var(--radius-card);
   border: 1px solid var(--blush-200); background: var(--blush-50); color: var(--ink);
   font: 400 var(--fs-2) var(--font-text); max-width: 260px;
 }
-.field textarea { max-width: none; width: 100%; font-size: var(--fs-3); line-height: 1.55; resize: vertical; }
 
 .kpi-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.75rem; }
 .kpi { padding: 0.75rem 1rem; background: var(--blush-100); border: 1px solid var(--blush-200); border-radius: var(--radius-card); }
@@ -47,13 +46,12 @@
 .data-table { width: 100%; border-collapse: collapse; font-size: var(--fs-2); font-variant-numeric: tabular-nums; }
 .data-table th { text-align: left; padding: 0.6rem 0.75rem; font-weight: 600; color: var(--ink-muted); background: var(--blush-50); border-bottom: 1px solid var(--blush-200); }
 .data-table td { padding: 0.65rem 0.75rem; border-bottom: 1px solid var(--blush-100); }
-.data-table td.cell-text { max-width: 280px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.table-pager { display: flex; justify-content: space-between; align-items: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 0.75rem; font-size: var(--fs-2); color: var(--ink-muted); }
-.page-buttons { display: flex; gap: 0.3rem; flex-wrap: wrap; }
-.page-num-btn { min-width: 36px; min-height: 36px; padding: 0.2rem 0.5rem; }
+.cm-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 0.75rem; }
+.cm-card h3 { font-size: var(--fs-2); font-weight: 700; margin-bottom: 0.5rem; color: var(--ink); }
+.cm-diag { background: var(--blush-100); font-weight: 700; color: var(--trust-high); }
 
 @media (max-width: 1100px) {
-  .insight-layout { grid-template-columns: minmax(0, 1fr); }
+  .insight-layout, .cm-grid { grid-template-columns: minmax(0, 1fr); }
 }
 @media (max-width: 768px) {
   .chart-grid, .kpi-grid { grid-template-columns: minmax(0, 1fr); }

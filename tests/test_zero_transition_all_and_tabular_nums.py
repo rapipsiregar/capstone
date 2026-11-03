@@ -7,7 +7,6 @@ Taste-skill compliance:
 
 from pathlib import Path
 import re
-import pytest
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 FRONTEND_CSS = REPO_ROOT / "frontend" / "css"
@@ -36,10 +35,11 @@ def test_tabular_nums_and_numeric_alignment_in_styles():
 
 
 def test_table_headers_and_cells_have_numeric_classes():
-    """Verify index.html table headers and pagination.js cells use num-col/num-cell."""
+    """Verify index.html table headers and charts.js cells use num-col/num-cell."""
     index_html = (REPO_ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
-    pagination_js = (REPO_ROOT / "frontend" / "js" / "pagination.js").read_text(encoding="utf-8")
+    charts_js = (REPO_ROOT / "frontend" / "js" / "charts.js").read_text(encoding="utf-8")
 
-    assert '<th class="num-col">Keyakinan</th>' in index_html
-    assert '<th class="num-col">Latensi</th>' in index_html
-    assert 'class="num-cell"' in pagination_js
+    assert '<th class="num-col">Precision</th>' in index_html
+    assert '<th class="num-col">Recall</th>' in index_html
+    assert '<th class="num-col">F1-Score</th>' in index_html
+    assert 'class="num-cell"' in charts_js

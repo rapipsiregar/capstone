@@ -82,3 +82,4 @@ def test_solusi_4_insight_sidebar_shows_trust_factor_map():
 
     assert "renderTrustFactorMap" in app_js
     assert "trustFactorMapList" in app_js
+

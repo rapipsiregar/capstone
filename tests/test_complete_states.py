@@ -31,11 +31,11 @@ def test_catalog_levels_have_cause_and_action_states():
     assert "'#/'" in detail
 
 
-def test_pagination_states():
-    """pagination.js must display helpful empty/error states."""
-    pagination_js = (FRONTEND_JS / "pagination.js").read_text(encoding="utf-8")
-    assert "Belum ada log inferensi tersimpan" in pagination_js
-    assert "'#/sandbox'" not in pagination_js
+def test_metrics_evaluation_states():
+    """charts.js must render per-class evaluation rows and handle empty/error states."""
+    charts_js = (FRONTEND_JS / "charts.js").read_text(encoding="utf-8")
+    assert "renderPerClassMetrics" in charts_js
+    assert "perClassMetricsBody" in charts_js
 
 
 def test_state_screenshots_captured_in_artifacts():

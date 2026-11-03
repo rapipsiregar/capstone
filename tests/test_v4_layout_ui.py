@@ -100,5 +100,5 @@ def test_no_invented_fallback_numbers_in_guidebook_scripts():
     app = _js("app.js")
     assert "0.48" not in app and "0.28" not in app and "* 0.5" not in app
     assert "raw_text: \"" not in _js("api.js")
-    assert "|| 0.9" not in _js("pagination.js")
+    assert "0.942" not in _js("charts.js")
 
