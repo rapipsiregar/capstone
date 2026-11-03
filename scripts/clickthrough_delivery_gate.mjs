@@ -102,16 +102,14 @@ async function runClickthrough() {
     console.log('[6/6] Testing Guidebook 2: Metrik Skripsi (#/metrics)...');
     await page.eval(async () => { window.location.hash = '#/metrics'; await new Promise(r => setTimeout(r, 1200)); });
     const gb3Res = await page.eval(() => ({
-      numCols: document.querySelectorAll('.data-table th.num-col').length,
-      numCells: document.querySelectorAll('.data-table td.num-cell').length,
-      evalRows: document.querySelectorAll('#perClassMetricsBody tr').length,
-      cmTables: document.querySelectorAll('#confusionMatrixGrid .cm-table').length,
+      chartPresent: !!document.getElementById('comparisonChart'),
+      testSamples: document.getElementById('metricsTestSampleCount')?.textContent?.trim() || '',
       totalSplit: document.getElementById('metricsSplitTotal')?.textContent?.trim() || ''
     }));
     results.steps.push({
-      step: 'Guidebook 2 (Metrik Skripsi, Evaluasi Per Kelas & Confusion Matrix)',
-      status: (gb3Res.numCols >= 4 && gb3Res.evalRows === 7 && gb3Res.cmTables === 2 && gb3Res.totalSplit !== '–') ? 'PASS' : 'FAIL',
-      detail: `Split total: ${gb3Res.totalSplit}, Right-aligned headers: ${gb3Res.numCols}, Per-class rows: ${gb3Res.evalRows}, Confusion matrices: ${gb3Res.cmTables}`
+      step: 'Guidebook 2 (Metrik Skripsi)',
+      status: (gb3Res.chartPresent && gb3Res.totalSplit !== '–' && gb3Res.testSamples !== '–') ? 'PASS' : 'FAIL',
+      detail: `Split total: ${gb3Res.totalSplit}, Test samples: ${gb3Res.testSamples}, Chart present: ${gb3Res.chartPresent}`
     });
 
     if (page.consoleErrors?.length) results.errors.push(...page.consoleErrors);

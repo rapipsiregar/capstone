@@ -1,4 +1,4 @@
-"""Verify that 'Simulasi XAI' (#/sandbox), inference history UI/DB, and Solusi C per-class evaluation table are properly applied."""
+"""Verify that 'Simulasi XAI' (#/sandbox), inference history UI/DB, and Solusi C tables are completely and permanently removed."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -16,11 +16,10 @@ def test_simulasi_xai_and_inference_history_completely_removed():
     assert "pagination.js" not in html
     assert "Riwayat inferensi" not in html
     assert 'id="historyTableBody"' not in html
-
-    # Solusi C: Per-class evaluation table and confusion matrix exist in Metrik Skripsi
-    assert 'id="perClassEvaluationPanel"' in html
-    assert 'id="perClassMetricsBody"' in html
-    assert 'id="confusionMatrixGrid"' in html
+    assert 'id="perClassEvaluationPanel"' not in html
+    assert 'id="perClassMetricsBody"' not in html
+    assert 'id="confusionMatrixPanel"' not in html
+    assert 'id="confusionMatrixGrid"' not in html
 
 
 def test_sandbox_and_history_files_completely_deleted():
@@ -44,4 +43,3 @@ def test_sandbox_and_history_files_completely_deleted():
     assert "fetchReviewHistory" not in api
     assert "requestPrediction" not in api
     assert "requestExplanation" not in api
-

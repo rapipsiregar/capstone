@@ -32,14 +32,3 @@ def test_tabular_nums_and_numeric_alignment_in_styles():
     assert "tabular-nums" in tokens_css, "font-variant-numeric: tabular-nums missing in tokens.css"
     assert ".num-cell, .num-col" in tokens_css, "num-col / num-cell alignment rule missing"
     assert "text-align: right" in tokens_css, "text-align: right for numeric cells missing"
-
-
-def test_table_headers_and_cells_have_numeric_classes():
-    """Verify index.html table headers and charts.js cells use num-col/num-cell."""
-    index_html = (REPO_ROOT / "frontend" / "index.html").read_text(encoding="utf-8")
-    charts_js = (REPO_ROOT / "frontend" / "js" / "charts.js").read_text(encoding="utf-8")
-
-    assert '<th class="num-col">Precision</th>' in index_html
-    assert '<th class="num-col">Recall</th>' in index_html
-    assert '<th class="num-col">F1-Score</th>' in index_html
-    assert 'class="num-cell"' in charts_js

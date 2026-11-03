@@ -22,4 +22,3 @@ def test_index_html_contains_essential_ids():
     assert 'id="aspectChart"' in html_content
     assert 'id="trustChart"' in html_content
     assert 'id="comparisonChart"' in html_content
-    assert 'id="perClassMetricsBody"' in html_content
