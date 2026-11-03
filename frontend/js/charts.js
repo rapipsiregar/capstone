@@ -1,164 +1,105 @@
+/**
+ * CHARM charts (Chart.js). Colours follow DESIGN.md section 8:
+ * one rose hue family for categories, status colours for trust, rose bars for model metrics.
+ */
 let aspectChartInstance = null;
 let trustChartInstance = null;
 let comparisonChartInstance = null;
 
+const CHART_INK = '#3D2228';
+const CHART_MUTED = '#75545A';
+const ROSE_RAMP = ['#F5AFAF', '#E8959B', '#C9636F', '#A84A58', '#F9DFDF', '#D97D87'];
+const TRUST_COLOURS = { High_Trust: '#1E6B47', Neutral: '#D4A62A', Low_Trust: '#A3262E' };
+const TRUST_ORDER = ['High_Trust', 'Neutral', 'Low_Trust'];
+
+function legendOptions(position = 'bottom') {
+  return { position, labels: { color: CHART_INK, font: { family: 'Inter', size: 12 }, boxWidth: 12 } };
+}
+
+function countTooltip(total) {
+  return {
+    callbacks: {
+      label: ctx => ` ${ctx.label}: ${Number(ctx.raw).toLocaleString('id-ID')} ulasan (${total ? ((ctx.raw / total) * 100).toFixed(1) : '0.0'}%)`
+    }
+  };
+}
+
 function renderAspectChart(aspectData) {
   const canvas = document.getElementById('aspectChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const labels = Object.keys(aspectData || {});
-  const values = Object.values(aspectData || {});
-
-  if (aspectChartInstance) {
-    aspectChartInstance.destroy();
-    aspectChartInstance = null;
-  }
-
-  aspectChartInstance = new Chart(ctx, {
+  if (!canvas || typeof Chart === 'undefined') return;
+  const entries = Object.entries(aspectData || {}).sort((a, b) => b[1] - a[1]);
+  const total = entries.reduce((s, [, v]) => s + v, 0);
+  if (aspectChartInstance) aspectChartInstance.destroy();
+  aspectChartInstance = new Chart(canvas.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: labels.map(l => l.replace(/_/g, ' ')),
-      datasets: [{
-        data: values,
-        backgroundColor: ['#10b981', '#3b82f6', '#8b5cf6', '#f59e0b'],
-        borderColor: '#1e293b',
-        borderWidth: 2
-      }]
+      labels: entries.map(([k]) => k.replace(/_/g, ' ')),
+      datasets: [{ data: entries.map(([, v]) => v), backgroundColor: entries.map((_, i) => ROSE_RAMP[i % ROSE_RAMP.length]), borderColor: '#FFFFFF', borderWidth: 2 }]
     },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      animation: false,
-      animations: {
-        colors: false,
-        x: false
-      },
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#475569', font: { family: 'Inter' } }
-        }
-      }
-    }
+    options: { responsive: true, maintainAspectRatio: false, animation: false, cutout: '55%', plugins: { legend: legendOptions(), tooltip: countTooltip(total) } }
   });
 }
 
 function renderTrustChart(trustData) {
   const canvas = document.getElementById('trustChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-  const labels = Object.keys(trustData || {});
-  const values = Object.values(trustData || {});
-
-  if (trustChartInstance) {
-    trustChartInstance.destroy();
-    trustChartInstance = null;
-  }
-
-  trustChartInstance = new Chart(ctx, {
-    type: 'pie',
+  if (!canvas || typeof Chart === 'undefined') return;
+  const data = trustData || {};
+  const keys = [...TRUST_ORDER.filter(k => k in data), ...Object.keys(data).filter(k => !TRUST_ORDER.includes(k))];
+  const total = keys.reduce((s, k) => s + data[k], 0);
+  if (trustChartInstance) trustChartInstance.destroy();
+  trustChartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'doughnut',
     data: {
-      labels: labels.map(l => l.replace(/_/g, ' ')),
+      labels: keys.map(k => k.replace(/_/g, ' ')),
+      datasets: [{ data: keys.map(k => data[k]), backgroundColor: keys.map(k => TRUST_COLOURS[k] || CHART_MUTED), borderColor: '#FFFFFF', borderWidth: 2 }]
+    },
+    options: { responsive: true, maintainAspectRatio: false, animation: false, cutout: '55%', plugins: { legend: legendOptions(), tooltip: countTooltip(total) } }
+  });
+}
+
+async function renderComparisonChart(preloadedMetrics = null) {
+  const canvas = document.getElementById('comparisonChart');
+  if (!canvas || typeof Chart === 'undefined') return;
+  let metrics = preloadedMetrics;
+  if (!metrics && typeof fetchModelEvaluationMetrics === 'function') metrics = await fetchModelEvaluationMetrics();
+
+  // Values come straight from /model/metrics (computed on test.csv); missing values stay at 0 and the legend says so.
+  const values = [
+    metrics?.trust_classifier?.accuracy ?? 0,
+    metrics?.trust_classifier?.f1_macro ?? 0,
+    metrics?.aspect_classifier?.accuracy ?? 0,
+    metrics?.aspect_classifier?.f1_macro ?? 0
+  ];
+  const numSamples = metrics?.total_test_samples ?? null;
+  const sampleEl = document.getElementById('metricsTestSampleCount');
+  if (sampleEl && numSamples !== null) sampleEl.textContent = Number(numSamples).toLocaleString('id-ID');
+
+  if (comparisonChartInstance) comparisonChartInstance.destroy();
+  comparisonChartInstance = new Chart(canvas.getContext('2d'), {
+    type: 'bar',
+    data: {
+      labels: ['Akurasi kepercayaan', 'Macro F1 kepercayaan', 'Akurasi aspek', 'Macro F1 aspek'],
       datasets: [{
+        label: numSamples !== null ? `IndoBERT fine-tuned, ${numSamples} data uji (test.csv)` : 'Metrik belum termuat dari API',
         data: values,
-        backgroundColor: ['#10b981', '#f59e0b', '#ef4444'],
-        borderColor: '#1e293b',
-        borderWidth: 2
+        backgroundColor: '#F5AFAF',
+        borderColor: '#A84A58',
+        borderWidth: 1.5,
+        borderRadius: 4
       }]
     },
     options: {
       responsive: true,
       maintainAspectRatio: false,
       animation: false,
-      animations: {
-        colors: false,
-        x: false
-      },
-      plugins: {
-        legend: {
-          position: 'bottom',
-          labels: { color: '#475569', font: { family: 'Inter' } }
-        }
-      }
-    }
-  });
-}
-
-async function renderComparisonChart(preloadedMetrics = null) {
-  const canvas = document.getElementById('comparisonChart');
-  if (!canvas) return;
-  const ctx = canvas.getContext('2d');
-
-  let metrics = preloadedMetrics;
-  if (!metrics && typeof fetchModelEvaluationMetrics === 'function') {
-    metrics = await fetchModelEvaluationMetrics();
-  }
-
-  // Extract authentic evaluation values directly from API JSON
-  const trustAcc = metrics?.trust_classifier?.accuracy ?? 0.0;
-  const trustF1 = metrics?.trust_classifier?.f1_macro ?? 0.0;
-  const aspectAcc = metrics?.aspect_classifier?.accuracy ?? 0.0;
-  const aspectF1 = metrics?.aspect_classifier?.f1_macro ?? 0.0;
-  const numSamples = metrics?.total_test_samples ?? null;
-  const sampleEl = document.getElementById('metricsTestSampleCount');
-  if (sampleEl && numSamples !== null) sampleEl.textContent = Number(numSamples).toLocaleString('id-ID');
-
-  if (comparisonChartInstance) comparisonChartInstance.destroy();
-
-  comparisonChartInstance = new Chart(ctx, {
-    type: 'bar',
-    data: {
-      labels: ['Akurasi Kepercayaan (Trust)', 'Macro F1 Kepercayaan', 'Akurasi Aspek Komunikasi', 'Macro F1 Aspek'],
-      datasets: [
-        {
-          label: numSamples !== null
-            ? `IndoBERT Transformer (Fine-Tuned) - ${numSamples} Data Uji (test.csv)`
-            : 'IndoBERT Transformer (Fine-Tuned) - metrik belum termuat dari API',
-          data: [trustAcc, trustF1, aspectAcc, aspectF1],
-          backgroundColor: [
-            'rgba(15, 118, 110, 0.85)',
-            'rgba(16, 185, 129, 0.85)',
-            'rgba(13, 148, 136, 0.85)',
-            'rgba(5, 150, 105, 0.85)'
-          ],
-          borderColor: '#0F766E',
-          borderWidth: 2,
-          borderRadius: 6
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
       scales: {
-        y: {
-          beginAtZero: true,
-          max: 1.0,
-          grid: { color: 'rgba(0, 0, 0, 0.05)' },
-          ticks: {
-            color: '#64748b',
-            callback: function(val) { return (val * 100) + '%'; }
-          }
-        },
-        x: {
-          grid: { display: false },
-          ticks: { color: '#334155', font: { weight: '600' } }
-        }
+        y: { beginAtZero: true, max: 1, grid: { color: '#F9DFDF' }, ticks: { color: CHART_MUTED, callback: v => `${Math.round(v * 100)}%` } },
+        x: { grid: { display: false }, ticks: { color: CHART_INK, font: { family: 'Inter', weight: '600' } } }
       },
       plugins: {
-        legend: {
-          position: 'top',
-          labels: { color: '#0F766E', font: { family: 'Plus Jakarta Sans', weight: '700' } }
-        },
-        tooltip: {
-          callbacks: {
-            label: function(context) {
-              return ` Skor: ${(context.raw * 100).toFixed(2)}%`;
-            }
-          }
-        }
+        legend: legendOptions('top'),
+        tooltip: { callbacks: { label: ctx => ` Skor: ${(ctx.raw * 100).toFixed(2)}%` } }
       }
     }
   });
 }
-

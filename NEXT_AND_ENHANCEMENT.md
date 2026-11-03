@@ -21,10 +21,10 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 | 7 | Fondasi repo, aturan kerja, baseline | 6/6 (DONE) |
 | 8 | Integritas model IndoBERT (fine-tuning sungguhan & full SHAP precompute GPU) | 15/15 (DONE) |
 | 9 | Arah desain, angka jujur, aksesibilitas | 12/12 (DONE) |
-| 10 | Pembersihan slop visual & gerbang akhir | 5/9 (Seksi 10A DONE 3/3; Task 10.6 & 10.7 DONE; 4 task tersisa) |
+| 10 | Pembersihan slop visual & gerbang akhir | 6/9 (Seksi 10A DONE 3/3; Task 10.4, 10.6 & 10.7 DONE; 3 task tersisa) |
 | 11 | Pembersihan file duplikat & yatim | 3/3 (DONE) |
 | 1–6 | Riwayat implementasi awal | DONE (dengan koreksi audit) |
-| **Total Sisa** | **Sisa TODO Aktif (Task 10.4, 10.5, 10.8, 10.9)** | **4 Task Tersisa** |
+| **Total Sisa** | **Sisa TODO Aktif (Task 10.5, 10.8, 10.9)** | **3 Task Tersisa** |
 
 ## Keputusan User (2026-10-27)
 
@@ -95,8 +95,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 ### Phase 10: Pembersihan Slop Visual & Gerbang Akhir
 
 #### 10B. Chart, Tipografi & Gerak
-- [ ] **Task 10.4**: **Warna Chart** (F12): Satu hue data per chart dari `DESIGN.md` (menggantikan warna default violet/indigo).
+- [x] **Task 10.4**: **Warna Chart** (F12): Satu hue data per chart dari `DESIGN.md` (menggantikan warna default violet/indigo).
   - *Kriteria selesai:* lint 0 FAIL `purple`, 0 WARN `framework-colour`.
+  - *Bukti (2026-11-03):* `frontend/js/charts.js` (105 LOC <= 256 LOC) diperbarui memakai `ROSE_RAMP` (`#F5AFAF`, `#E8959B`, `#C9636F`, `#A84A58`) untuk grafik aspek, warna status `DESIGN.md` (`#1E6B47`, `#D4A62A`, `#A3262E`) untuk grafik kepercayaan, serta batang `#F5AFAF` bergaris `#A84A58` untuk metrik evaluasi; `tests/test_chart_colors_v4.py` (Red 3 failed → Green 3 passed); `lint.mjs frontend --app` menghasilkan **0 FAIL `purple` dan 0 WARN `framework-colour`** (total 0 FAIL, 1 WARN shadow overlay).
 - [ ] **Task 10.5**: **Tipografi** (F14, F15): Maks 2 typeface, ≤ 5 ukuran, headline ≤ 2 baris sesuai acuan `DESIGN.md`.
   - *Kriteria selesai:* inspector 0 WARN `font-count` dan `headline-lines`.
 - [x] **Task 10.6**: **Angka & Transisi** (F16, F17): Angka rata kanan dengan tabular figures; `transition: all` diganti properti spesifik.
