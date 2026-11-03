@@ -98,8 +98,9 @@ Dokumen tunggal untuk rencana (**TODO**) dan riwayat (**DONE**) proyek CHARM, Ca
 - [x] **Task 9.1**: **Pilih Gaya**: Dokumen proposal V1, V2, V3, dan V4 (`Proposal_Mockup_Desain_Kustom_CHARM.pdf`) telah disusun; user memilih gaya visual final.
   - *Kriteria selesai:* pilihan user tercatat.
   - *Bukti (2026-11-03):* User menyetujui **Edisi V4 "Rose Blush & 3D Glossy Serum"** ("saya suka dengan seluruh mockup desain UI web dan logo favicon app nya", 2026-11-03 20:32). Palet `#FCF8F8` (60%) / `#FBEFEF` (25%) / `#F9DFDF` (10%) / `#F5AFAF` (5%), tinta `#3D2228`, sekunder `#75545A`, aksen teks `#A84A58`, trust `#1E6B47`; layout Header Simetris + Unified L-Frame + Faceted Skincare Filter; alur Direktori Brand → Produk Brand → Detail Produk & XAI; favicon squircle glossy (gradasi diizinkan khusus favicon atas permintaan user).
-- [ ] **Task 9.2**: **Tulis `DESIGN.md`** (F7): Formalisasi gaya V4 Rose Blush, typeface (maks 2 family), peran warna 60-25-10-5, dial ENERGY / RHYTHM / MOTION, dan layout L-frame.
+- [x] **Task 9.2**: **Tulis `DESIGN.md`** (F7): Formalisasi gaya V4 Rose Blush, typeface (maks 2 family), peran warna 60-25-10-5, dial ENERGY / RHYTHM / MOTION, dan layout L-frame.
   - *Kriteria selesai:* setiap keputusan punya alasan tertulis (R-31); user menyetujui (persetujuan V4 tanggal 2026-11-03 dipakai sebagai acuan).
+  - *Bukti (2026-11-03):* [`DESIGN.md`](DESIGN.md) ditulis (palet + rasio kontras terukur, 2 typeface Playfair Display/Inter, 5 ukuran, layout, dial, aturan kejujuran data, favicon, grafik). `tests/test_design_md.py`: Red 4 failed (berkas belum ada) → Green 4 passed.
 - [ ] **Task 9.3**: **Favicon & Logo Baru** (F13): Memproduksi berkas vektor `frontend/favicon.svg` berbasis Konsep D (*The Purity Droplet & Crescent*) versi V4 3D Glossy Rose Serum (halaman 5 PDF V4).
   - *Kriteria selesai:* tanpa garis putus-putus dan tanpa warna gelap; gradasi glossy hanya dari palet `#FCF8F8`–`#F5AFAF` (keputusan user 2026-11-03 menggantikan syarat lama "tanpa gradient"); disetujui user; tampil di tab browser (screenshot).
 
