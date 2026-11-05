@@ -68,6 +68,7 @@ async function loadDatasetStats() {
   setText('metricsDatasetReviewCount', stats.total_reviews && fmt(stats.total_reviews));
   setText('metricsDatasetBrandCount', stats.total_brands && fmt(stats.total_brands));
   setText('metricsDatasetProductCount', stats.total_products && fmt(stats.total_products));
+  setText('complianceInfoReviewCount', stats.total_reviews && fmt(stats.total_reviews));
 
   const split = stats.split_counts;
   if (split) {

@@ -90,13 +90,13 @@ async function runClickthrough() {
         await new Promise(r => setTimeout(r, 1200));
       }
       const driverPills = document.querySelectorAll('#highTrustDriversList .badge, #lowTrustDriversList .badge').length;
-      const factorRows = document.querySelectorAll('#trustFactorMapList .meter-row').length;
-      return { brandOptionsCount: initialOptions, driverPillsCount: driverPills, factorRows };
+      const ratioText = document.getElementById('halalComplianceRatioText')?.textContent?.trim() || '';
+      return { brandOptionsCount: initialOptions, driverPillsCount: driverPills, ratioText };
     });
     results.steps.push({
       step: 'Guidebook 1 (Insight Reputasi & Brand Analytics)',
-      status: (gb1Res.brandOptionsCount > 200 && gb1Res.driverPillsCount > 0 && gb1Res.factorRows > 0) ? 'PASS' : 'FAIL',
-      detail: `Brand options: ${gb1Res.brandOptionsCount}, Driver pills: ${gb1Res.driverPillsCount}, Factor map rows: ${gb1Res.factorRows}`
+      status: (gb1Res.brandOptionsCount > 200 && gb1Res.driverPillsCount > 0) ? 'PASS' : 'FAIL',
+      detail: `Brand options: ${gb1Res.brandOptionsCount}, Driver pills: ${gb1Res.driverPillsCount}, Compliance: ${gb1Res.ratioText}`
     });
 
     console.log('[6/6] Testing Guidebook 2: Metrik Skripsi (#/metrics)...');

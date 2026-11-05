@@ -19,8 +19,7 @@ class TestFDSidebarUI(unittest.TestCase):
 
         self.assertIn('class="insight-layout"', content)
         self.assertIn('id="rightSidebarAnalytics"', content)
-        self.assertIn('id="trustFactorMapPanel"', content)
-        self.assertIn('id="trustFactorMapList"', content)
+        self.assertIn('id="halalComplianceProgressBar"', content)
 
     def test_sidebar_logic_exists_in_js(self):
         """Test that JavaScript app.js contains renderRightSidebarAnalytics logic."""
@@ -29,7 +28,7 @@ class TestFDSidebarUI(unittest.TestCase):
             content = f.read()
 
         self.assertIn("renderRightSidebarAnalytics", content)
-        self.assertIn("renderTrustFactorMap", content)
+        self.assertIn("halalComplianceProgressBar", content)
 
 if __name__ == "__main__":
     unittest.main()

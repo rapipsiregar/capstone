@@ -29,12 +29,11 @@ function renderAspectChart(aspectData) {
   if (!canvas || typeof Chart === 'undefined') return;
   const entries = Object.entries(aspectData || {}).sort((a, b) => b[1] - a[1]);
   const total = entries.reduce((s, [, v]) => s + v, 0);
-  const labelFn = window.charmUI?.aspectLabel || (k => k.replace(/_/g, ' '));
   if (aspectChartInstance) aspectChartInstance.destroy();
   aspectChartInstance = new Chart(canvas.getContext('2d'), {
     type: 'doughnut',
     data: {
-      labels: entries.map(([k]) => labelFn(k)),
+      labels: entries.map(([k]) => k.replace(/_/g, ' ')),
       datasets: [{ data: entries.map(([, v]) => v), backgroundColor: entries.map((_, i) => ROSE_RAMP[i % ROSE_RAMP.length]), borderColor: '#FFFFFF', borderWidth: 2 }]
     },
     options: { responsive: true, maintainAspectRatio: false, animation: false, cutout: '55%', plugins: { legend: legendOptions(), tooltip: countTooltip(total) } }
@@ -64,6 +63,7 @@ async function renderComparisonChart(preloadedMetrics = null) {
   let metrics = preloadedMetrics;
   if (!metrics && typeof fetchModelEvaluationMetrics === 'function') metrics = await fetchModelEvaluationMetrics();
 
+  // Values come straight from /model/metrics (computed on test.csv); missing values stay at 0 and the legend says so.
   const values = [
     metrics?.trust_classifier?.accuracy ?? 0,
     metrics?.trust_classifier?.f1_macro ?? 0,

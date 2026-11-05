@@ -72,8 +72,6 @@ def get_catalog_products(
     category: Optional[str] = Query(None, description="Category name to filter"),
     brand: Optional[str] = Query(None, description="Brand name to filter"),
     search: Optional[str] = Query("", description="Optional search keyword"),
-    aspect: Optional[str] = Query(None, description="Dominant communication aspect to filter"),
-    high_trust: bool = Query(False, description="Only products with High Trust >= 50%"),
     halal: bool = Query(False, description="Only products whose reviews mention a halal claim"),
     bpom: bool = Query(False, description="Only products whose reviews mention a BPOM claim"),
     min_rating: Optional[float] = Query(None, ge=0, le=5, description="Minimum average rating"),
@@ -128,8 +126,7 @@ def get_catalog_products(
     for (brand, prod_name), group in grouped:
         rev_count = len(group)
         avg_rating = round(float(group["rating_bintang"].mean()), 2) if "rating_bintang" in group.columns else 4.5
-        ht_count = int((group["label_kepercayaan"] == "High_Trust").sum()) if "label_kepercayaan" in group.columns else 0
-        top_aspect = str(group["aspek_komunikasi"].mode().iloc[0]) if "aspek_komunikasi" in group.columns and not group["aspek_komunikasi"].dropna().empty else ""
+        high_trust = int((group["label_kepercayaan"] == "High_Trust").sum()) if "label_kepercayaan" in group.columns else 0
         halal_claimed = bool((group["klaim_halal"] == 1).any()) if "klaim_halal" in group.columns else False
         bpom_claimed = bool((group["klaim_bpom"] == 1).any()) if "klaim_bpom" in group.columns else False
 
@@ -139,15 +136,13 @@ def get_catalog_products(
             "category_name": str(group["kategori_produk"].iloc[0]),
             "review_count": rev_count,
             "avg_rating": avg_rating,
-            "high_trust_ratio": round(float(ht_count / rev_count), 2) if rev_count > 0 else 0.0,
-            "high_trust_pct": round(float(ht_count / rev_count * 100), 1) if rev_count > 0 else 0.0,
-            "top_aspect": top_aspect,
+            "high_trust_ratio": round(float(high_trust / rev_count), 2) if rev_count > 0 else 0.0,
             "halal_claim": halal_claimed,
             "bpom_claim": bpom_claimed
         })
 
     products_list.sort(key=lambda x: x["review_count"], reverse=True)
-    products_list = refine_products(products_list, halal, bpom, min_rating, aspect, high_trust)
+    products_list = refine_products(products_list, halal, bpom, min_rating)
     total_prods = len(products_list)
     total_pages = max(1, (total_prods + limit - 1) // limit)
     start_idx = (page - 1) * limit
