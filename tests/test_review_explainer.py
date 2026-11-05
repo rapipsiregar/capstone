@@ -63,3 +63,27 @@ def test_generate_review_xai_explanation_neutral_fallback():
     
     assert "Netral" in explanation["trust_reason"] or "Netral" in explanation["trust_reason"] or "cukup" in explanation["trust_reason"].lower()
     assert "Kombinasi" in explanation["skin_analysis"]
+
+
+def test_every_distinct_review_gets_unique_comment_specific_umkm_recommendation():
+    """Saran UMKM must differ for every distinct review comment based on its specific content."""
+    import pandas as pd
+    df = pd.read_csv("data/annotated/female_daily_skincare_annotated.csv")
+    for prod_name in ["Lightening Day Cream", "Elderflower Unperfumed Eye Gel"]:
+        sub = df[df["nama_produk"] == prod_name].head(8)
+        recs = []
+        for _, row in sub.iterrows():
+            raw_text = str(row["teks_ulasan_mentah"])
+            review_dict = {
+                "label_kepercayaan": str(row["label_kepercayaan"]),
+                "aspek_komunikasi": str(row["aspek_komunikasi"]),
+                "merek_umkm": str(row["merek_umkm"]),
+                "kondisi_kulit_usia": str(row["kondisi_kulit_usia"]),
+            }
+            exp = generate_review_xai_explanation(review_dict, raw_text)
+            recs.append(exp["umkm_recommendation"])
+
+        assert len(set(recs)) == len(recs), (
+            f"Expected all {len(recs)} recommendations for {prod_name} to be unique, got duplicates: {recs}"
+        )
+
